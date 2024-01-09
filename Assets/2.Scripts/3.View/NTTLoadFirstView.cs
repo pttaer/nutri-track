@@ -13,7 +13,7 @@ public class NTTLoadFirstView : MonoBehaviour
         NTTControl.Api.Init();
 
 #if PLATFORM_ANDROID
-        StartCoroutine(CheckForBackButton());
+        //StartCoroutine(CheckForBackButton());
 #endif
     }
 
