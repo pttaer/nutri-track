@@ -29,10 +29,11 @@ public class NTTApiControl
         return request;
     }
 
-    public IEnumerator GetListData<T>(string url, Dictionary<string, string> param = null, Action<T[]> renderPage = null, bool isNotShowSorry = false)
+    public IEnumerator GetListData<T>(string url, Action<T[]> callback, Dictionary<string, string> param = null)
     {
         NTTControl.Api.ShowLoading();
 
+        // handling url parameters
         if (param != null)
         {
             url += "?";
@@ -43,23 +44,21 @@ public class NTTApiControl
             }
         }
 
-        Debug.Log("CALL " + url);
-
         UnityWebRequest request = WebRequestWithAuthorizationHeader(url, NTTConstant.METHOD_GET);
 
         request.downloadHandler = new DownloadHandlerBuffer();
         yield return request.SendWebRequest();
 
-        Debug.Log("request result= " + request.result);
+        Debug.Log("request result: " + request.result);
 
         // Check that downloadHandler is not null
         if (request.downloadHandler != null)
         {
-            Debug.Log("request data= " + request.downloadHandler.text);
+            Debug.Log("response: " + request.downloadHandler.text);
         }
         else
         {
-            Debug.Log("Error: downloadHandler is null");
+            Debug.LogError("Error: downloadHandler is null");
         }
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -72,28 +71,24 @@ public class NTTApiControl
             {
                 T[] dataArray = JsonConvert.DeserializeObject<T[]>(response);
 
-                renderPage?.Invoke(dataArray);
+                callback?.Invoke(dataArray);
             }
             else
             {
-                //NTTListDTO<T> data = JsonConvert.DeserializeObject<NTTListDTO<T>>(response);
-
-                //renderPage?.Invoke(data.results);
             }
         }
         else
         {
-            NTTControl.Api.HideLoading();
-            // Show popup error
-
-            Debug.LogError("test error: " + request.error);
+            Debug.Log("error: " + request.error);
         }
+        NTTControl.Api.HideLoading();
     }
 
-    public IEnumerator GetData<T>(string url, Dictionary<string, string> param = null, Action<T> renderPage = null)
+    public IEnumerator GetData<T>(string url, Dictionary<string, string> param = null, Action<T> callback = null)
     {
         NTTControl.Api.ShowLoading();
 
+        // handling url parameters
         if (param != null)
         {
             url += "?";
@@ -104,20 +99,16 @@ public class NTTApiControl
             }
         }
 
-        Debug.Log("CALL " + url);
-
         UnityWebRequest request = WebRequestWithAuthorizationHeader(url, NTTConstant.METHOD_GET);
-
-
         request.downloadHandler = new DownloadHandlerBuffer();
         yield return request.SendWebRequest();
 
-        Debug.Log("request result= " + request.result);
+        Debug.Log("request result: " + request.result);
 
         // Check that downloadHandler is not null
         if (request.downloadHandler != null)
         {
-            Debug.Log("request data= " + request.downloadHandler.text);
+            Debug.Log("response: " + request.downloadHandler.text);
         }
         else
         {
@@ -130,45 +121,44 @@ public class NTTApiControl
             string response = request.downloadHandler.text;
 
             T data = JsonConvert.DeserializeObject<T>(response);
-            renderPage?.Invoke(data);
-        }
-        else
-        {
-            // Show popup error
-            Debug.LogError("test error: " + request.error);
-        }
-        NTTControl.Api.HideLoading();
-    }
-
-    public IEnumerator SetRequestMemberAccess(string url, int memberId, int requestAccess)
-    {
-        UnityWebRequest request = WebRequestWithAuthorizationHeader(url, NTTConstant.METHOD_PUT);
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        JObject json = new JObject
-         {
-             { "id", memberId },
-             { "requestStatus", requestAccess }
-         };
-
-        byte[] rawJsonData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(json));
-
-        request.uploadHandler = new UploadHandlerRaw(rawJsonData);
-        request.downloadHandler = new DownloadHandlerBuffer();
-
-        yield return request.SendWebRequest();
-
-        string response = request.downloadHandler.text;
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            Debug.Log("Handled request access successfully: " + response);
+            callback?.Invoke(data);
         }
         else
         {
             Debug.Log("error: " + request.error);
         }
+        NTTControl.Api.HideLoading();
     }
+
+    //public IEnumerator SetRequestMemberAccess(string url, int memberId, int requestAccess)
+    //{
+    //    UnityWebRequest request = WebRequestWithAuthorizationHeader(url, NTTConstant.METHOD_PUT);
+    //    request.SetRequestHeader("Content-Type", "application/json");
+
+    //    JObject json = new JObject
+    //     {
+    //         { "id", memberId },
+    //         { "requestStatus", requestAccess }
+    //     };
+
+    //    byte[] rawJsonData = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(json));
+
+    //    request.uploadHandler = new UploadHandlerRaw(rawJsonData);
+    //    request.downloadHandler = new DownloadHandlerBuffer();
+
+    //    yield return request.SendWebRequest();
+
+    //    string response = request.downloadHandler.text;
+
+    //    if (request.result == UnityWebRequest.Result.Success)
+    //    {
+    //        Debug.Log("Handled request access successfully: " + response);
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("error: " + request.error);
+    //    }
+    //}
 
     public IEnumerator PatchData(string uri, Action callback = null)
     {
@@ -180,41 +170,38 @@ public class NTTApiControl
 
         yield return request.SendWebRequest();
 
-        Debug.Log("request result= " + request.result);
+        Debug.Log("request result: " + request.result);
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.LogError("PATCH OK: ");
             NTTControl.Api.HideLoading();
             callback?.Invoke();
         }
         else
         {
-            Debug.LogError("Error sending data: " + request.error);
+            Debug.Log("error: " + request.error);
         }
         NTTControl.Api.HideLoading();
     }
 
-    public IEnumerator EditData<T>(string uri, T formData, Action callback = null)
+    public IEnumerator EditData<T>(string url, T formData, Action callback = null)
     {
         NTTControl.Api.ShowLoading();
 
-        Debug.Log("formData " + formData);
-
         string jsonData = JsonConvert.SerializeObject(formData, Formatting.Indented);
 
-        Debug.Log("jsonData " + jsonData);
+        Debug.Log("formData: " + jsonData);
 
         byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
 
-        UnityWebRequest request = WebRequestWithAuthorizationHeader(uri, NTTConstant.METHOD_PUT);
+        UnityWebRequest request = WebRequestWithAuthorizationHeader(url, NTTConstant.METHOD_PUT);
         request.SetRequestHeader("Content-Type", "application/json");
         request.uploadHandler = new UploadHandlerRaw(jsonBytes);
         request.downloadHandler = new DownloadHandlerBuffer();
 
         yield return request.SendWebRequest();
 
-        Debug.Log("request result= " + request.result);
+        Debug.Log("request result: " + request.result);
 
         if (request.uploadHandler != null)
         {
@@ -230,13 +217,11 @@ public class NTTApiControl
         if (request.result == UnityWebRequest.Result.Success)
         {
             NTTControl.Api.HideLoading();
-
-            Debug.LogError("SENT OK: ");
             callback?.Invoke();
         }
         else
         {
-            Debug.LogError("Error sending data: " + request.error);
+            Debug.Log("error: " + request.error);
         }
         NTTControl.Api.HideLoading();
     }
@@ -248,6 +233,8 @@ public class NTTApiControl
         string jsonData = JsonConvert.SerializeObject(formData, Formatting.Indented);
         byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
 
+        Debug.Log("formData: " + jsonData);
+
         UnityWebRequest request = WebRequestWithAuthorizationHeader(uri, NTTConstant.METHOD_POST);
         request.SetRequestHeader("Content-Type", "application/json");
         request.uploadHandler = new UploadHandlerRaw(jsonBytes);
@@ -272,41 +259,24 @@ public class NTTApiControl
         {
             NTTControl.Api.HideLoading();
 
-            Debug.LogError("SENT OK: ");
             JObject data = JsonConvert.DeserializeObject<JObject>(response);
+            Debug.Log("response: " + response);
             callback?.Invoke(data);
         }
         else
         {
-            Debug.LogError("Error sending data: " + request.error);
+            Debug.Log("error: " + request.error);
             JObject data = JsonConvert.DeserializeObject<JObject>(response);
             callback?.Invoke(data);
         }
         NTTControl.Api.HideLoading();
     }
 
-    public IEnumerator PurchasePack<T>(string uri, T formData, Action callback = null)
+    public IEnumerator DelItem(string url, Action callback = null)
     {
         NTTControl.Api.ShowLoading();
 
-        string jsonData = JsonConvert.SerializeObject(formData, Formatting.Indented);
-        byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
-
-        UnityWebRequest request = WebRequestWithAuthorizationHeader(uri, NTTConstant.METHOD_POST);
-        request.SetRequestHeader("Content-Type", "application/json");
-        request.uploadHandler = new UploadHandlerRaw(jsonBytes);
-        request.downloadHandler = new DownloadHandlerBuffer();
-
-        callback?.Invoke();
-
-        yield return request.SendWebRequest();
-    }
-
-    public IEnumerator DelItem(string uri, Action callback = null)
-    {
-        NTTControl.Api.ShowLoading();
-
-        UnityWebRequest request = NTTApiControl.WebRequestWithAuthorizationHeader(uri, NTTConstant.METHOD_DELETE);
+        UnityWebRequest request = NTTApiControl.WebRequestWithAuthorizationHeader(url, NTTConstant.METHOD_DELETE);
 
         request.downloadHandler = new DownloadHandlerBuffer();
 
@@ -316,7 +286,6 @@ public class NTTApiControl
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("Handled request access successfully: " + response);
             callback?.Invoke();
         }
         else
@@ -327,86 +296,81 @@ public class NTTApiControl
         NTTControl.Api.HideLoading();
     }
 
-    public void Logout()
-    {
+    //public IEnumerator Login(string email, string password, bool isRememberMe = false, Action callback = null)
+    //{
+    //    NTTControl.Api.ShowLoading();
+    //    UnityWebRequest request = new UnityWebRequest(NTTConstant.LOGIN, NTTConstant.METHOD_POST.ToUpper());
 
-    }
+    //    JObject data = new JObject()
+    //    {
+    //        {"email", email },
+    //        {"password", password}
+    //    };
 
-    public IEnumerator Login(string email, string password, bool isRememberMe = false, Action callback = null)
-    {
-        NTTControl.Api.ShowLoading();
-        UnityWebRequest request = new UnityWebRequest(NTTConstant.LOGIN, NTTConstant.METHOD_POST.ToUpper());
+    //    string jsonData = JsonConvert.SerializeObject(data, Formatting.Indented);
+    //    byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonData);
 
-        JObject data = new JObject()
-        {
-            {"email", email },
-            {"password", password}
-        };
+    //    request.SetRequestHeader("Content-Type", "application/json");
+    //    request.uploadHandler = new UploadHandlerRaw(jsonBytes);
+    //    request.downloadHandler = new DownloadHandlerBuffer();
 
-        string jsonData = JsonConvert.SerializeObject(data, Formatting.Indented);
-        byte[] jsonBytes = Encoding.UTF8.GetBytes(jsonData);
+    //    yield return request.SendWebRequest();
 
-        request.SetRequestHeader("Content-Type", "application/json");
-        request.uploadHandler = new UploadHandlerRaw(jsonBytes);
-        request.downloadHandler = new DownloadHandlerBuffer();
+    //    // Check that downloadHandler is not null
+    //    if (request.downloadHandler != null)
+    //    {
+    //        Debug.Log("request data= " + request.downloadHandler.text);
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("Error: downloadHandler is null");
+    //    }
 
-        yield return request.SendWebRequest();
+    //    if (request.result == UnityWebRequest.Result.Success)
+    //    {
+    //        string response = request.downloadHandler.text;
 
-        // Check that downloadHandler is not null
-        if (request.downloadHandler != null)
-        {
-            Debug.Log("request data= " + request.downloadHandler.text);
-        }
-        else
-        {
-            Debug.Log("Error: downloadHandler is null");
-        }
+    //        //            NTTUserResponseDTO userData = JsonConvert.DeserializeObject<NTTUserResponseDTO>(response);
+    //        //            string token = userData.token;
 
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            string response = request.downloadHandler.text;
+    //        //            Debug.Log($"Response from {NTTConstant.LOGIN}: " + response);
 
-//            NTTUserResponseDTO userData = JsonConvert.DeserializeObject<NTTUserResponseDTO>(response);
-//            string token = userData.token;
+    //        //            NTTModel.Api.CurrentUser = JsonConvert.DeserializeObject<NTTUserDTO>(response);
 
-//            Debug.Log($"Response from {NTTConstant.LOGIN}: " + response);
+    //        //            PlayerPrefs.SetString(NTTConstant.BEARER_TOKEN_CACHE, NTTModel.Api.CurrentUser.Token);
+    //        //            PlayerPrefs.SetInt(NTTConstant.USER_ID, userData.id);
 
-//            NTTModel.Api.CurrentUser = JsonConvert.DeserializeObject<NTTUserDTO>(response);
+    //        //            if (isRememberMe)
+    //        //            {
+    //        //                SetCacheAccount(password, userData);
+    //        //            }
+    //        //            else
+    //        //            {
+    //        //                ClearCacheLoginRemember();
+    //        //            }
 
-//            PlayerPrefs.SetString(NTTConstant.BEARER_TOKEN_CACHE, NTTModel.Api.CurrentUser.Token);
-//            PlayerPrefs.SetInt(NTTConstant.USER_ID, userData.id);
+    //        //            PlayerPrefs.SetString(NTTConstant.USER_EMAIL_CACHE, userData.email);
+    //        //            PlayerPrefs.SetString(NTTConstant.USER_FULLNAME_CACHE, userData.fullName);
 
-//            if (isRememberMe)
-//            {
-//                SetCacheAccount(password, userData);
-//            }
-//            else
-//            {
-//                ClearCacheLoginRemember();
-//            }
+    //        //            Debug.Log("Set token: " + PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE));
 
-//            PlayerPrefs.SetString(NTTConstant.USER_EMAIL_CACHE, userData.email);
-//            PlayerPrefs.SetString(NTTConstant.USER_FULLNAME_CACHE, userData.fullName);
-
-//            Debug.Log("Set token: " + PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE));
-
-//#if UNITY_EDITOR
-//            NTTConstant.BEARER_TOKEN_EDITOR = "Bearer " + NTTModel.Api.CurrentUser.Token;
-//#endif
-            callback?.Invoke();
-        }
-        else
-        {
-            Debug.LogError("test error: " + request.error);
-            if (request.responseCode == 404 || request.responseCode == 500)
-            {
-                NTTControl.Api.FailLogin(false);
-            }
-            else
-            {
-                NTTControl.Api.FailLogin(true);
-            }
-        }
-        NTTControl.Api.HideLoading();
-    }
+    //        //#if UNITY_EDITOR
+    //        //            NTTConstant.BEARER_TOKEN_EDITOR = "Bearer " + NTTModel.Api.CurrentUser.Token;
+    //        //#endif
+    //        callback?.Invoke();
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("test error: " + request.error);
+    //        if (request.responseCode == 404 || request.responseCode == 500)
+    //        {
+    //            NTTControl.Api.FailLogin(false);
+    //        }
+    //        else
+    //        {
+    //            NTTControl.Api.FailLogin(true);
+    //        }
+    //    }
+    //    NTTControl.Api.HideLoading();
+    //}
 }

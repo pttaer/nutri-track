@@ -56,8 +56,8 @@ public class NTTControl
         NTTDeeplinkControl.Api.Init();
 
         // Default value
-        UnloadThenLoadScene(NTTConstant.SCENE_LOGIN);
-        LoadScene(NTTConstant.SCENE_MENU);
+        //UnloadThenLoadScene(NTTConstant.SCENE_LOGIN);
+        //LoadScene(NTTConstant.SCENE_MENU);
 
         Debug.Log("INIT");
     }
