@@ -11,38 +11,8 @@ public class NTTConstant
     {
         get { return "NTTLoadFirst"; }
     }
-    public static string SCENE_LOGIN
-    {
-        get { return "NTTLogin"; }
-    }
-    public static string SCENE_MENU
-    {
-        get { return "NTTMenuView"; }
-    }
-    public static string SCENE_HOME
-    {
-        get { return "NTTHome"; }
-    }
-    public static string SCENE_MAIN
-    {
-        get { return "NTTMainView"; }
-    }
-    public static string SCENE_SURVEY_LIST
-    {
-        get { return "NTTSurveyList"; }
-    }
-    public static string SCENE_CREATE_SURVEY
-    {
-        get { return "NTTCreateSurvey"; }
-    }
-    public static string SCENE_BUNDLE
-    {
-        get { return "NTTBundle"; }
-    }
-    public static string SCENE_PAYMENT
-    {
-        get { return "NTTPayment"; }
-    }
+    
+    //TODO: UPDATE NEW SCENES
 
     #endregion SCENE_NAMES
 
@@ -97,44 +67,12 @@ public class NTTConstant
 
     #endregion FORMAT
 
-    #region API_URI
+    #region API_URL
 
-    public const string LOGIN = "https://survey-now-fptu-production.somee.com/api/v1/authentication/login";
-    public const string REGISTER = "https://survey-now-fptu-production.somee.com/api/v1/authentication/register";
+    public const string BASE_DOMAIN = ""; // base domain name, in case hosting service is changed
+    public const string ROUTE = BASE_DOMAIN + ""; // service route
 
-    public const string USER_UPDATE_INFO = "https://survey-now-fptu-production.somee.com/api/v1/users/{0}";
-    public const string USER_CURRENT_INFO = "https://survey-now-fptu-production.somee.com/api/v1/users/login-user";
-    public const string USER_GET_FIELDS = "https://survey-now-fptu-production.somee.com/api/v1/occupations/fields";
-
-    public const string OCCUPATION = "https://survey-now-fptu-production.somee.com/api/v1/occupation";
-
-    public const string PACKS_ALL = "https://survey-now-fptu-production.somee.com/api/v1/packs/all";
-    public const string PACKS_CALCULATE = "https://survey-now-fptu-production.somee.com/api/v1/packs/calculate";
-    public const string PACKS_RECOMMEND = "https://survey-now-fptu-production.somee.com/api/v1/packs/recommend";
-    public const string PACKS_PURCHASE = "https://survey-now-fptu-production.somee.com/api/v1/packs/purchase";
-
-    public const string POINTS_PURCHASE = "https://survey-now-fptu-production.somee.com/api/v1/points/purchase/momo";
-    public const string POINTS_PURCHASE_REQUEST = "https://survey-now-fptu-production.somee.com/api/v1/points/purchase/request";
-    public const string POINTS_PURCHASE_RETURN = "https://survey-now-fptu-production.somee.com/api/v1/points/purchase/momo/return";
-    public const string POINTS_PURCHASE_HISTORY = "https://survey-now-fptu-production.somee.com/api/v1/points/history";
-
-    public const string SURVEY_CREATE = "https://survey-now-fptu-production.somee.com/api/v1/surveys";
-    public const string SURVEY_GET_HOME = "https://survey-now-fptu-production.somee.com/api/v1/surveys";
-    public const string SURVEY_GET_ALL = "https://survey-now-fptu-production.somee.com/api/v1/surveys";
-    public const string SURVEY_GET_MY_SURVEY = "https://survey-now-fptu-production.somee.com/api/v1/account/surveys";
-    public const string SURVEY_SET_ACTIVE = "https://survey-now-fptu-production.somee.com/api/v1/surveys/status/{0}";
-    public const string SURVEY_GET_DETAIL = "https://survey-now-fptu-production.somee.com/api/v1/surveys/{0}";
-    public const string SURVEY_PUT = "https://survey-now-fptu-production.somee.com/api/v1/surveys/{0}";
-    public const string SURVEY_PATCH = "https://survey-now-fptu-production.somee.com/api/v1/surveys/status/{0}";
-    public const string SURVEY_DO = "https://survey-now-fptu-production.somee.com/api/v1/surveys/do-survey";
-    public const string SURVEY_DELETE = "https://survey-now-fptu-production.somee.com/api/v1/surveys/{0}";
-    public const string SURVEY_POST = "https://survey-now-fptu-production.somee.com/api/v1/surveys/{0}/post-survey";
-    public const string SURVEY_HISTORY = "https://survey-now-fptu-production.somee.com/api/v1/account/history";
-    public const string SURVEY_HISTORY_DETAIL = "https://survey-now-fptu-production.somee.com/api/v1/account/surveys/{0}/answer";
-
-    public const string REDEEM_MONEY = "https://survey-now-fptu-production.somee.com/api/v1/points/redeem/request";
-
-    #endregion API_URI
+    #endregion API_URL
 
     // Methods
     public const string METHOD_GET = "GET";
@@ -143,33 +81,6 @@ public class NTTConstant
     public const string METHOD_DELETE = "DELETE";
     public const string METHOD_PATCH = "PATCH";
 
-    // title text
-
-    // keys
-    public static readonly List<string> questionTypes = new()
-    {
-        "Text",
-        "Radio",
-        "CheckBox",
-        "Selection",
-        "Rating",
-        "Likert"
-    };
-
-    public static readonly List<string> multipleOptionTypes = new()
-    {
-        "NoLimit",
-        "EqualTo",
-        "AtMost"
-    };
-
-    public static readonly List<string> packTypes = new()
-    {
-        "Basic",
-        "Medium",
-        "Advanced",
-        "Expert"
-    };
 
     // playerprefs
     public const string EMAIL_CACHE = "email_cache";
@@ -208,13 +119,6 @@ public class NTTConstant
     private static Color32 m_RedTextColor = new(202, 33, 43, 255);
 
     private static Color32 m_GreenTextColor = new(34, 130, 34, 255);
-
-    // api constant
-    public enum REQUEST_STATUS
-    {
-        APPROVE = 2,
-        REJECT
-    }
 
 #if UNITY_EDITOR
     public static string BEARER_TOKEN = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0IiwiZW1haWwiOiJ1c2VyMUBnbWFpbC5jb20iLCJyb2xlIjoiVXNlciIsIm5iZiI6MTY5NjQ3NzYwMCwiZXhwIjoxNjk2NzM2ODAwLCJpYXQiOjE2OTY0Nzc2MDB9.0wIsn-p-Cwtod9otv3cWMDO-Rx20LbsktHMDmZF9UgY";
