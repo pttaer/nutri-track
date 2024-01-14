@@ -118,8 +118,76 @@ MonoBehaviour:
     _activeThemeId: ee785432-c643-4b21-9b05-8390c308c373
   _characterStyleTMPPalette:
     _entries:
-      _keys: []
-      _values: []
+      _keys:
+      - c2a2a64f-4e75-4ab0-8970-4103f24635bc
+      - 42a85a87-1144-40cb-a151-b4ccdb272ab3
+      - a8e80d30-f1cc-436c-9940-2659496c73a3
+      - ca7c27d2-0a46-4d29-af56-3c601a35ca2f
+      _values:
+      - _id: c2a2a64f-4e75-4ab0-8970-4103f24635bc
+        _name:
+          _value: Bold
+        _values:
+          _keys:
+          - f4f94bdb-2412-4a14-89b8-5f1c5703cd27
+          _values:
+          - _value:
+              font: {fileID: 11400000, guid: 2deb9490d539ae948969139e3b6cc0b1, type: 2}
+              fontStyle: 0
+              fontSize: 36
+              enableAutoSizing: 0
+              characterSpacing: 0
+              wordSpacing: 0
+              lineSpacing: 0
+              paragraphSpacing: 0
+      - _id: 42a85a87-1144-40cb-a151-b4ccdb272ab3
+        _name:
+          _value: Medium
+        _values:
+          _keys:
+          - f4f94bdb-2412-4a14-89b8-5f1c5703cd27
+          _values:
+          - _value:
+              font: {fileID: 11400000, guid: 42050de4c8f4db345846b9564e992a09, type: 2}
+              fontStyle: 0
+              fontSize: 36
+              enableAutoSizing: 0
+              characterSpacing: 0
+              wordSpacing: 0
+              lineSpacing: 0
+              paragraphSpacing: 0
+      - _id: a8e80d30-f1cc-436c-9940-2659496c73a3
+        _name:
+          _value: Regular
+        _values:
+          _keys:
+          - f4f94bdb-2412-4a14-89b8-5f1c5703cd27
+          _values:
+          - _value:
+              font: {fileID: 11400000, guid: 6c26059dbfb96e345bf8a53182c892b7, type: 2}
+              fontStyle: 0
+              fontSize: 36
+              enableAutoSizing: 0
+              characterSpacing: 0
+              wordSpacing: 0
+              lineSpacing: 0
+              paragraphSpacing: 0
+      - _id: ca7c27d2-0a46-4d29-af56-3c601a35ca2f
+        _name:
+          _value: Light
+        _values:
+          _keys:
+          - f4f94bdb-2412-4a14-89b8-5f1c5703cd27
+          _values:
+          - _value:
+              font: {fileID: 11400000, guid: 73c84843a5a21d4478f6337badf01515, type: 2}
+              fontStyle: 0
+              fontSize: 36
+              enableAutoSizing: 0
+              characterSpacing: 0
+              wordSpacing: 0
+              lineSpacing: 0
+              paragraphSpacing: 0
     _themes:
       _keys:
       - f4f94bdb-2412-4a14-89b8-5f1c5703cd27
@@ -128,7 +196,11 @@ MonoBehaviour:
         _name:
           _value: Default
     _entryOrders:
-      _ids: []
+      _ids:
+      - c2a2a64f-4e75-4ab0-8970-4103f24635bc
+      - 42a85a87-1144-40cb-a151-b4ccdb272ab3
+      - ca7c27d2-0a46-4d29-af56-3c601a35ca2f
+      - a8e80d30-f1cc-436c-9940-2659496c73a3
     _themeOrders:
       _ids:
       - f4f94bdb-2412-4a14-89b8-5f1c5703cd27
