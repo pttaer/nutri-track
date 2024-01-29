@@ -238,7 +238,5 @@ public class NTTChatMain : MonoBehaviour
                 VivoxService.Instance.TextToSpeechSendMessage($"{message.SenderDisplayName} said, {message.MessageText}", TextToSpeechMessageType.LocalPlayback);
             }
         }
-
-        Debug.Log(JsonConvert.SerializeObject(message));
     }
 }
