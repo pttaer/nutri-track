@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Services.Vivox;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class NTTChatMessageObj : MonoBehaviour
 {
-    public Text MessageText;
+    public Text DisplayNameText;
+    public TextMeshProUGUI MessageText;
+    public TextMeshProUGUI MessageDisplayText;
+    public Text ReceivedTimeText;
+    public Image BackgroundImg;
     public Button EditButton;
     public Button DeleteButton;
     public Button ConfirmDeleteButton;
@@ -69,24 +74,24 @@ public class NTTChatMessageObj : MonoBehaviour
         m_vivoxMessage = message;
         if (deleted)
         {
-            MessageText.text = string.Format($"<color=#5A5A5A><size=8>{editedText}{message.ReceivedTime}</size></color>");
+            MessageText.text = string.Format($"<color=#5A5A5A><size=14>{editedText}{message.ReceivedTime}</size></color>");
             Controls.SetActive(false);
             return;
         }
 
-        if (message.FromSelf)
-        {
-            MessageText.alignment = TextAnchor.MiddleRight;
-            MessageText.text = string.Format($"{message.MessageText} :<color=blue>{message.SenderDisplayName} </color>\n<color=#5A5A5A><size=8>{editedText}{message.ReceivedTime}</size></color>");
-        }
-        else
-        {
-            MessageText.alignment = TextAnchor.MiddleLeft;
-            MessageText.text = string.Format($"<color=green>{message.SenderDisplayName} </color>: {message.MessageText}\n<color=#5A5A5A><size=8>{editedText}{message.ReceivedTime}</size></color>");
-        }
+        // Set textbox color
+        ColorUtility.TryParseHtmlString(message.FromSelf ? "#133063" : "#252525", out Color color);
+        BackgroundImg.color = color;
+
+        // Set text content
+        DisplayNameText.text = message.SenderDisplayName;
+        MessageText.text = message.MessageText;
+        MessageDisplayText.text = message.MessageText;
+        ReceivedTimeText.text = editedText + message.ReceivedTime.ToString();
 
         // If it's your own message you can edit and delete them so lets show those controls
-        Controls.SetActive(message.FromSelf);
+        //Controls.SetActive(message.FromSelf);
+        Controls.SetActive(false);
     }
 
     private void EnableEditMode(bool isEditMode = false, bool isDelete = false)
