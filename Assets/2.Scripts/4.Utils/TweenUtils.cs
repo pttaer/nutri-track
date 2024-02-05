@@ -496,4 +496,21 @@ public class TweenUtils
         TweenerCore<Vector3, Path, PathOptions> tweener = transform.DOPath(path, duration, pathType, pathMode, resolution, gizmoColor);
         tweener.SetOptions(true);
     }
+
+    public static Tween TweenLerpFloat(Func<float> getter, Action<float> setter, float endValue, float duration, Action onCompleteCallback = null)
+    {
+        float currentValue = getter.Invoke();
+
+        Tween tween = DOTween.To(() => currentValue, x => currentValue = x, endValue, duration)
+                                .OnUpdate(() =>
+                                {
+                                    setter.Invoke(currentValue);
+                                })
+                                .OnComplete(() =>
+                                {
+                                    onCompleteCallback?.Invoke();
+                                });
+
+        return tween;
+    }
 }
