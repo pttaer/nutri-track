@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using XCharts.Runtime;
 
 public class NTTDashboardMain : MonoBehaviour
 {
     private BarChart m_barChart;
+    private XAxis m_xAxis;
+
+    private Dropdown m_DrdwSelectChart;
 
     private int m_maxXAxisValue;
-    private XAxis m_xAxis;
     private List<double> mockdata = new() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
     public void Init()
