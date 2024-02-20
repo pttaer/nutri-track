@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "com.3d-group.unity-simple-notifications": "https://github.com/3d-group/unity-simple-notifications.git",
+    "com.fonts.material-icons": "https://github.com/RageAgainstThePixel/com.fonts.material-icons.git#upm",
     "com.harumak.upalette": "https://github.com/Haruma-K/uPalette.git?path=/Assets/uPalette#2.0.0",
+    "com.monitor1394.xcharts": "https://github.com/XCharts-Team/XCharts.git",
     "com.nobi.roundedcorners": "https://github.com/kirevdokimov/Unity-UI-Rounded-Corners.git",
     "com.unity.adaptiveperformance": "4.0.1",
     "com.unity.adaptiveperformance.google.android": "1.2.1",
@@ -18,7 +20,7 @@
     "com.unity.services.authentication": "2.0.0",
     "com.unity.services.vivox": "16.0.1",
     "com.unity.test-framework": "1.1.33",
-    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.textmeshpro": "3.0.7",
     "com.unity.timeline": "1.7.6",
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.9.1",
@@ -52,14 +54,16 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.unity.uiextensions": "2.3.2"
   },
   "scopedRegistries": [
     {
       "name": "OpenUPM",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.fonts"
+        "com.fonts",
+        "com.unity.uiextensions"
       ]
     }
   ]

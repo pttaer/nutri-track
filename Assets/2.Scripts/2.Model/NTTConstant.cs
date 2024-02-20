@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -73,6 +74,11 @@ public class NTTConstant
     public const string ROUTE = BASE_DOMAIN + ""; // service route
 
     #endregion API_URL
+
+    #region ICON_CODE
+    public const string ICON_CLOSE = "\ue5cd";
+    public const string ICON_MENU = "\ue5d2";
+    #endregion
 
     // Methods
     public const string METHOD_GET = "GET";
