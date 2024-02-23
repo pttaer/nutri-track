@@ -47,11 +47,14 @@ public class NTTControl
     public void Init()
     {
         //init other controls here
-        PrefsUtils.Api = new PrefsUtils();
-        NTTApiControl.Api = new NTTApiControl();
-        NTTDeeplinkControl.Api = new NTTDeeplinkControl();
+        PrefsUtils.Api = new ();
+        NTTApiControl.Api = new ();
+        NTTDeeplinkControl.Api = new ();
         PrefsUtils.Api = new();
         NTTApiControl.Api = new();
+        NTTMyHealthControl.Api = new();
+
+        Application.targetFrameRate = 60;
 
         NTTDeeplinkControl.Api.Init();
 
