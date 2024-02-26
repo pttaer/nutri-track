@@ -19,6 +19,7 @@ MonoBehaviour:
       - 0aa5245d-b64d-41ec-9e06-85a45e3ac837
       - 3d51e616-387d-4567-abbb-8a5780830867
       - f9664b2f-be79-49f8-8adf-d8eab3f1af51
+      - e95d30b1-2e84-49c5-8d48-c23278bb8f11
       _values:
       - _id: ed16ed0e-dac1-49fb-a608-d88a993816b7
         _name:
@@ -60,6 +61,16 @@ MonoBehaviour:
           _values:
           - _value: {r: 0.99607843, g: 0.37254903, b: 0.33333334, a: 1}
           - _value: {r: 0.22352943, g: 0.5764706, b: 0.86666673, a: 1}
+      - _id: e95d30b1-2e84-49c5-8d48-c23278bb8f11
+        _name:
+          _value: DateSelected
+        _values:
+          _keys:
+          - e9c81117-b7cb-4f69-8673-b747282a5fc3
+          - 913ca696-7772-405e-9764-40cabcc3e128
+          _values:
+          - _value: {r: 1, g: 0, b: 0, a: 1}
+          - _value: {r: 0.22352943, g: 0.5764706, b: 0.86666673, a: 1}
     _themes:
       _keys:
       - e9c81117-b7cb-4f69-8673-b747282a5fc3
@@ -77,11 +88,12 @@ MonoBehaviour:
       - 3d51e616-387d-4567-abbb-8a5780830867
       - 0aa5245d-b64d-41ec-9e06-85a45e3ac837
       - f9664b2f-be79-49f8-8adf-d8eab3f1af51
+      - e95d30b1-2e84-49c5-8d48-c23278bb8f11
     _themeOrders:
       _ids:
       - e9c81117-b7cb-4f69-8673-b747282a5fc3
       - 913ca696-7772-405e-9764-40cabcc3e128
-    _activeThemeId: e9c81117-b7cb-4f69-8673-b747282a5fc3
+    _activeThemeId: 913ca696-7772-405e-9764-40cabcc3e128
   _gradientPalette:
     _entries:
       _keys: []
