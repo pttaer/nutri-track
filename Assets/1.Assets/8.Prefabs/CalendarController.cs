@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using uPalette.Generated;
+using uPalette.Runtime.Core;
+using static UnityEngine.GraphicsBuffer;
 
 public class CalendarController : MonoBehaviour
 {
     public GameObject _calendarPanel;
-    public Text _yearNumText;
-    public Text _monthNumText;
+    public TextMeshProUGUI _yearNumText;
+    public TextMeshProUGUI _monthNumText;
 
     public GameObject _item;
 
@@ -19,6 +22,7 @@ public class CalendarController : MonoBehaviour
     public float m_Height = 48f;
     public TextMeshProUGUI _target;
 
+    [SerializeField] float TWEEN_DURATION = 0.6f;
     private DateTime m_DateTime;
     public static CalendarController Api;
 
@@ -38,7 +42,13 @@ public class CalendarController : MonoBehaviour
             item.transform.localRotation = Quaternion.identity;
             item.transform.localPosition = new Vector3((i % 7 * m_Width) + startPos.x, startPos.y - (i / 7 * m_Height), startPos.z);
 
-            _dateItems.Add(item.GetComponent<CalendarDateItem>());
+            CalendarDateItem itemView = item.GetComponent<CalendarDateItem>();
+            _dateItems.Add(itemView);
+
+            if ((i + 1) % 7 == 0)
+            {
+                itemView.m_IsSunday = true;
+            }
         }
 
         m_DateTime = DateTime.Now;
@@ -48,12 +58,16 @@ public class CalendarController : MonoBehaviour
         //_calendarPanel.SetActive(false);
     }
 
-    void CreateCalendar()
+    private void CreateCalendar()
     {
         SetAllItemsOff();
+        ClearTargetText();
 
         DateTime firstDay = m_DateTime.AddDays(-(m_DateTime.Day - 1));
         int index = GetDays(firstDay.DayOfWeek);
+
+        var palette = PaletteStore.Instance.ColorPalette;
+        var color = palette.GetActiveValue(ColorEntry.DateSelected.ToEntryId()).Value;
 
         int date = 0;
         for (int i = 0; i < _totalDateNum; i++)
@@ -69,12 +83,17 @@ public class CalendarController : MonoBehaviour
                     _dateItems[i].gameObject.SetActive(true);
 
                     label.text = (date + 1).ToString();
-                    date++;
+                    if(_dateItems[i].m_IsSunday)
+                    {
+                        label.color = color;
+                    }
                 }
+                date++;
             }
         }
-        _yearNumText.text = m_DateTime.Year.ToString();
-        _monthNumText.text = m_DateTime.ToString("MMM");
+
+        TweenUtils.TypingAnimation(_yearNumText, m_DateTime.Year.ToString(), TWEEN_DURATION);
+        TweenUtils.TypingAnimation(_monthNumText, m_DateTime.ToString("MMM"), TWEEN_DURATION);
     }
 
     int GetDays(DayOfWeek day)
@@ -129,20 +148,26 @@ public class CalendarController : MonoBehaviour
     {
         SetAllItemsOff();
         Debug.Log("CLICK" + day);
-        if (int.TryParse(day, out int dayInt) && 
+        if (int.TryParse(day, out int dayInt) &&
             int.TryParse(_yearNumText.text, out int year))
         {
             DateTime date = new DateTime(year, MonthAbbreviationToNumber(_monthNumText.text), dayInt);
-            _target.text = date.ToString("dd MMM yyyy");
+            TweenUtils.TypingAnimation(_target, date.ToString("dd MMM yyyy"), TWEEN_DURATION);
 
             //NTTMyHealthControl.Api.DateClickShowBMICaloriesValue(dayInt, month, year);
-
         }
         else
         {
             Debug.LogError("Invalid input for date.");
         }
         //_calendarPanel.SetActive(false);
+    }
+
+    public void ClearTargetText()
+    {
+        _target.text = "Date";
+
+        // TODO: May clear the others info here too
     }
 
     private void SetAllItemsOff()

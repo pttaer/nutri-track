@@ -381,6 +381,8 @@ public class TweenUtils
 
     public static void TypingAnimation(TextMeshProUGUI textMeshPro, string text, float duration, Action callback = null)
     {
+        if (textMeshPro.text == text) return; // The same text does not trigger animation
+
         int chars = text.Length;
         float delay = duration / chars;
 
@@ -397,6 +399,7 @@ public class TweenUtils
                 {
                     textMeshPro.text += c;
                 })
+                .SetEase(Ease.InOutExpo)
                 .Play()
                 .OnComplete(() => { callback?.Invoke(); });
         }
