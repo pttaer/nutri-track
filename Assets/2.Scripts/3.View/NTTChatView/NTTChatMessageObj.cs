@@ -24,6 +24,10 @@ public class NTTChatMessageObj : MonoBehaviour
     private Color m_dangerTextColor = new Color(0.6705883f, 0, 0, 1f);
     private VivoxMessage m_vivoxMessage;
 
+    private string m_HexStringFromSelf = "#5276E9";
+    private string m_HexStringFromOther = "#E8E9F0";
+    private string m_HexStringDeleted = "#5A5A5A";
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -74,20 +78,21 @@ public class NTTChatMessageObj : MonoBehaviour
         m_vivoxMessage = message;
         if (deleted)
         {
-            MessageText.text = string.Format($"<color=#5A5A5A><size=14>{editedText}{message.ReceivedTime}</size></color>");
+            MessageText.text = string.Format($"<color={m_HexStringDeleted}><size=14>{editedText}{message.ReceivedTime}</size></color>");
             Controls.SetActive(false);
             return;
         }
 
         // Set textbox color
-        ColorUtility.TryParseHtmlString(message.FromSelf ? "#133063" : "#252525", out Color color);
+        ColorUtility.TryParseHtmlString(message.FromSelf ? m_HexStringFromSelf : m_HexStringFromOther, out Color color);
         BackgroundImg.color = color;
 
         // Set text content
         DisplayNameText.text = message.SenderDisplayName;
         MessageText.text = message.MessageText;
+        MessageDisplayText.color = message.FromSelf ? Color.white : Color.black;
         MessageDisplayText.text = message.MessageText;
-        ReceivedTimeText.text = editedText + message.ReceivedTime.ToString();
+        ReceivedTimeText.text = editedText + message.ReceivedTime.ToString("dd MMM hh:mm tt");
 
         // If it's your own message you can edit and delete them so lets show those controls
         //Controls.SetActive(message.FromSelf);
