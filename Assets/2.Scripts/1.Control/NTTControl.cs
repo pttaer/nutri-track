@@ -60,7 +60,7 @@ public class NTTControl
 
         // Default value
         //UnloadThenLoadScene(NTTConstant.SCENE_LOGIN);
-        //LoadScene(NTTConstant.SCENE_MENU);
+        LoadScene(NTTConstant.SCENE_MENU);
 
         Debug.Log("INIT");
     }
