@@ -9,8 +9,32 @@ EditorBuildSettings:
     path: Assets/3.Scenes/NTTMobile/NTTLoadFirst.unity
     guid: 8ffe84aed0cef83428f335d7502f099a
   - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTMenu.unity
+    guid: 83763d695942c77468b77f543e99a057
+  - enabled: 1
     path: Assets/3.Scenes/NTTMobile/NTTLogin.unity
     guid: e08b15cb6d887bf428c52a3d78c3b136
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTHome.unity
+    guid: 8f55949710b40344384b1623db8bf27d
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTMyHealth.unity
+    guid: 45f289317b0cd974b8c68ce2924e47c4
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTStatistic.unity
+    guid: 18c6feeee531de4489f6b312bfdfaed3
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTProfile.unity
+    guid: d41e087305e51274f8bb858e0b0b5eac
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTShop.unity
+    guid: 4c589e7cc05004248b7552f350ba5796
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTChat.unity
+    guid: 25e91ba0063e095418e52b637ec3ef2f
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/Wallet/NTTWalletMain.unity
+    guid: d055eb11616395d48a65dc6747fca1fb
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 2e121863da454a94bacece014cd4557a, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 813dd21343589844485df56cd05810e3, type: 2}

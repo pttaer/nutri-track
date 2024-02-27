@@ -12,6 +12,42 @@ public class NTTConstant
     {
         get { return "NTTLoadFirst"; }
     }
+    public static string SCENE_MENU
+    {
+        get { return "NTTMenu"; }
+    }
+    public static string SCENE_LOGIN
+    {
+        get { return "NTTLogin"; }
+    }
+    public static string SCENE_HOME
+    {
+        get { return "NTTHome"; }
+    }
+    public static string SCENE_MY_HEALTH
+    {
+        get { return "NTTMyHealth"; }
+    }
+    public static string SCENE_STATISTIC
+    {
+        get { return "NTTStatistic"; }
+    }
+    public static string SCENE_PROFILE
+    {
+        get { return "NTTProfile"; }
+    }
+    public static string SCENE_SHOP
+    {
+        get { return "NTTShop"; }
+    }
+    public static string SCENE_CHAT
+    {
+        get { return "NTTChat"; }
+    }
+    public static string SCENE_WALLET_MAIN
+    {
+        get { return "NTTWalletMain"; }
+    }
     
     //TODO: UPDATE NEW SCENES
 
