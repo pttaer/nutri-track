@@ -28,7 +28,6 @@ public class NTTSceneLoaderControl : MonoBehaviour
         if (!SceneManager.GetSceneByName(sceneName).isLoaded)
         {
             SceneStack.Push(sceneName);
-        Debug.LogError(SceneStack.First());
 
             SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
         }
