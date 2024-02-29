@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NTTMyHealthControl : MonoBehaviour
+public class NTTMyHealthControl
 {
     public static NTTMyHealthControl Api;
 

@@ -31,6 +31,7 @@ public enum ColorTheme
         White,
         Error,
         DateSelected,
+        Text,
     }
 
     public static class ColorEntryExtensions
@@ -49,6 +50,8 @@ public enum ColorTheme
                     return "f9664b2f-be79-49f8-8adf-d8eab3f1af51";
                 case ColorEntry.DateSelected:
                     return "e95d30b1-2e84-49c5-8d48-c23278bb8f11";
+                case ColorEntry.Text:
+                    return "e62d09f8-073c-41fa-92ec-62252f813220";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(entry), entry, null);
             }

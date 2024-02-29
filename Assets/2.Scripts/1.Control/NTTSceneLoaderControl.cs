@@ -12,7 +12,7 @@ public class NTTSceneLoaderControl : MonoBehaviour
 
     private Stack<string> m_ExcludedSceneNames;
 
-    
+
     public void Init()
     {
         SceneStack = new Stack<string>();
@@ -20,20 +20,25 @@ public class NTTSceneLoaderControl : MonoBehaviour
 
         // INCLUDE EXCLUDED SCENES HERE
         m_ExcludedSceneNames.Push(NTTConstant.SCENE_LOADFIRST); // EXAMPLE
+        m_ExcludedSceneNames.Push(NTTConstant.SCENE_MENU); // EXAMPLE
     }
 
     public void LoadScene(string sceneName)
     {
-        SceneStack.Push(sceneName);
+        if (!SceneManager.GetSceneByName(sceneName).isLoaded)
+        {
+            SceneStack.Push(sceneName);
+        Debug.LogError(SceneStack.First());
 
-        SceneManager.LoadScene(SceneStack.Last(), LoadSceneMode.Additive);
+            SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+        }
     }
 
     public void UnloadLastScene()
     {
-        if (SceneStack.Count > 1) 
+        if (SceneStack.Count > 1)
         {
-            SceneManager.UnloadSceneAsync(SceneStack.Last());
+            SceneManager.UnloadSceneAsync(SceneStack.First());
 
             SceneStack.Pop();
         }
