@@ -53,14 +53,18 @@ public class NTTControl
         PrefsUtils.Api = new();
         NTTApiControl.Api = new();
         NTTMyHealthControl.Api = new();
+        NTTMenuControl.Api = new();
+        NTTSceneLoaderControl.Api = new();
 
         Application.targetFrameRate = 60;
 
         NTTDeeplinkControl.Api.Init();
+        NTTSceneLoaderControl.Api.Init();
 
         // Default value
         //UnloadThenLoadScene(NTTConstant.SCENE_LOGIN);
-        LoadScene(NTTConstant.SCENE_MENU);
+        //LoadScene(NTTConstant.SCENE_MENU);
+        NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_MENU);
 
         Debug.Log("INIT");
     }

@@ -29,13 +29,16 @@ public class NTTMenu : MonoBehaviour
     {
         foreach (Transform tf in m_Content)
         {
-            Button btn = tf.Find("Btn").GetComponent<Button>();
-            TextMeshProUGUI txt = tf.Find("Btn/Icon").GetComponent<TextMeshProUGUI>();
-            btn.onClick.AddListener(() => {
-                MoveSelectedTo(btn.transform, m_BtnActiveColor[m_BtnList.IndexOf(btn)], txt);
+            NTTMenuBtnView btnView = tf.GetComponent<NTTMenuBtnView>();
+            btnView.Init();
+
+            btnView.Btn.onClick.AddListener(() => {
+                MoveSelectedTo(btnView.Btn.transform, m_BtnActiveColor[m_BtnList.IndexOf(btnView.Btn)], btnView.Text);
+                LoadScene(btnView.ButtonScene);
             });
-            m_BtnList.Add(btn);
-            m_TxtList.Add(txt);
+            
+            m_BtnList.Add(btnView.Btn);
+            m_TxtList.Add(btnView.Text);
         }
 
         // Default
@@ -72,6 +75,29 @@ public class NTTMenu : MonoBehaviour
             // Set current button off
             tf.gameObject.SetActive(false);*/
         });
+    }
+
+    private void LoadScene(NTTMenuControl.MenuScene menuScene)
+    {
+        NTTSceneLoaderControl.Api.UnloadLastScene();
+        switch (menuScene)
+        {
+            case NTTMenuControl.MenuScene.MyHealth:
+                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_MY_HEALTH);
+                break;
+            case NTTMenuControl.MenuScene.Statistic:
+                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_STATISTIC);
+                break;
+            case NTTMenuControl.MenuScene.Home:
+                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_HOME);
+                break;
+            case NTTMenuControl.MenuScene.Store:
+                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_SHOP);
+                break;
+            case NTTMenuControl.MenuScene.Profile:
+                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_PROFILE);
+                break;
+        }
     }
 
 
