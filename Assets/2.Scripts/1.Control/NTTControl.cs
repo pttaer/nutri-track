@@ -55,6 +55,7 @@ public class NTTControl
         NTTMyHealthControl.Api = new();
         NTTMenuControl.Api = new();
         NTTSceneLoaderControl.Api = new();
+        NTTNotificationControl.Api = new();
 
         Application.targetFrameRate = 60;
 

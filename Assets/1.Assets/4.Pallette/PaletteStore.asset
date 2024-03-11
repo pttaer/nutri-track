@@ -21,6 +21,7 @@ MonoBehaviour:
       - f9664b2f-be79-49f8-8adf-d8eab3f1af51
       - e95d30b1-2e84-49c5-8d48-c23278bb8f11
       - e62d09f8-073c-41fa-92ec-62252f813220
+      - 85c67598-67da-4d45-bb5f-fb3be32ca9a9
       _values:
       - _id: ed16ed0e-dac1-49fb-a608-d88a993816b7
         _name:
@@ -82,6 +83,16 @@ MonoBehaviour:
           _values:
           - _value: {r: 0.20392157, g: 0.20392157, b: 0.20392157, a: 1}
           - _value: {r: 1, g: 1, b: 1, a: 1}
+      - _id: 85c67598-67da-4d45-bb5f-fb3be32ca9a9
+        _name:
+          _value: Menu
+        _values:
+          _keys:
+          - e9c81117-b7cb-4f69-8673-b747282a5fc3
+          - 913ca696-7772-405e-9764-40cabcc3e128
+          _values:
+          - _value: {r: 0.25490198, g: 0.25490198, b: 0.25490198, a: 1}
+          - _value: {r: 1, g: 1, b: 1, a: 1}
     _themes:
       _keys:
       - e9c81117-b7cb-4f69-8673-b747282a5fc3
@@ -101,6 +112,7 @@ MonoBehaviour:
       - f9664b2f-be79-49f8-8adf-d8eab3f1af51
       - e95d30b1-2e84-49c5-8d48-c23278bb8f11
       - e62d09f8-073c-41fa-92ec-62252f813220
+      - 85c67598-67da-4d45-bb5f-fb3be32ca9a9
     _themeOrders:
       _ids:
       - e9c81117-b7cb-4f69-8673-b747282a5fc3
