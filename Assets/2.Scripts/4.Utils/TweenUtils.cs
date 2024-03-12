@@ -3,12 +3,15 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Core.PathCore;
 using DG.Tweening.Plugins.Options;
 using System;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TweenUtils
 {
+    private static Tween m_CurrentTween;
+
     #region COMPLEX
 
     public static void TweenComplexAnimation(Transform transform, Vector3 finalPos, Vector3 finalScale, Quaternion finalRot, Color finalColor, float duration, float overshoot = 1.5f, int numLoops = 2)
@@ -388,20 +391,25 @@ public class TweenUtils
 
         textMeshPro.text = "";
 
+        StringBuilder sb = new StringBuilder();
+
         for (int i = 0; i < chars; i++)
         {
             int charIndex = i;
             char c = text[charIndex];
 
-            DOTween.Sequence()
+            m_CurrentTween = DOTween.Sequence()
                 .AppendInterval(delay * i)
                 .AppendCallback(() =>
                 {
-                    textMeshPro.text += c;
+                    sb.Append(c);
+                    textMeshPro.text = sb.ToString();
                 })
                 .SetEase(Ease.InOutExpo)
                 .Play()
-                .OnComplete(() => { callback?.Invoke(); });
+                .OnComplete(() => {
+                    callback?.Invoke(); 
+                });
         }
     }
 
@@ -515,5 +523,10 @@ public class TweenUtils
                                 });
 
         return tween;
+    }
+
+    public static void FinishCurrentTween()
+    {
+        m_CurrentTween?.Complete();
     }
 }

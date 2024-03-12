@@ -22,7 +22,7 @@ public class CalendarController : MonoBehaviour
     public float m_Height = 48f;
     public TextMeshProUGUI _target;
 
-    [SerializeField] float TWEEN_DURATION = 0.6f;
+    [SerializeField] float TWEEN_DURATION = 0.3f;
     private DateTime m_DateTime;
     public static CalendarController Api;
 
@@ -54,8 +54,11 @@ public class CalendarController : MonoBehaviour
         m_DateTime = DateTime.Now;
 
         CreateCalendar();
+    }
 
-        //_calendarPanel.SetActive(false);
+    public void SetTargetTxt(TextMeshProUGUI txt)
+    {
+        _target = txt;
     }
 
     private void CreateCalendar()
@@ -63,13 +66,14 @@ public class CalendarController : MonoBehaviour
         SetAllItemsOff();
         ClearTargetText();
 
-        DateTime firstDay = m_DateTime.AddDays(-(m_DateTime.Day - 1));
+        DateTime firstDay = m_DateTime.AddDays(-(m_DateTime.Day));
         int index = GetDays(firstDay.DayOfWeek);
 
         var palette = PaletteStore.Instance.ColorPalette;
         var color = palette.GetActiveValue(ColorEntry.DateSelected.ToEntryId()).Value;
 
         int date = 0;
+        firstDay = firstDay.AddDays(1);
         for (int i = 0; i < _totalDateNum; i++)
         {
             Text label = _dateItems[i].GetComponentInChildren<Text>();
@@ -165,7 +169,10 @@ public class CalendarController : MonoBehaviour
 
     public void ClearTargetText()
     {
-        _target.text = "Date";
+        if(_target != null)
+        {
+            _target.text = "Date";
+        }
 
         // TODO: May clear the others info here too
     }
