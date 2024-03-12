@@ -106,8 +106,17 @@ public class NTTConstant
 
     #region API_URL
 
-    public const string BASE_DOMAIN = ""; // base domain name, in case hosting service is changed
-    public const string ROUTE = BASE_DOMAIN + ""; // service route
+    public const string BASE_DOMAIN = "http://14.225.211.111:3000/v1/"; // base domain name, in case hosting service is changed
+    public const string LOGIN_ROUTE = BASE_DOMAIN + "auth/login";
+    public const string REGISTER_ROUTE = BASE_DOMAIN + "auth/register";
+    public const string REGISTER_EXPERT_ROUTE = BASE_DOMAIN + "auth/register-expert";
+
+    public const string BMI_ROUTE = BASE_DOMAIN + "bmi-records/{0}";
+
+    public const string APPLICATION_ROUTE = BASE_DOMAIN + "applications/{0}";
+    public const string APPLICATION_STATUS_ROUTE = BASE_DOMAIN + "applications/{0}/status";
+
+    public const string USER_ROUTE = BASE_DOMAIN + "user/{0}";
 
     #endregion API_URL
 

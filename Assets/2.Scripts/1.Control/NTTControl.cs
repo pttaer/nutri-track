@@ -65,7 +65,8 @@ public class NTTControl
         // Default value
         //UnloadThenLoadScene(NTTConstant.SCENE_LOGIN);
         //LoadScene(NTTConstant.SCENE_MENU);
-        NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_MENU);
+        //NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_MENU);
+        NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_LOGIN);
 
         Debug.Log("INIT");
     }

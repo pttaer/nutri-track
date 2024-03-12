@@ -31,6 +31,7 @@ public class GoogleSignIn : MonoBehaviour
     public void SignOut()
     {
         GoogleAuth.SignOut(revokeAccessToken: true);
+        Debug.LogError("signed out");
     }
 
     public void GetAccessToken()
@@ -41,6 +42,7 @@ public class GoogleSignIn : MonoBehaviour
     private void OnSignIn(bool success, string error, UserInfo userInfo)
     {
         // When done sign in
+        //SignOut();
     }
 
     private void OnGetAccessToken(bool success, string error, TokenResponse tokenResponse)
@@ -51,7 +53,7 @@ public class GoogleSignIn : MonoBehaviour
 
         Debug.Log($"JSON Web Token (JWT) Payload: {jwt.Payload}");
 
-        jwt.ValidateSignature(GoogleAuth.ClientId, (success, error) => OnValidateSignature(success, error, tokenResponse.IdToken));
+        //jwt.ValidateSignature(GoogleAuth.ClientId, (success, error) => OnValidateSignature(success, error, tokenResponse.IdToken));
     }
 
     private void OnValidateSignature(bool success, string error, string idToken)
@@ -71,14 +73,12 @@ public class GoogleSignIn : MonoBehaviour
     {
         NTTControl.Api.ShowLoading();
 
-        var api_uri = "https://alumniproject.azurewebsites.net/api/alumnis/login";
-
         JObject json = new JObject
         {
             { "token", idToken }
         };
 
-        using (UnityWebRequest request = new UnityWebRequest(api_uri, "POST"))
+        using (UnityWebRequest request = new UnityWebRequest(NTTConstant.LOGIN_ROUTE, "POST"))
         {
             request.SetRequestHeader("Content-Type", "application/json");
 
