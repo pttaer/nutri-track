@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,9 +9,11 @@ public class NTTGeneralView : MonoBehaviour
     [SerializeField] private GameObject m_FAMPopupPrefab;//prefab popup message
     private GameObject m_Popup;//prefab popup message
     private GameObject m_Loading;//prefab popup message
-
+    private GameObject m_CalendarPopup;
+    private CalendarController m_CalendarPopupView;
     private Transform m_canvasObj;//object canvas
     private Transform m_SorryText;//object canvas
+    private TextMeshProUGUI m_DummyTxt;//object canvas
 
     private void Start()
     {
@@ -20,11 +23,12 @@ public class NTTGeneralView : MonoBehaviour
     private void OnDestroy()
     {
         // unregister event
-        NTTControl.Api.ShowNTTPopupEvent -= ShowFAMPopup;
-        NTTControl.Api.ShowFAMPopupInputEvent -= ShowFAMPopup;
+        NTTControl.Api.ShowNTTPopupEvent -= ShowNTTPopup;
+        NTTControl.Api.ShowFAMPopupInputEvent -= ShowNTTPopup;
         NTTControl.Api.OnLoadShowLoading -= ShowLoading;
         NTTControl.Api.OnLoadFailShowSorry -= ShowSorryTxt;
         NTTControl.Api.CheckingSchoolIdEvent -= CheckSchoolId;
+        NTTControl.Api.OnCallShowPopupCalendarEvent -= ShowCalendarPopup;
     }
 
     private void Init()
@@ -33,15 +37,25 @@ public class NTTGeneralView : MonoBehaviour
         m_canvasObj = transform.Find("Canvas");
         m_SorryText = transform.Find("Canvas/TxtSorry");
         m_Loading = transform.Find("Canvas/Loading").gameObject;
+        m_CalendarPopup = transform.Find("Canvas/CalendarPopup").gameObject;
+        m_DummyTxt = transform.Find("Canvas/TxtDummy").GetComponent<TextMeshProUGUI>();
+        m_CalendarPopupView = transform.Find("Canvas/CalendarPopup/BG/CalendarControllerPreb").GetComponent<CalendarController>();
         //
         m_popupMessagePrefab = ResourceObject.GetResource<GameObject>(NTTConstant.CONFIG_PREFAB_POPUP_MESSAGE);
 
         // register event
-        NTTControl.Api.ShowNTTPopupEvent += ShowFAMPopup;
-        NTTControl.Api.ShowFAMPopupInputEvent += ShowFAMPopup;
+        NTTControl.Api.ShowNTTPopupEvent += ShowNTTPopup;
+        NTTControl.Api.ShowFAMPopupInputEvent += ShowNTTPopup;
         NTTControl.Api.OnLoadShowLoading += ShowLoading;
         NTTControl.Api.OnLoadFailShowSorry += ShowSorryTxt;
         NTTControl.Api.CheckingSchoolIdEvent += CheckSchoolId;
+        NTTControl.Api.OnCallShowPopupCalendarEvent += ShowCalendarPopup;
+    }
+
+    private void ShowCalendarPopup(TextMeshProUGUI targetTxt)
+    {
+        m_CalendarPopupView.SetTargetTxt(targetTxt);
+        m_CalendarPopup.SetActive(true);
     }
 
     public void ShowSorryTxt(bool isShow, string txtShow = null)
@@ -59,7 +73,7 @@ public class NTTGeneralView : MonoBehaviour
         m_Loading.gameObject.SetActive(isShow);
     }
 
-    private void ShowFAMPopup(string title, string content, string btnConfirmText, string btnElseText, Action onConfirm = null, Action onElse = null, Action onExit = null)
+    private void ShowNTTPopup(string title, string content, string btnConfirmText, string btnElseText, Action onConfirm = null, Action onElse = null, Action onExit = null)
     {
         if (m_Popup == null)
         {
@@ -73,7 +87,7 @@ public class NTTGeneralView : MonoBehaviour
         }
     }
 
-    private void ShowFAMPopup(string title, string content, string btnConfirmText, string btnElseText, Action<string> onConfirm = null, Action onElse = null, Action onExit = null, bool isShowInput = false)
+    private void ShowNTTPopup(string title, string content, string btnConfirmText, string btnElseText, Action<string> onConfirm = null, Action onElse = null, Action onExit = null, bool isShowInput = false)
     {
         if (m_Popup == null)
         {
@@ -90,5 +104,13 @@ public class NTTGeneralView : MonoBehaviour
     private void CheckSchoolId()
     {
         //StartCoroutine(FAMApiControl.Api.CheckSchoolId());
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            ShowCalendarPopup(m_DummyTxt);
+        }
     }
 }

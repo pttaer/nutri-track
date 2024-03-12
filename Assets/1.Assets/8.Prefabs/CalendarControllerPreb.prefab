@@ -472,6 +472,7 @@ MonoBehaviour:
   m_Width: 95
   m_Height: 64
   _target: {fileID: 0}
+  TWEEN_DURATION: 0.2
 --- !u!1 &433109480439865325
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,7 +915,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -286, y: -224}
+  m_AnchoredPosition: {x: -286, y: -200}
   m_SizeDelta: {x: 64, y: 48}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &433109480824168945
@@ -2543,6 +2544,7 @@ GameObject:
   - component: {fileID: 433109482101693678}
   - component: {fileID: 433109482101693664}
   - component: {fileID: 433109482101693665}
+  - component: {fileID: 2899420649785251847}
   m_Layer: 5
   m_Name: SundayText
   m_TagString: Untagged
@@ -2653,6 +2655,21 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &2899420649785251847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433109482101693676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6e1d633c6a85e040a3eeb66ccca5432, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _entryId:
+    _value: e95d30b1-2e84-49c5-8d48-c23278bb8f11
+  _component: {fileID: 433109482101693678}
 --- !u!1 &1417396367842637520
 GameObject:
   m_ObjectHideFlags: 0

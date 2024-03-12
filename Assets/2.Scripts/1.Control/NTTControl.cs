@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,6 +31,14 @@ public class NTTControl
     {
         get { return m_showFAMPopupInputEvent; }
         set { m_showFAMPopupInputEvent = value; }
+    }
+
+    private Action<TextMeshProUGUI> m_ShowPopupCalendar; //notify show popup message
+
+    public Action<TextMeshProUGUI> OnCallShowPopupCalendarEvent
+    {
+        get { return m_ShowPopupCalendar; }
+        set { m_ShowPopupCalendar = value; }
     }
 
     public static NTTControl Api
@@ -122,6 +131,11 @@ public class NTTControl
     public void ShowFAMPopup(string title, string content, string btnConfirmText, string btnElseText, Action<string> onConfirm, Action onElse = null, Action onExit = null, bool isShowInputField = false)
     {
         ShowFAMPopupInputEvent?.Invoke(title, content, btnConfirmText, btnElseText, onConfirm, onElse, onExit, isShowInputField);
+    }
+    
+    public void ShowCalendarPopup(TextMeshProUGUI targetTxt)
+    {
+        OnCallShowPopupCalendarEvent?.Invoke(targetTxt);
     }
 
     public void UnloadThenLoadScene(string sceneToLoad)
