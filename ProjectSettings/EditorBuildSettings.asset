@@ -35,6 +35,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/3.Scenes/NTTMobile/Wallet/NTTWalletMain.unity
     guid: d055eb11616395d48a65dc6747fca1fb
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTRegister.unity
+    guid: 46ddc0c898a4c794395aa5b1cdae18a5
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTWelcome.unity
+    guid: d154b86b47491a2409cb2ef4fe5694f6
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 2e121863da454a94bacece014cd4557a, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 813dd21343589844485df56cd05810e3, type: 2}

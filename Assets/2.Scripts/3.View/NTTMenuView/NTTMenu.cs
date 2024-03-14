@@ -80,23 +80,22 @@ public class NTTMenu : MonoBehaviour
 
     private void LoadScene(NTTMenuControl.MenuScene menuScene)
     {
-        NTTSceneLoaderControl.Api.UnloadLastScene();
         switch (menuScene)
         {
             case NTTMenuControl.MenuScene.MyHealth:
-                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_MY_HEALTH);
+                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_MY_HEALTH);
                 break;
             case NTTMenuControl.MenuScene.Statistic:
-                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_STATISTIC);
+                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_STATISTIC);
                 break;
             case NTTMenuControl.MenuScene.Home:
-                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_HOME);
+                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_HOME);
                 break;
             case NTTMenuControl.MenuScene.Store:
-                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_SHOP);
+                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_SHOP);
                 break;
             case NTTMenuControl.MenuScene.Profile:
-                NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_PROFILE);
+                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_PROFILE);
                 break;
         }
     }

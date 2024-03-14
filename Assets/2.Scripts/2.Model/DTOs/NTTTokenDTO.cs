@@ -1,16 +1,24 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NTTTokenDTO : MonoBehaviour
+public class NTTTokenDTO
 {
-    public int TokenID { get; set; }
-    public string Value { get; set; }
-    public string Type { get; set; }
-    public int UserID { get; set; }
-    public DateTime LastDeposit { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public AccessToken Access { get; set; }
+    public RefreshToken Refresh { get; set; }
+
+    public class AccessToken
+    {
+        public string Token { get; set; }
+        public DateTime Expires { get; set; }
+    }
+
+    public class RefreshToken
+    {
+        public string Token { get; set; }
+        public DateTime Expires { get; set; }
+    }
 
 }
