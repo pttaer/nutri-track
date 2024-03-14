@@ -48,7 +48,16 @@ public class NTTConstant
     {
         get { return "NTTWalletMain"; }
     }
-    
+    public static string SCENE_REGISTER
+    {
+        get { return "NTTRegister"; }
+    }
+
+    public static string SCENE_WELCOME
+    {
+        get { return "NTTWelcome"; }
+    }
+
     //TODO: UPDATE NEW SCENES
 
     #endregion SCENE_NAMES

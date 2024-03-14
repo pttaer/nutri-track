@@ -23,6 +23,10 @@ public class NTTSceneLoaderControl : MonoBehaviour
         m_ExcludedSceneNames.Push(NTTConstant.SCENE_MENU); // EXAMPLE
     }
 
+    /// <summary>
+    /// To load and stack scenes, use this for multiple scenes stacking
+    /// </summary>
+    /// <param name="sceneName"></param>
     public void LoadScene(string sceneName)
     {
         if (!SceneManager.GetSceneByName(sceneName).isLoaded)
@@ -35,12 +39,22 @@ public class NTTSceneLoaderControl : MonoBehaviour
 
     public void UnloadLastScene()
     {
-        if (SceneStack.Count > 1)
+        if (SceneStack.Count >= 1 && !m_ExcludedSceneNames.Contains(SceneStack.First()))
         {
             SceneManager.UnloadSceneAsync(SceneStack.First());
 
             SceneStack.Pop();
         }
+    }
+
+    /// <summary>
+    /// To load a singular scene, not to have scenes stack
+    /// </summary>
+    /// <param name="sceneName"></param>
+    public void LoadSingularScene(string sceneName)
+    {
+        UnloadLastScene();
+        LoadScene(sceneName);
     }
 
     public void UnloadAllSceneExcept()
