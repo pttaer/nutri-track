@@ -54,6 +54,8 @@ public class NTTMyHealthView : MonoBehaviour
         m_TxtDate.text = DateTime.Now.ToString("dd MMM yyyy");
         m_TxtBMIValue.text = DEFAULT_VALUE;
         m_TxtCaloriesValue.text = DEFAULT_VALUE;
+
+        m_CalendarController.Init(m_TxtDate);
     }
 
     private void SetBMICaloriesValue(float bmi, float calo)
