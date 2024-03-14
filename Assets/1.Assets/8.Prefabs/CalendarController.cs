@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using uPalette.Generated;
 using uPalette.Runtime.Core;
@@ -14,6 +15,9 @@ using static UnityEngine.GraphicsBuffer;
     [SerializeField] TextMeshProUGUI m_YearNumText;
     [SerializeField] TextMeshProUGUI m_MonthNumText;
 
+    [SerializeField] Button BtnExit;
+    [SerializeField] Button m_BtnFinish;
+
     [SerializeField] GameObject m_Item;
 
     [SerializeField] List<CalendarDateItem> m_DateItems = new List<CalendarDateItem>();
@@ -24,15 +28,35 @@ using static UnityEngine.GraphicsBuffer;
 
     [SerializeField] float TWEEN_DURATION = 0.3f;
     [SerializeField] DateTime m_DateTime;
+    private string m_DateFormat;
     public static CalendarController Api;
 
-    void Start()
+    private const string DEFAULT_DATE_FORMAT = "dd MMM yyyy";
+
+    public void Init(TextMeshProUGUI txt, string dateFormat = null)
     {
         Api = this;
         Vector3 startPos = m_Item.transform.localPosition;
+        m_DateFormat = dateFormat;
         m_DateItems.Clear();
         m_DateItems.Add(m_Item.GetComponent<CalendarDateItem>());
 
+        BtnExit = transform.Find("CalendarBG/BtnExit").GetComponent<Button>();
+        m_BtnFinish = transform.Find("CalendarBG/BottomBar/BtnFinish").GetComponent<Button>();
+
+        BtnExit.onClick.AddListener(ClosePopup);
+        m_BtnFinish.onClick.AddListener(FinishPopup);
+
+        BtnExit.gameObject.SetActive(false);
+        m_BtnFinish.gameObject.SetActive(false);
+        m_DateTime = DateTime.Now;
+        GenerateCalendarItems(startPos);
+        CreateCalendar();
+        SetTargetTxt(txt);
+    }
+
+    private void GenerateCalendarItems(Vector3 startPos)
+    {
         for (int i = 1; i < _totalDateNum; i++)
         {
             GameObject item = Instantiate(m_Item);
@@ -50,15 +74,48 @@ using static UnityEngine.GraphicsBuffer;
                 itemView.m_IsSunday = true;
             }
         }
-
-        m_DateTime = DateTime.Now;
-
-        CreateCalendar();
     }
 
-    public void SetTargetTxt(TextMeshProUGUI txt)
+    private void FinishPopup()
+    {
+        if (IsAtLeastOneChoosen())
+        {
+            SetAllItemsOff();
+            ClosePopup();
+        }
+    }
+
+    private bool IsAtLeastOneChoosen()
+    {
+        foreach (var item in m_DateItems)
+        {
+            if (item.m_IsChoosen)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void ClosePopup()
+    {
+        NTTControl.Api.ShowCalendarPopup(null, isClosePopup: true);
+        gameObject.SetActive(false);
+    }
+
+    public void SetTargetTxt(TextMeshProUGUI txt, bool isShowPopup = false)
     {
         m_Target = txt;
+    }
+    
+    public void ShowExitFinishPopup(bool isShowPopup = false)
+    {
+        // For calling popup
+        if (isShowPopup)
+        {
+            BtnExit.gameObject.SetActive(true);
+            m_BtnFinish.gameObject.SetActive(true);
+        }
     }
 
     private void CreateCalendar()
@@ -159,7 +216,7 @@ using static UnityEngine.GraphicsBuffer;
             int.TryParse(m_YearNumText.text, out int year))
         {
             DateTime date = new DateTime(year, MonthAbbreviationToNumber(m_MonthNumText.text), dayInt);
-            TweenUtils.TypingAnimation(m_Target, date.ToString("dd MMM yyyy"), TWEEN_DURATION);
+            TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat != null ? m_DateFormat : DEFAULT_DATE_FORMAT), TWEEN_DURATION);
 
             //NTTMyHealthControl.Api.DateClickShowBMICaloriesValue(dayInt, month, year);
         }

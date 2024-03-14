@@ -33,9 +33,9 @@ public class NTTControl
         set { m_showFAMPopupInputEvent = value; }
     }
 
-    private Action<TextMeshProUGUI> m_ShowPopupCalendar; //notify show popup message
+    private Action<TextMeshProUGUI, bool> m_ShowPopupCalendar; //notify show popup message
 
-    public Action<TextMeshProUGUI> OnCallShowPopupCalendarEvent
+    public Action<TextMeshProUGUI, bool> OnCallShowPopupCalendarEvent
     {
         get { return m_ShowPopupCalendar; }
         set { m_ShowPopupCalendar = value; }
@@ -133,9 +133,9 @@ public class NTTControl
         ShowFAMPopupInputEvent?.Invoke(title, content, btnConfirmText, btnElseText, onConfirm, onElse, onExit, isShowInputField);
     }
     
-    public void ShowCalendarPopup(TextMeshProUGUI targetTxt)
+    public void ShowCalendarPopup(TextMeshProUGUI targetTxt, bool isClosePopup)
     {
-        OnCallShowPopupCalendarEvent?.Invoke(targetTxt);
+        OnCallShowPopupCalendarEvent?.Invoke(targetTxt, isClosePopup);
     }
 
     public void UnloadThenLoadScene(string sceneToLoad)

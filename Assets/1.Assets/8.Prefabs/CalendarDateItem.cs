@@ -8,6 +8,7 @@ public class CalendarDateItem : MonoBehaviour
     [SerializeField] Text m_Txt;
     [SerializeField] GameObject m_BG;
     public bool m_IsSunday;
+    public bool m_IsChoosen;
 
     public void OnDateItemClick()
     {
@@ -23,6 +24,7 @@ public class CalendarDateItem : MonoBehaviour
             m_Txt.fontStyle = FontStyle.Bold;
             m_BG.SetActive(true);
         }
+        m_IsChoosen = m_BG.activeSelf;
     }
 
     public void SetItemOff()

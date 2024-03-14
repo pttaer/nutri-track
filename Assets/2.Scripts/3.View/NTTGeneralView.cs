@@ -52,10 +52,19 @@ public class NTTGeneralView : MonoBehaviour
         NTTControl.Api.OnCallShowPopupCalendarEvent += ShowCalendarPopup;
     }
 
-    private void ShowCalendarPopup(TextMeshProUGUI targetTxt)
+    private void ShowCalendarPopup(TextMeshProUGUI targetTxt, bool isClosePopup = false)
     {
-        m_CalendarPopupView.SetTargetTxt(targetTxt);
-        m_CalendarPopup.SetActive(true);
+        if (isClosePopup)
+        {
+            m_CalendarPopup.gameObject.SetActive(false);
+        }
+        else
+        {
+            m_CalendarPopup.gameObject.SetActive(true);
+            m_CalendarPopupView.Init(targetTxt);
+            m_CalendarPopupView.ShowExitFinishPopup(true);
+            m_CalendarPopupView.gameObject.SetActive(true);
+        }
     }
 
     public void ShowSorryTxt(bool isShow, string txtShow = null)
