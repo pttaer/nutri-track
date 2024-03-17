@@ -38,7 +38,7 @@ public class NTTMyHealthView : MonoBehaviour
         m_CalendarController = pnlCalendar.Find("CalendarControllerPreb").GetComponent<CalendarController>();
 
         m_PnlSummary = pnlSummary.gameObject;
-        m_TxtDate = pnlSummary.Find("TxtDate").GetComponent<TextMeshProUGUI>();
+        m_TxtDate = pnlSummary.Find("TopBar/TxtDate").GetComponent<TextMeshProUGUI>();
         m_TxtBMIValue = pnlSummary.Find("BMI/Value").GetComponent<TextMeshProUGUI>();
         m_TxtCaloriesValue = pnlSummary.Find("Calories/Value").GetComponent<TextMeshProUGUI>();
 
