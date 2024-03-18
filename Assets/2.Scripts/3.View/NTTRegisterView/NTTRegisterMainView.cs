@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,8 @@ public class NTTRegisterMainView : MonoBehaviour
     private Transform m_ConditionPnl;
     private Transform m_GooglePnl;
     private Transform m_CalendarPnl;
+    private NTTInputIncreamentView m_HeightPnl;
+    private NTTInputIncreamentView m_WeightPnl;
 
     private InputField m_IpfEmail;
     private InputField m_IpfPassword;
@@ -20,6 +23,7 @@ public class NTTRegisterMainView : MonoBehaviour
 
     private CalendarController m_CalendarController;
 
+    private Button m_BtnDob;
     private Button m_BtnNext;
     private Button m_BtnBack;
 
@@ -44,15 +48,26 @@ public class NTTRegisterMainView : MonoBehaviour
     public void Init()
     {
         m_MainPnl = transform.Find("Body/MainPnl");
+        m_CalendarController = transform.Find("Body/CalendarPnl/CalendarControllerPreb").GetComponent<CalendarController>();
 
         m_EmailPnl = m_MainPnl.Find("EmailPnl");
         m_InfoPnl = m_MainPnl.Find("InfoPnl");
         m_BmiPnl = m_MainPnl.Find("BmiPnl");
         m_ConditionPnl = m_MainPnl.Find("ConditionPnl");
 
+        // EMAIL
         m_IpfEmail = m_EmailPnl.Find("EmailPnl/IpfEmail").GetComponent<InputField>();
         m_IpfPassword = m_EmailPnl.Find("PasswordPnl/IpfPassword").GetComponent<InputField>();
+
+        // INFO
         m_IpfName = m_InfoPnl.Find("NamePnl/IpfName").GetComponent<InputField>();
+        m_BtnDob = m_InfoPnl.Find("DobPnl/BtnDob").GetComponent<Button>();
+
+        // BMI
+        m_HeightPnl = m_BmiPnl.Find("HWPnl/HeightPnl").GetComponent<NTTInputIncreamentView>();
+        m_WeightPnl = m_BmiPnl.Find("HWPnl/WeightPnl").GetComponent<NTTInputIncreamentView>();
+
+        // CONDITION
 
         m_BtnNext = m_MainPnl.Find("BtnGr/BtnNext").GetComponent<Button>();
         m_BtnBack = m_MainPnl.Find("BtnGr/BtnBack").GetComponent<Button>();
@@ -75,6 +90,9 @@ public class NTTRegisterMainView : MonoBehaviour
             { PnlEnum.Conditional, m_ConditionPnl }
         };
 
+        m_HeightPnl.Init();
+        m_WeightPnl.Init();
+        //m_CalendarController.Init();
     }
 
     private void NextPnl()
