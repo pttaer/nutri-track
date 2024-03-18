@@ -10,6 +10,11 @@ public class CalendarDateItem : MonoBehaviour
     public bool m_IsSunday;
     public bool m_IsChoosen;
 
+    public void EnableButton(bool enable)
+    {
+        GetComponent<Button>().interactable = enable;
+    }
+
     public void OnDateItemClick()
     {
         if (m_BG.activeSelf)

@@ -9,7 +9,8 @@ using uPalette.Generated;
 using uPalette.Runtime.Core;
 using static UnityEngine.GraphicsBuffer;
 
-[SerializeField] class CalendarController : MonoBehaviour
+[SerializeField]
+class CalendarController : MonoBehaviour
 {
     [SerializeField] GameObject m_CalendarPanel;
     [SerializeField] TextMeshProUGUI m_YearNumText;
@@ -36,7 +37,7 @@ using static UnityEngine.GraphicsBuffer;
     private const string DEFAULT_DATE_FORMAT = "dd MMM yyyy";
     private const string DATE_DEFAULT = "Date";
 
-    public void Init(TextMeshProUGUI txt, string dateFormat = null, Action<bool> onSelectCallback = null)
+    public void Init(TextMeshProUGUI txt, string dateFormat = null, bool isDisableAllDayAfterToday = false, Action<bool> onSelectCallback = null)
     {
         Api = this;
         m_OnSelectCallback = onSelectCallback;
@@ -111,7 +112,7 @@ using static UnityEngine.GraphicsBuffer;
     {
         m_Target = txt;
     }
-    
+
     public void ShowExitFinishPopup(bool isShowPopup = false)
     {
         // For calling popup
@@ -150,6 +151,8 @@ using static UnityEngine.GraphicsBuffer;
                     label.text = (date + 1).ToString();
 
                     m_DateItems[i].gameObject.name = $"{label.text} {thatDay.Month} {thatDay.Year}";
+
+                    m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
 
                     if (m_DateItems[i].m_IsSunday)
                     {
@@ -233,7 +236,7 @@ using static UnityEngine.GraphicsBuffer;
 
     public void ClearTargetText()
     {
-        if(m_Target != null)
+        if (m_Target != null)
         {
             m_Target.text = DATE_DEFAULT;
             m_OnSelectCallback?.Invoke(false);

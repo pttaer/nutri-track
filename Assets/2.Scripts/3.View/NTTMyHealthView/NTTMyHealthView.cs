@@ -89,15 +89,11 @@ public class NTTMyHealthView : MonoBehaviour
         m_PopupInputBMIRecord.Init();
         m_PopupInputCaloriesRecord.Init();
 
-        m_CalendarController.Init(m_TxtDate, null, (isOn) =>
+        m_CalendarController.Init(m_TxtDate, null, onSelectCallback: (isOn) =>
         {
             Debug.Log("Run here " + isOn);
             m_BtnAddDailyRecord.gameObject.SetActive(isOn);
-
-            if (!isOn)
-            {
-                OnClickAddDailyRecord(true);
-            }
+            OnClickAddDailyRecord(true);
         });
     }
 
