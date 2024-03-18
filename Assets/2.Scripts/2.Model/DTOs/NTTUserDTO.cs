@@ -16,6 +16,7 @@ public class NTTUserDTO : MonoBehaviour
         public string Email { get; set; }
         public string Avatar { get; set; }
         public DateTime Dob { get; set; }
+        public float Height { get; set; }
         public string Gender { get; set; }
         public string Role { get; set; }
         public string AccountType { get; set; }

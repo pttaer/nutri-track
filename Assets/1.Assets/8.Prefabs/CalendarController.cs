@@ -29,13 +29,17 @@ using static UnityEngine.GraphicsBuffer;
     [SerializeField] float TWEEN_DURATION = 0.3f;
     [SerializeField] DateTime m_DateTime;
     private string m_DateFormat;
+    private Action<bool> m_OnSelectCallback;
+
     public static CalendarController Api;
 
     private const string DEFAULT_DATE_FORMAT = "dd MMM yyyy";
+    private const string DATE_DEFAULT = "Date";
 
-    public void Init(TextMeshProUGUI txt, string dateFormat = null)
+    public void Init(TextMeshProUGUI txt, string dateFormat = null, Action<bool> onSelectCallback = null)
     {
         Api = this;
+        m_OnSelectCallback = onSelectCallback;
         Vector3 startPos = m_Item.transform.localPosition;
         m_DateFormat = dateFormat;
         m_DateItems.Clear();
@@ -85,7 +89,7 @@ using static UnityEngine.GraphicsBuffer;
         }
     }
 
-    private bool IsAtLeastOneChoosen()
+    public bool IsAtLeastOneChoosen()
     {
         foreach (var item in m_DateItems)
         {
@@ -212,11 +216,11 @@ using static UnityEngine.GraphicsBuffer;
     {
         SetAllItemsOff();
         Debug.Log("CLICK" + day);
-        if (int.TryParse(day, out int dayInt) &&
-            int.TryParse(m_YearNumText.text, out int year))
+        if (int.TryParse(day, out int dayInt) && int.TryParse(m_YearNumText.text, out int year))
         {
             DateTime date = new DateTime(year, MonthAbbreviationToNumber(m_MonthNumText.text), dayInt);
             TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat != null ? m_DateFormat : DEFAULT_DATE_FORMAT), TWEEN_DURATION);
+            m_OnSelectCallback?.Invoke(true);
 
             //NTTMyHealthControl.Api.DateClickShowBMICaloriesValue(dayInt, month, year);
         }
@@ -231,7 +235,8 @@ using static UnityEngine.GraphicsBuffer;
     {
         if(m_Target != null)
         {
-            m_Target.text = "Date";
+            m_Target.text = DATE_DEFAULT;
+            m_OnSelectCallback?.Invoke(false);
         }
 
         // TODO: May clear the others info here too
