@@ -36,7 +36,7 @@ public class NTTApiControl
         return request;
     }
 
-    public IEnumerator GetListData<T>(string url, Action<T[]> callback, Dictionary<string, string> param = null)
+    public IEnumerator GetListData<T>(string url, Action<JObject, UnityWebRequest.Result> callback, Dictionary<string, string> param = null)
     {
         NTTControl.Api.ShowLoading();
 
@@ -68,25 +68,20 @@ public class NTTApiControl
             Debug.LogError("Error: downloadHandler is null");
         }
 
+        string response = request.downloadHandler.text;
+
         if (request.result == UnityWebRequest.Result.Success)
         {
             NTTControl.Api.HideLoading();
 
-            string response = request.downloadHandler.text;
-
-            if (JsonConvert.DeserializeObject(response).GetType() == typeof(JArray))
-            {
-                T[] dataArray = JsonConvert.DeserializeObject<T[]>(response);
-
-                callback?.Invoke(dataArray);
-            }
-            else
-            {
-            }
+            JObject data = JsonConvert.DeserializeObject<JObject>(response);
+            callback?.Invoke(data, request.result);
         }
         else
         {
             Debug.Log("error: " + request.error);
+            JObject data = JsonConvert.DeserializeObject<JObject>(response);
+            callback?.Invoke(data, request.result);
         }
         NTTControl.Api.HideLoading();
     }
