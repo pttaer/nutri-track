@@ -127,6 +127,8 @@ public class NTTConstant
 
     public const string USER_ROUTE = BASE_DOMAIN + "user/{0}";
 
+    public const string FOOD_ROUTE = BASE_DOMAIN + "foods";
+
     #endregion API_URL
 
     #region ICON_CODE
