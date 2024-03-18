@@ -41,7 +41,7 @@ public class NTTPopupInputBMIRecordView : MonoBehaviour
 
     private void AddRecordWeight()
     {
-        if(string.IsNullOrEmpty(m_TxtWeight.text) && float.TryParse(m_TxtWeight.text, out float weight))
+        if (string.IsNullOrEmpty(m_TxtWeight.text) && float.TryParse(m_TxtWeight.text, out float weight))
         {
             PostWeightBMIData(weight);
         }
@@ -63,7 +63,7 @@ public class NTTPopupInputBMIRecordView : MonoBehaviour
 
     private void PostWeightBMIData(float weight)
     {
-        NTTBMIRecordPostDTO bmiRecord = new(weight);
+        NTTBMIRecordPostDTO bmiRecord = new(weight, DateTime.Today);
 
         Debug.Log("Run here bmiRecord: " + JsonConvert.SerializeObject(bmiRecord));
 
@@ -79,10 +79,10 @@ public class NTTPopupInputBMIRecordView : MonoBehaviour
             }
         }));
     }
-    
+
     private void GetWeightBMIData()
     {
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(NTTConstant.BMI_ROUTE, callback: (data) =>
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(NTTConstant.BMI_ROUTE, callback: (data, result) =>
         {
             Debug.Log("Run here" + JsonConvert.SerializeObject(data));
         }));
@@ -90,7 +90,7 @@ public class NTTPopupInputBMIRecordView : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.F2))
+        if (Input.GetKeyDown(KeyCode.F2))
         {
             Debug.Log("Run here");
             PostWeightBMIData(40);

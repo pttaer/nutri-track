@@ -68,7 +68,7 @@ public class NTTMyHealthView : MonoBehaviour
 
         // Add listeners
         m_BtnSummary.onClick.AddListener(OnSummaryClick);
-        m_BtnAddDailyRecord.onClick.AddListener(OnAddDailyRecord);
+        m_BtnAddDailyRecord.onClick.AddListener(() => OnClickAddDailyRecord());
         m_BtnBMIRecord.onClick.AddListener(OnClickBtnBMIRecord);
         m_BtnCalRecord.onClick.AddListener(OnClickBtnCalRecord);
 
@@ -93,6 +93,11 @@ public class NTTMyHealthView : MonoBehaviour
         {
             Debug.Log("Run here " + isOn);
             m_BtnAddDailyRecord.gameObject.SetActive(isOn);
+
+            if (!isOn)
+            {
+                OnClickAddDailyRecord(true);
+            }
         });
     }
 
@@ -111,13 +116,20 @@ public class NTTMyHealthView : MonoBehaviour
         ShowPopupInputBMIRecord(true);
     }
 
-    private void OnAddDailyRecord()
+    private void OnClickAddDailyRecord(bool isForceReset = false)
     {
         bool isPnlChooseOn = m_PnlChooseRecordType.activeSelf;
 
-        ShowPnlChooseRecordType(!isPnlChooseOn);
+        if (isForceReset)
+        {
+            ShowPnlChooseRecordType(false);
+        }
+        else
+        {
+            ShowPnlChooseRecordType(!isPnlChooseOn);
+        }
 
-        m_TxtBtnAddDailyRecord.text = isPnlChooseOn ? "Add daily record" : "Close";
+        m_TxtBtnAddDailyRecord.text = isPnlChooseOn || isForceReset ? "Add daily record" : "Close";
     }
 
     private void SetBMICaloriesValue(float bmi, float calo)
@@ -139,13 +151,13 @@ public class NTTMyHealthView : MonoBehaviour
     {
         m_PnlChooseRecordType.SetActive(isOn);
     }
-    
+
     private void ShowPopupInputBMIRecord(bool isOn)
     {
         m_PopupInputBMIRecord.gameObject.SetActive(isOn);
         m_BGFull.SetActive(isOn);
     }
-    
+
     private void ShowPopupInputCaloriesRecord(bool isOn)
     {
         m_PopupInputCaloriesRecord.gameObject.SetActive(isOn);
