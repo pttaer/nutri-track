@@ -18,18 +18,18 @@ public class NTTApiControl
         UnityWebRequest request = new UnityWebRequest(url, method.ToUpper());
         //Debug.Log("Token " + FAMConstant.BEARER_TOKEN);
 #if UNITY_ANDROID
-        if (PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE) != null)
-        {
-            Debug.Log("Calling api with token: " + PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE));
-            request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE));
-        }
+        //if (PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE) != null)
+        //{
+        //    Debug.Log("Calling api with token: " + PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE));
+        //    request.SetRequestHeader("Authorization", "Bearer " + PlayerPrefs.GetString(NTTConstant.BEARER_TOKEN_CACHE));
+        //}
 #endif
 
 #if UNITY_EDITOR
         if (NTTConstant.BEARER_TOKEN_EDITOR != null)
         {
             Debug.Log("Calling with editor token: " + NTTConstant.BEARER_TOKEN_EDITOR);
-            request.SetRequestHeader("Authorization", NTTConstant.BEARER_TOKEN_EDITOR);
+            request.SetRequestHeader("Authorization", "Bearer " + NTTConstant.BEARER_TOKEN_EDITOR);
         }
 
 #endif
@@ -241,8 +241,16 @@ public class NTTApiControl
 
         UnityWebRequest request = WebRequestWithAuthorizationHeader(uri, NTTConstant.METHOD_POST);
         request.SetRequestHeader("Content-Type", "application/json");
+
+        string headerValue = request.GetRequestHeader("Content-Type");
+        Debug.Log($"Header: Content-Type, Value: {headerValue}");
+        string header = request.GetRequestHeader("Authorization");
+        Debug.Log($"Header: Authorization, Value: {header}");
+
         request.uploadHandler = new UploadHandlerRaw(jsonBytes);
         request.downloadHandler = new DownloadHandlerBuffer();
+
+        Debug.Log("Run here request" + JsonConvert.SerializeObject(request));
 
         yield return request.SendWebRequest();
 

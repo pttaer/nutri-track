@@ -116,11 +116,15 @@ public class NTTConstant
     #region API_URL
 
     public const string BASE_DOMAIN = "http://14.225.211.111:3000/v1/"; // base domain name, in case hosting service is changed
+
     public const string LOGIN_ROUTE = BASE_DOMAIN + "auth/login";
     public const string REGISTER_ROUTE = BASE_DOMAIN + "auth/register";
     public const string REGISTER_EXPERT_ROUTE = BASE_DOMAIN + "auth/register-expert";
 
-    public const string BMI_ROUTE = BASE_DOMAIN + "bmi-records/{0}";
+    public const string BMI_ROUTE = BASE_DOMAIN + "bmi-records";
+    public const string BMI_ROUTE_FORMAT = BASE_DOMAIN + "bmi-records/{0}";
+    public const string CAL_ROUTE = BASE_DOMAIN + "cal-records";
+    public const string CAL_ROUTE_FORMAT = BASE_DOMAIN + "cal-records/{0}";
 
     public const string APPLICATION_ROUTE = BASE_DOMAIN + "applications/{0}";
     public const string APPLICATION_STATUS_ROUTE = BASE_DOMAIN + "applications/{0}/status";
@@ -143,7 +147,6 @@ public class NTTConstant
     public const string METHOD_DELETE = "DELETE";
     public const string METHOD_PATCH = "PATCH";
 
-
     // playerprefs
     public const string EMAIL_CACHE = "email_cache";
 
@@ -158,6 +161,9 @@ public class NTTConstant
     public const string USER_EMAIL_CACHE = "user_email";
 
     public const string USER_FULLNAME_CACHE = "full_name";
+
+    // unit constants
+    public const string BMI_UNIT = "kg/m^2";
 
     // tween constant
     public const string TIME_UNIT = " mins";

@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,4 +15,8 @@ public class NTTCalRecordDTO : MonoBehaviour
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
+    public static NTTCalRecordDTO FromJObject(JObject obj)
+    {
+        return JsonConvert.DeserializeObject<NTTCalRecordDTO>(obj.ToString());
+    }
 }

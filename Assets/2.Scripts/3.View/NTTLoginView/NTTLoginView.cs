@@ -48,7 +48,7 @@ public class NTTLoginView : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            NTTLoginDTO m_LoginDTO = new("user1@gmail.com", "password1");
+            NTTLoginDTO m_LoginDTO = new("tester1@gmail.com", "password1");
 
             StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.LOGIN_ROUTE, m_LoginDTO, (response, status) =>
             {
