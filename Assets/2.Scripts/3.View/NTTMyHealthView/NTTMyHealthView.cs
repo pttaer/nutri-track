@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using TMPro;
 using Unity.VisualScripting;
@@ -89,12 +90,22 @@ public class NTTMyHealthView : MonoBehaviour
         m_PopupInputBMIRecord.Init();
         m_PopupInputCaloriesRecord.Init();
 
-        m_CalendarController.Init(m_TxtDate, null, onSelectCallback: (isOn) =>
+        m_CalendarController.Init(m_TxtDate, null, isDisableAllDayAfterToday: true, onSelectCallback: (isOn) =>
         {
             Debug.Log("Run here " + isOn);
             m_BtnAddDailyRecord.gameObject.SetActive(isOn);
             OnClickAddDailyRecord(true);
         });
+
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(string.Format(NTTConstant.BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT, "date", 10, 1), (data, result) =>
+        {
+            Debug.Log("RUN HERE BMI " + JsonConvert.SerializeObject(data));
+        }));
+
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTDailyCalDTO>(string.Format(NTTConstant.DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT, "date", 10, 1), (data, result) =>
+        {
+            Debug.Log("RUN HERE DAILY DIET  " + JsonConvert.SerializeObject(data));
+        }));
     }
 
     private void ClosePopupBackground()

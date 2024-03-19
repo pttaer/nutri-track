@@ -30,6 +30,7 @@ class CalendarController : MonoBehaviour
     [SerializeField] float TWEEN_DURATION = 0.3f;
     [SerializeField] DateTime m_DateTime;
     private string m_DateFormat;
+    private bool m_IsDisableAllDayAfterToday;
     private Action<bool> m_OnSelectCallback;
 
     public static CalendarController Api;
@@ -40,6 +41,7 @@ class CalendarController : MonoBehaviour
     public void Init(TextMeshProUGUI txt, string dateFormat = null, bool isDisableAllDayAfterToday = false, Action<bool> onSelectCallback = null)
     {
         Api = this;
+        m_IsDisableAllDayAfterToday = isDisableAllDayAfterToday;
         m_OnSelectCallback = onSelectCallback;
         Vector3 startPos = m_Item.transform.localPosition;
         m_DateFormat = dateFormat;
@@ -150,9 +152,14 @@ class CalendarController : MonoBehaviour
 
                     label.text = (date + 1).ToString();
 
+                    // For recognition
                     m_DateItems[i].gameObject.name = $"{label.text} {thatDay.Month} {thatDay.Year}";
 
-                    m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
+                    // For disabling days in my health
+                    if (m_IsDisableAllDayAfterToday)
+                    {
+                        m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
+                    }
 
                     if (m_DateItems[i].m_IsSunday)
                     {

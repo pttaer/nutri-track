@@ -67,7 +67,7 @@ public class NTTPopupInputBMIRecordView : MonoBehaviour
 
         Debug.Log("Run here bmiRecord: " + JsonConvert.SerializeObject(bmiRecord));
 
-        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.BMI_ROUTE, bmiRecord, (data, result) =>
+        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.BMI_RECORDS_ROUTE, bmiRecord, (data, result) =>
         {
             if (result == UnityWebRequest.Result.Success)
             {
@@ -82,7 +82,7 @@ public class NTTPopupInputBMIRecordView : MonoBehaviour
 
     private void GetWeightBMIData()
     {
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(NTTConstant.BMI_ROUTE, callback: (data, result) =>
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(NTTConstant.BMI_RECORDS_ROUTE, callback: (data, result) =>
         {
             Debug.Log("Run here" + JsonConvert.SerializeObject(data));
         }));
