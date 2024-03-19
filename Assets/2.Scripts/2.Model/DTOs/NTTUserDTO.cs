@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NTTUserDTO : MonoBehaviour
+public class NTTUserDTO
 {
     public UserDTO User { get; set; }
     public NTTTokenDTO Tokens { get; set; }

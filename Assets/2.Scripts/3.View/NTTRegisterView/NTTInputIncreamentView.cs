@@ -16,19 +16,20 @@ public class NTTInputIncreamentView : MonoBehaviour
 
     public void Init()
     {
-        Ipf = transform.Find("Ipf").GetComponent<TMP_InputField>();
-        BtnIncrease = transform.Find("BtnUp").GetComponent<Button>();
-        BtnDecrease = transform.Find("BtnDown").GetComponent<Button>();
+        Ipf = transform.Find("Main/Ipf").GetComponent<TMP_InputField>();
+        BtnIncrease = transform.Find("Main/BtnUp").GetComponent<Button>();
+        BtnDecrease = transform.Find("Main/BtnDown").GetComponent<Button>();
 
         Ipf.onValueChanged.AddListener(OnEdit);
         BtnIncrease.onClick.AddListener(OnClickIncrease);
         BtnDecrease.onClick.AddListener(OnClickDecrease);
-
     }
 
     private void OnEdit(string input)
     {
         Value = float.Parse(input);
+
+        NTTRegisterControl.Api.OnUpdateBmiValue();
     }
 
     private void OnClickIncrease()
@@ -43,8 +44,13 @@ public class NTTInputIncreamentView : MonoBehaviour
 
     private void UpdateValue(float marginValue)
     {
-        Value += marginValue;
+        if (Value >= 0)
+        {
+            Value += marginValue;
+        }
 
-        Ipf.textComponent.text = Value.ToString();
+        Ipf.text = Value.ToString();
+
+        NTTRegisterControl.Api.OnUpdateBmiValue();
     }
 }

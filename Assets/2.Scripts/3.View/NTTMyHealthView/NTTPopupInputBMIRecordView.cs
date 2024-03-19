@@ -63,29 +63,29 @@ public class NTTPopupInputBMIRecordView : MonoBehaviour
 
     private void PostWeightBMIData(float weight)
     {
-        NTTBMIRecordPostDTO bmiRecord = new(weight);
+        //NTTBMIRecordPostDTO bmiRecord = new(weight);
 
-        Debug.Log("Run here bmiRecord: " + JsonConvert.SerializeObject(bmiRecord));
+        //Debug.Log("Run here bmiRecord: " + JsonConvert.SerializeObject(bmiRecord));
 
-        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.BMI_ROUTE, bmiRecord, (data, result) =>
-        {
-            if (result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Run here" + JsonConvert.SerializeObject(data));
+        //StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.BMI_ROUTE, bmiRecord, (data, result) =>
+        //{
+        //    if (result == UnityWebRequest.Result.Success)
+        //    {
+        //        Debug.Log("Run here" + JsonConvert.SerializeObject(data));
 
-                NTTBMIRecordDTO newRecord = NTTBMIRecordDTO.FromJObject(data);
+        //        NTTBMIRecordDTO newRecord = NTTBMIRecordDTO.FromJObject(data);
 
-                Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
-            }
-        }));
+        //        Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
+        //    }
+        //}));
     }
     
     private void GetWeightBMIData()
     {
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(NTTConstant.BMI_ROUTE, callback: (data) =>
-        {
-            Debug.Log("Run here" + JsonConvert.SerializeObject(data));
-        }));
+        //StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(NTTConstant.BMI_ROUTE, callback: (data) =>
+        //{
+        //    Debug.Log("Run here" + JsonConvert.SerializeObject(data));
+        //}));
     }
 
     private void Update()

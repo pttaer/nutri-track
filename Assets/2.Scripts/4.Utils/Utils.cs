@@ -232,4 +232,9 @@ public class Utils
     }
 
     #endregion LOG
+
+    public static float GetBMI(float height, float weight)
+    {
+        return weight / Mathf.Pow(height / 100, 2);
+    }
 }

@@ -1,9 +1,11 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class NTTRegisterMainView : MonoBehaviour
 {
@@ -16,12 +18,14 @@ public class NTTRegisterMainView : MonoBehaviour
     private Transform m_CalendarPnl;
     private NTTInputIncreamentView m_HeightPnl;
     private NTTInputIncreamentView m_WeightPnl;
+    private TextMeshProUGUI m_TxtBmi;
 
     private InputField m_IpfEmail;
     private InputField m_IpfPassword;
     private InputField m_IpfName;
 
     private CalendarController m_CalendarController;
+    private AutoCompleteComboBox m_ComboBoxMedical;
 
     private Button m_BtnDob;
     private Button m_BtnNext;
@@ -66,14 +70,18 @@ public class NTTRegisterMainView : MonoBehaviour
         // BMI
         m_HeightPnl = m_BmiPnl.Find("HWPnl/HeightPnl").GetComponent<NTTInputIncreamentView>();
         m_WeightPnl = m_BmiPnl.Find("HWPnl/WeightPnl").GetComponent<NTTInputIncreamentView>();
+        m_TxtBmi = m_BmiPnl.Find("BmiPnl/ValuePnl/TxtValue").GetComponent<TextMeshProUGUI>();
 
         // CONDITION
+        m_ComboBoxMedical = m_ConditionPnl.Find("MedicalPnl/ComboBoxMedical").GetComponent<AutoCompleteComboBox>();
 
         m_BtnNext = m_MainPnl.Find("BtnGr/BtnNext").GetComponent<Button>();
         m_BtnBack = m_MainPnl.Find("BtnGr/BtnBack").GetComponent<Button>();
 
         m_BtnNext.onClick.AddListener(NextPnl);
         m_BtnBack.onClick.AddListener(BackPnl);
+
+        NTTRegisterControl.Api.OnUpdateBmiValueEvent += UpdateBmiView;
 
         InitView();
     }
@@ -92,7 +100,10 @@ public class NTTRegisterMainView : MonoBehaviour
 
         m_HeightPnl.Init();
         m_WeightPnl.Init();
+        m_TxtBmi.text = "0";
         //m_CalendarController.Init();
+
+        GetMedicalConditions();
     }
 
     private void NextPnl()
@@ -100,7 +111,7 @@ public class NTTRegisterMainView : MonoBehaviour
         m_CurrentPnlIndex++;
         if (m_CurrentPnlIndex > 3)
         {
-            NTTApiControl.Api.PostData(NTTConstant.REGISTER_ROUTE, NTTUserDTO, (response, status) =>
+            NTTApiControl.Api.PostData(NTTConstant.REGISTER_ROUTE, NTTUserDTO, (response) =>
             {
 
             });
@@ -133,5 +144,37 @@ public class NTTRegisterMainView : MonoBehaviour
         tf.gameObject.SetActive(true);
 
         m_BtnBack.gameObject.SetActive(!m_EmailPnl.gameObject.activeSelf);
+    }
+
+    private void UpdateBmiView()
+    {
+        m_TxtBmi.text = Utils.GetBMI(m_HeightPnl.Value, m_WeightPnl.Value).ToString();
+    }
+
+    private void GetMedicalConditions()
+    {
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTMedicalConditionDTO>(NTTConstant.MEDICAL_ROUTE, (response) =>
+        {
+            List<string> ComboBoxOptions = new List<string>();
+
+            foreach (NTTMedicalConditionDTO item in response.Results)
+            {
+                ComboBoxOptions.Add(item.Name);
+            }
+
+            m_ComboBoxMedical.AvailableOptions = ComboBoxOptions;
+
+        }, new Dictionary<string, string>()
+        {
+            {"limit", "22" },
+        }));
+
+    }
+
+    public void OnSelectMedical(string selected)
+    {
+        Debug.LogError("Name: " + m_ComboBoxMedical.SelectedItem.Caption);
+        Debug.LogError("selected: " + selected);
+
     }
 }
