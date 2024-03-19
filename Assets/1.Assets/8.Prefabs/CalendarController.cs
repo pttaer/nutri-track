@@ -31,22 +31,24 @@ class CalendarController : MonoBehaviour
     [SerializeField] DateTime m_DateTime;
     private string m_DateFormat;
     private bool m_IsDisableAllDayAfterToday;
-    private Action<bool> m_OnSelectCallback;
+    private Action<bool, bool, bool, DateTime?> m_OnSelectCallback;
 
     List<NTTBMIRecordDTO> m_BmiRecordsList = new List<NTTBMIRecordDTO>();
     List<NTTDailyCalDTO> m_DailyCalList = new List<NTTDailyCalDTO>();
+    List<NTTCalRecordDTO> m_CalRecordList = new List<NTTCalRecordDTO>();
 
     public static CalendarController Api;
 
     private const string DEFAULT_DATE_FORMAT = "dd MMM yyyy";
     private const string DATE_DEFAULT = "Date";
 
-    public void Init(TextMeshProUGUI txt, string dateFormat = null, bool isDisableAllDayAfterToday = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, Action<bool> onSelectCallback = null)
+    public void Init(TextMeshProUGUI txt, string dateFormat = null, bool isDisableAllDayAfterToday = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, List<NTTCalRecordDTO> calRecordList = null, Action<bool, bool, bool, DateTime?> onSelectCallback = null)
     {
         Api = this;
 
         m_BmiRecordsList = bmiRecordsList;
         m_DailyCalList = dailyCalList;
+        m_CalRecordList = calRecordList;
         m_IsDisableAllDayAfterToday = isDisableAllDayAfterToday;
         m_OnSelectCallback = onSelectCallback;
         Vector3 startPos = m_Item.transform.localPosition;
@@ -169,7 +171,7 @@ class CalendarController : MonoBehaviour
 
                         // Find all the data items that have the same month of the current month
                         m_DateItems[i].EnableBMI(thatDay, m_BmiRecordsList?.FindAll(item => item.Date.Month == thatDay.Month));
-                        m_DateItems[i].EnableDailyCal(thatDay, m_DailyCalList?.FindAll(item => item.Date.Month == thatDay.Month));
+                        m_DateItems[i].EnableDailyCal(thatDay, m_DailyCalList?.FindAll(item => item.Date.Month == thatDay.Month), m_CalRecordList);
                     }
 
                     if (m_DateItems[i].m_IsSunday)
@@ -233,15 +235,17 @@ class CalendarController : MonoBehaviour
         Debug.Log("TARGET IS: " + m_Target.name);
     }
 
-    public void OnDateItemClick(string day)
+    public void OnDateItemClick(string day, bool isBmiExist, bool isCalRecordExist)
     {
         SetAllItemsOff();
         Debug.Log("CLICK" + day);
         if (int.TryParse(day, out int dayInt) && int.TryParse(m_YearNumText.text, out int year))
         {
             DateTime date = new DateTime(year, MonthAbbreviationToNumber(m_MonthNumText.text), dayInt);
-            TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat != null ? m_DateFormat : DEFAULT_DATE_FORMAT), TWEEN_DURATION);
-            m_OnSelectCallback?.Invoke(true);
+
+            TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat ?? DEFAULT_DATE_FORMAT), TWEEN_DURATION);
+
+            m_OnSelectCallback?.Invoke(true, isBmiExist, isCalRecordExist, date);
 
             //NTTMyHealthControl.Api.DateClickShowBMICaloriesValue(dayInt, month, year);
         }
@@ -257,7 +261,9 @@ class CalendarController : MonoBehaviour
         if (m_Target != null)
         {
             m_Target.text = DATE_DEFAULT;
-            m_OnSelectCallback?.Invoke(false);
+
+            // DateTime.MinValue for default
+            m_OnSelectCallback?.Invoke(false, false, false, null);
         }
 
         // TODO: May clear the others info here too

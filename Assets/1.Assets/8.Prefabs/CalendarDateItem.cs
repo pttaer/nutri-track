@@ -21,32 +21,37 @@ public class CalendarDateItem : MonoBehaviour
     
     public void EnableBMI(DateTime itemDate, List<NTTBMIRecordDTO> bmiRecordList)
     {
-        foreach (NTTBMIRecordDTO item in bmiRecordList)
-        {
-            if (item.Date.Date == itemDate.Date)
+        NTTMyHealthControl.Api.CheckExistItemByDateInListBMI(
+            itemDate, 
+            bmiRecordList,
+            callbackExist: (itemData) =>
             {
                 m_BMI.SetActive(true);
-
                 Debug.Log("Run here YEET " + itemDate);
-                return;
+            },
+            callbackNone: () =>
+            {
+                m_BMI.SetActive(false);
             }
-        }
-        m_BMI.SetActive(false);
+        );
     }
     
-    public void EnableDailyCal(DateTime itemDate, List<NTTDailyCalDTO> dailyCalList)
+    public void EnableDailyCal(DateTime itemDate, List<NTTDailyCalDTO> dailyCalList, List<NTTCalRecordDTO> calRecordList)
     {
-        foreach (NTTDailyCalDTO item in dailyCalList)
-        {
-            if (item.Date.Date == itemDate.Date)
+        NTTMyHealthControl.Api.CheckExistItemByDateInListDailyCal(
+            itemDate,
+            dailyCalList,
+            calRecordList,
+            callbackExist: (listCalRecord) =>
             {
                 m_DailyCal.SetActive(true);
-
-                Debug.Log("Run here YEET2 " + itemDate);
-                return;
+                Debug.Log("Run here YEET " + itemDate);
+            },
+            callbackNone: () =>
+            {
+                m_DailyCal.SetActive(false);
             }
-        }
-        m_DailyCal.SetActive(false);
+        );
     }
 
     public void OnDateItemClick()
@@ -58,7 +63,7 @@ public class CalendarDateItem : MonoBehaviour
         }
         else
         {
-            CalendarController.Api.OnDateItemClick(gameObject.GetComponentInChildren<Text>().text);
+            CalendarController.Api.OnDateItemClick(gameObject.GetComponentInChildren<Text>().text, m_BMI.activeSelf, m_DailyCal.activeSelf);
             m_Txt.color = Color.white;
             m_Txt.fontStyle = FontStyle.Bold;
             m_BG.SetActive(true);

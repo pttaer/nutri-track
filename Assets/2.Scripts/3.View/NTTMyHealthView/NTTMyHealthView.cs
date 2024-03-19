@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.Networking;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class NTTMyHealthView : MonoBehaviour
 {
@@ -92,19 +93,59 @@ public class NTTMyHealthView : MonoBehaviour
 
         StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(string.Format(NTTConstant.BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (bmiData, result) =>
         {
-            if(result == UnityWebRequest.Result.Success)
+            if (result == UnityWebRequest.Result.Success)
             {
                 StartCoroutine(NTTApiControl.Api.GetListData<NTTDailyCalDTO>(string.Format(NTTConstant.DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (dailyCalData, result) =>
                 {
-                    if (result == UnityWebRequest.Result.Success)
+                    StartCoroutine(NTTApiControl.Api.GetListData<NTTCalRecordDTO>(string.Format(NTTConstant.CAL_RECORDS_ROUTE, NTTConstant.PARAM_DATE), (calRecordData, result) =>
                     {
-                        m_CalendarController.Init(m_TxtDate, null, isDisableAllDayAfterToday: true, bmiRecordsList: bmiData.Results, dailyCalList: dailyCalData.Results, onSelectCallback: (isOn) =>
+                        NTTControl.Api.ShowLoading();
+                        if (result == UnityWebRequest.Result.Success)
                         {
-                            Debug.Log("Run here " + isOn);
-                            m_BtnAddDailyRecord.gameObject.SetActive(isOn);
-                            OnClickAddDailyRecord(true);
-                        });
-                    }
+                            m_CalendarController.Init(m_TxtDate, null, isDisableAllDayAfterToday: true, bmiRecordsList: bmiData.Results, dailyCalList: dailyCalData.Results, calRecordList: calRecordData.Results, onSelectCallback: (isOn, isBMIExist, isCalRecordExist, date) =>
+                            {
+                                Debug.Log("Run here " + isOn);
+                                m_BtnAddDailyRecord.gameObject.SetActive(isOn);
+                                OnClickAddDailyRecord(isForceReset: true);
+
+                                if(isBMIExist)
+                                {
+                                    NTTMyHealthControl.Api.CheckExistItemByDateInListBMI(
+                                        date ?? DateTime.MinValue,
+                                        bmiData.Results,
+                                        callbackExist: (itemData) =>
+                                        {
+                                            // kg/height^2 (height is in meter)
+                                            string bmi = (itemData.Weight / Math.Pow(NTTModel.CurrentUser.User.Height / 100, 2)).ToString("F1");
+                                            m_TxtBMIValue.text = $"{bmi} {NTTConstant.BMI_UNIT}";
+                                        }
+                                    );
+                                }
+                                else
+                                {
+                                    m_TxtBMIValue.text = DEFAULT_VALUE;
+                                }
+                                
+                                if(isCalRecordExist)
+                                {
+                                    NTTMyHealthControl.Api.CheckExistItemByDateInListDailyCal(
+                                        date ?? DateTime.MinValue,
+                                        dailyCalData.Results,
+                                        calRecordData.Results,
+                                        callbackExist: (listCalRecord) =>
+                                        {
+                                            m_TxtCaloriesValue.text = $"{listCalRecord.Sum(item => item.Amount)} {NTTConstant.CALS}";
+                                        }
+                                    );
+                                }
+                                else
+                                {
+                                    m_TxtCaloriesValue.text = DEFAULT_VALUE;
+                                }
+                            });
+                        }
+                        NTTControl.Api.HideLoading();
+                    }));
                 }));
             }
         }));
