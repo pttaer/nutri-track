@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 
-public class NTTPopupInputBMIRecordView : MonoBehaviour
+public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
 {
     Button m_BtnExit;
     Button m_BtnWeightSelect;

@@ -42,7 +42,7 @@ public class CalendarDateItem : MonoBehaviour
             itemDate,
             dailyCalList,
             calRecordList,
-            callbackExist: (listCalRecord) =>
+            callbackExist: (dailyCal, listCalRecord) =>
             {
                 m_DailyCal.SetActive(true);
                 Debug.Log("Run here YEET " + itemDate);

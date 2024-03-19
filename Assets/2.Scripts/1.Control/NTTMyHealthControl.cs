@@ -30,7 +30,7 @@ public class NTTMyHealthControl
         callbackNone?.Invoke();
     }
 
-    public void CheckExistItemByDateInListDailyCal(DateTime itemDate, List<NTTDailyCalDTO> dailyCalList, List<NTTCalRecordDTO> calRecordList, Action<List<NTTCalRecordDTO>> callbackExist = null, Action callbackNone = null)
+    public void CheckExistItemByDateInListDailyCal(DateTime itemDate, List<NTTDailyCalDTO> dailyCalList, List<NTTCalRecordDTO> calRecordList, Action<NTTDailyCalDTO, List<NTTCalRecordDTO>> callbackExist = null, Action callbackNone = null)
     {
         bool isRecordExistThatDay = false;
         List<NTTCalRecordDTO> recordsData = new List<NTTCalRecordDTO>();
@@ -47,7 +47,7 @@ public class NTTMyHealthControl
                         recordsData.Add(calRecord);
                     }
                 }
-                callbackExist?.Invoke(recordsData);
+                callbackExist?.Invoke(dailyCal, recordsData);
             }
         }
 

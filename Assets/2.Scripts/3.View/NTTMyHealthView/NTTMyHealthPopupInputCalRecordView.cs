@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class NTTPopupInputCalRecordView : MonoBehaviour
+public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
 {
     Button m_BtnExit;
     Button m_BtnAddRecord;
