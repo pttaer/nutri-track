@@ -33,14 +33,20 @@ class CalendarController : MonoBehaviour
     private bool m_IsDisableAllDayAfterToday;
     private Action<bool> m_OnSelectCallback;
 
+    List<NTTBMIRecordDTO> m_BmiRecordsList = new List<NTTBMIRecordDTO>();
+    List<NTTDailyCalDTO> m_DailyCalList = new List<NTTDailyCalDTO>();
+
     public static CalendarController Api;
 
     private const string DEFAULT_DATE_FORMAT = "dd MMM yyyy";
     private const string DATE_DEFAULT = "Date";
 
-    public void Init(TextMeshProUGUI txt, string dateFormat = null, bool isDisableAllDayAfterToday = false, Action<bool> onSelectCallback = null)
+    public void Init(TextMeshProUGUI txt, string dateFormat = null, bool isDisableAllDayAfterToday = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, Action<bool> onSelectCallback = null)
     {
         Api = this;
+
+        m_BmiRecordsList = bmiRecordsList;
+        m_DailyCalList = dailyCalList;
         m_IsDisableAllDayAfterToday = isDisableAllDayAfterToday;
         m_OnSelectCallback = onSelectCallback;
         Vector3 startPos = m_Item.transform.localPosition;
@@ -158,7 +164,12 @@ class CalendarController : MonoBehaviour
                     // For disabling days in my health
                     if (m_IsDisableAllDayAfterToday)
                     {
+                        Debug.Log("Run here thatDay: " + thatDay);
                         m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
+
+                        // Find all the data items that have the same month of the current month
+                        m_DateItems[i].EnableBMI(thatDay, m_BmiRecordsList?.FindAll(item => item.Date.Month == thatDay.Month));
+                        m_DateItems[i].EnableDailyCal(thatDay, m_DailyCalList?.FindAll(item => item.Date.Month == thatDay.Month));
                     }
 
                     if (m_DateItems[i].m_IsSunday)

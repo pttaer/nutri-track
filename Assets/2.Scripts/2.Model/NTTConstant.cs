@@ -124,12 +124,14 @@ public class NTTConstant
     public const string BMI_RECORDS_ROUTE = BASE_DOMAIN + "bmi-records";
     public const string BMI_RECORDS_ROUTE_FORMAT = BASE_DOMAIN + "bmi-records/{0}";
     public const string BMI_RECORDS_ROUTE_GET_ALL_FORMAT = BASE_DOMAIN + "bmi-records?limit={0}&page={1}";
-    public const string BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "bmi-records?sortBy={0}&limit={1}&page={2}";
+    public const string BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "bmi-records?sortBy={0}";
+    public const string BMI_RECORDS_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "bmi-records?sortBy={0}&limit={1}&page={2}";
 
     public const string DAILY_CAL_ROUTE = BASE_DOMAIN + "daily-cals";
     public const string DAILY_CAL_ROUTE_FORMAT = BASE_DOMAIN + "daily-cals/{0}";
     public const string DAILY_CAL_ROUTE_GET_ALL_FORMAT = BASE_DOMAIN + "daily-cals?limit={0}&page={1}";
-    public const string DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "daily-cals?sortBy={0}&limit={1}&page={2}";
+    public const string DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "daily-cals?sortBy={0}";
+    public const string DAILY_CAL_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "daily-cals?sortBy={0}&limit={1}&page={2}";
 
     public const string CAL_RECORDS_ROUTE = BASE_DOMAIN + "cal-records";
     public const string CAL_RECORDS_ROUTE_FORMAT = BASE_DOMAIN + "cal-records/{0}";
@@ -146,6 +148,10 @@ public class NTTConstant
     #region ICON_CODE
     public const string ICON_CLOSE = "\ue5cd";
     public const string ICON_MENU = "\ue5d2";
+    #endregion
+
+    #region SERVICE_KEY
+    public const string PARAM_DATE = "date";
     #endregion
 
     // Methods

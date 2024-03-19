@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using TMPro;
-using Unity.VisualScripting;
+using UnityEngine.Networking;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -90,21 +90,23 @@ public class NTTMyHealthView : MonoBehaviour
         m_PopupInputBMIRecord.Init();
         m_PopupInputCaloriesRecord.Init();
 
-        m_CalendarController.Init(m_TxtDate, null, isDisableAllDayAfterToday: true, onSelectCallback: (isOn) =>
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(string.Format(NTTConstant.BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (bmiData, result) =>
         {
-            Debug.Log("Run here " + isOn);
-            m_BtnAddDailyRecord.gameObject.SetActive(isOn);
-            OnClickAddDailyRecord(true);
-        });
-
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(string.Format(NTTConstant.BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT, "date", 10, 1), (data, result) =>
-        {
-            Debug.Log("RUN HERE BMI " + JsonConvert.SerializeObject(data));
-        }));
-
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTDailyCalDTO>(string.Format(NTTConstant.DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT, "date", 10, 1), (data, result) =>
-        {
-            Debug.Log("RUN HERE DAILY DIET  " + JsonConvert.SerializeObject(data));
+            if(result == UnityWebRequest.Result.Success)
+            {
+                StartCoroutine(NTTApiControl.Api.GetListData<NTTDailyCalDTO>(string.Format(NTTConstant.DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (dailyCalData, result) =>
+                {
+                    if (result == UnityWebRequest.Result.Success)
+                    {
+                        m_CalendarController.Init(m_TxtDate, null, isDisableAllDayAfterToday: true, bmiRecordsList: bmiData.Results, dailyCalList: dailyCalData.Results, onSelectCallback: (isOn) =>
+                        {
+                            Debug.Log("Run here " + isOn);
+                            m_BtnAddDailyRecord.gameObject.SetActive(isOn);
+                            OnClickAddDailyRecord(true);
+                        });
+                    }
+                }));
+            }
         }));
     }
 

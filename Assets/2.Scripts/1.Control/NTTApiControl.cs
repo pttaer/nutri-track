@@ -36,7 +36,7 @@ public class NTTApiControl
         return request;
     }
 
-    public IEnumerator GetListData<T>(string url, Action<JObject, UnityWebRequest.Result> callback, Dictionary<string, string> param = null)
+    public IEnumerator GetListData<T>(string url, Action<NTTPageResultDTO<T>, UnityWebRequest.Result> callback, Dictionary<string, string> param = null)
     {
         NTTControl.Api.ShowLoading();
 
@@ -74,14 +74,13 @@ public class NTTApiControl
         {
             NTTControl.Api.HideLoading();
 
-            JObject data = JsonConvert.DeserializeObject<JObject>(response);
+            NTTPageResultDTO<T> data = JsonConvert.DeserializeObject<NTTPageResultDTO<T>>(response);
+
             callback?.Invoke(data, request.result);
         }
         else
         {
             Debug.Log("error: " + request.error);
-            JObject data = JsonConvert.DeserializeObject<JObject>(response);
-            callback?.Invoke(data, request.result);
         }
         NTTControl.Api.HideLoading();
     }
@@ -278,8 +277,6 @@ public class NTTApiControl
         else
         {
             Debug.Log("error: " + request.error);
-            JObject data = JsonConvert.DeserializeObject<JObject>(response);
-            callback?.Invoke(data, request.result);
         }
         NTTControl.Api.HideLoading();
     }
