@@ -133,6 +133,8 @@ public class NTTConstant
 
     public const string FOOD_ROUTE = BASE_DOMAIN + "foods";
 
+    public const string MEDICAL_ROUTE = BASE_DOMAIN + "medical-conditions";
+
     #endregion API_URL
 
     #region ICON_CODE

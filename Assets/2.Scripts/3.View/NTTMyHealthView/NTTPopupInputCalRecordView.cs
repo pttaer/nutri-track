@@ -99,16 +99,13 @@ public class NTTPopupInputCalRecordView : MonoBehaviour
 
         Debug.Log("Run here calRecord: " + JsonConvert.SerializeObject(calRecord));
 
-        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.CAL_ROUTE, calRecord, (data, result) =>
+        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.CAL_ROUTE, calRecord, (data) =>
         {
-            if (result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Run here" + JsonConvert.SerializeObject(data));
+            Debug.Log("Run here" + JsonConvert.SerializeObject(data));
 
-                NTTCalRecordDTO newRecord = NTTCalRecordDTO.FromJObject(data);
+            NTTCalRecordDTO newRecord = NTTCalRecordDTO.FromJObject(data);
 
-                Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
-            }
+            Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
         }));
     }
 

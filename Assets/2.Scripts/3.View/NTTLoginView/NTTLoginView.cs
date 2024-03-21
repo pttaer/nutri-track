@@ -30,16 +30,13 @@ public class NTTLoginView : MonoBehaviour
     {
         NTTLoginDTO m_LoginDTO = new(m_IpfEmail.text, m_IpfPassword.text);
 
-        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.LOGIN_ROUTE, m_LoginDTO, (response, status) =>
+        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.LOGIN_ROUTE, m_LoginDTO, (response) =>
         {
-            if (status == UnityEngine.Networking.UnityWebRequest.Result.Success)
-            {
-                NTTModel.CurrentUser = response.ToObject<NTTUserDTO>();
-                NTTConstant.BEARER_TOKEN_EDITOR = NTTModel.CurrentUser.Tokens.Access.Token;
+            NTTModel.CurrentUser = response.ToObject<NTTUserDTO>();
+            NTTConstant.BEARER_TOKEN_EDITOR = NTTModel.CurrentUser.Tokens.Access.Token;
 
-                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_MENU);
-                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_HOME);
-            }
+            NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_MENU);
+            NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_HOME);
         }));
     }
 
@@ -50,16 +47,13 @@ public class NTTLoginView : MonoBehaviour
         {
             NTTLoginDTO m_LoginDTO = new("tester1@gmail.com", "password1");
 
-            StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.LOGIN_ROUTE, m_LoginDTO, (response, status) =>
+            StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.LOGIN_ROUTE, m_LoginDTO, (response) =>
             {
-                if (status == UnityEngine.Networking.UnityWebRequest.Result.Success)
-                {
-                    NTTModel.CurrentUser = response.ToObject<NTTUserDTO>();
-                    NTTConstant.BEARER_TOKEN_EDITOR = NTTModel.CurrentUser.Tokens.Access.Token;
+                NTTModel.CurrentUser = response.ToObject<NTTUserDTO>();
+                NTTConstant.BEARER_TOKEN_EDITOR = NTTModel.CurrentUser.Tokens.Access.Token;
 
-                    NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_MENU);
-                    NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_HOME);
-                }
+                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_MENU);
+                NTTSceneLoaderControl.Api.LoadSingularScene(NTTConstant.SCENE_HOME);
             }));
         }
     }

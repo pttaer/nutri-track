@@ -36,7 +36,7 @@ public class NTTApiControl
         return request;
     }
 
-    public IEnumerator GetListData<T>(string url, Action<JObject, UnityWebRequest.Result> callback, Dictionary<string, string> param = null)
+    public IEnumerator GetListData<T>(string url, Action<NTTPageResultDTO<T>> callback, Dictionary<string, string> param = null)
     {
         NTTControl.Api.ShowLoading();
 
@@ -74,14 +74,12 @@ public class NTTApiControl
         {
             NTTControl.Api.HideLoading();
 
-            JObject data = JsonConvert.DeserializeObject<JObject>(response);
-            callback?.Invoke(data, request.result);
+            NTTPageResultDTO<T> data = JsonConvert.DeserializeObject<NTTPageResultDTO<T>>(response);
+            callback?.Invoke(data);
         }
         else
         {
             Debug.Log("error: " + request.error);
-            JObject data = JsonConvert.DeserializeObject<JObject>(response);
-            callback?.Invoke(data, request.result);
         }
         NTTControl.Api.HideLoading();
     }
@@ -162,7 +160,7 @@ public class NTTApiControl
     //    }
     //}
 
-    public IEnumerator PatchData(string uri, Action<UnityWebRequest.Result> callback = null)
+    public IEnumerator PatchData(string uri, Action callback = null)
     {
         NTTControl.Api.ShowLoading();
 
@@ -177,17 +175,16 @@ public class NTTApiControl
         if (request.result == UnityWebRequest.Result.Success)
         {
             NTTControl.Api.HideLoading();
-            callback?.Invoke(request.result);
+            callback?.Invoke();
         }
         else
         {
             Debug.Log("error: " + request.error);
-            callback?.Invoke(request.result);
         }
         NTTControl.Api.HideLoading();
     }
 
-    public IEnumerator EditData<T>(string url, T formData, Action<UnityWebRequest.Result> callback = null)
+    public IEnumerator EditData<T>(string url, T formData, Action callback = null)
     {
         NTTControl.Api.ShowLoading();
 
@@ -220,17 +217,16 @@ public class NTTApiControl
         if (request.result == UnityWebRequest.Result.Success)
         {
             NTTControl.Api.HideLoading();
-            callback?.Invoke(request.result);
+            callback?.Invoke();
         }
         else
         {
             Debug.Log("error: " + request.error);
-            callback?.Invoke(request.result);
         }
         NTTControl.Api.HideLoading();
     }
 
-    public IEnumerator PostData<T>(string uri, T formData, Action<JObject, UnityWebRequest.Result> callback = null)
+    public IEnumerator PostData<T>(string uri, T formData, Action<JObject> callback = null)
     {
         NTTControl.Api.ShowLoading();
 
@@ -273,13 +269,11 @@ public class NTTApiControl
 
             JObject data = JsonConvert.DeserializeObject<JObject>(response);
             Debug.Log("response: " + response);
-            callback?.Invoke(data, request.result);
+            callback?.Invoke(data);
         }
         else
         {
             Debug.Log("error: " + request.error);
-            JObject data = JsonConvert.DeserializeObject<JObject>(response);
-            callback?.Invoke(data, request.result);
         }
         NTTControl.Api.HideLoading();
     }

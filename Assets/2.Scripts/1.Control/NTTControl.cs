@@ -58,13 +58,15 @@ public class NTTControl
         //init other controls here
         PrefsUtils.Api = new ();
         NTTApiControl.Api = new ();
-        NTTDeeplinkControl.Api = new ();
+        NTTDeeplinkControl.Api = new();
         PrefsUtils.Api = new();
         NTTApiControl.Api = new();
         NTTMyHealthControl.Api = new();
         NTTMenuControl.Api = new();
         NTTSceneLoaderControl.Api = new();
         NTTNotificationControl.Api = new();
+        NTTLoginControl.Api = new();
+        NTTRegisterControl.Api = new();
 
         Application.targetFrameRate = 60;
 
