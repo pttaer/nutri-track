@@ -8,6 +8,8 @@ public class NTTBMIRecordPostDTO
     [JsonProperty("date")]
     public DateTime Date { get; set; }
 
+    public NTTBMIRecordPostDTO() { }
+
     public NTTBMIRecordPostDTO(float weight, DateTime date)
     {
         Weight = weight;

@@ -16,6 +16,8 @@ public class GoogleSignIn : MonoBehaviour
     private string googleClientId = "529134634305-oin934ukcggp0qspi786jqgvsoqq52o1.apps.googleusercontent.com";
     private string googleClientSecret = "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";
 
+    public bool isRegister;
+
     public GoogleAuth GoogleAuth;
 
     public void Start()
@@ -25,6 +27,10 @@ public class GoogleSignIn : MonoBehaviour
 
     public void SignIn()
     {
+        if (isRegister)
+        {
+            SignOut();
+        }
         GoogleAuth.SignIn(OnSignIn, caching: true);
     }
 
@@ -41,8 +47,12 @@ public class GoogleSignIn : MonoBehaviour
 
     private void OnSignIn(bool success, string error, UserInfo userInfo)
     {
+        GetAccessToken();
         // When done sign in
-        //SignOut();
+        if (isRegister)
+        {
+            NTTRegisterControl.Api.OnRegisterWithGoogle(userInfo);
+        }
     }
 
     private void OnGetAccessToken(bool success, string error, TokenResponse tokenResponse)
@@ -53,7 +63,7 @@ public class GoogleSignIn : MonoBehaviour
 
         Debug.Log($"JSON Web Token (JWT) Payload: {jwt.Payload}");
 
-        //jwt.ValidateSignature(GoogleAuth.ClientId, (success, error) => OnValidateSignature(success, error, tokenResponse.IdToken));
+        jwt.ValidateSignature(GoogleAuth.ClientId, (success, error) => OnValidateSignature(success, error, tokenResponse.IdToken));
     }
 
     private void OnValidateSignature(bool success, string error, string idToken)
@@ -61,11 +71,11 @@ public class GoogleSignIn : MonoBehaviour
         if (success)
         {
             // NOTE: login and set bearer token first and then call the other api
-            StartCoroutine(ApiLogin(idToken));
+            //StartCoroutine(ApiLogin(idToken));
         }
         else
         {
-            Debug.Log("error= " + error);
+            Debug.Log("error: " + error);
         }
     }
 
