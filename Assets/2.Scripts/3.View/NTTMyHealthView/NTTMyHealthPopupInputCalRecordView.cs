@@ -58,7 +58,7 @@ public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
 
     private void Validate(string arg0)
     {
-        
+
     }
 
     private void OnClickSelectUnit()
@@ -90,14 +90,11 @@ public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
 
         Debug.Log("Run here calRecord: " + JsonConvert.SerializeObject(calRecord));
 
-        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.CAL_RECORDS_ROUTE, calRecord, (data, result) =>
+        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.CAL_RECORDS_ROUTE, calRecord, (data) =>
         {
-            if (result == UnityWebRequest.Result.Success)
-            {
-                NTTCalRecordDTO newRecord = NTTCalRecordDTO.FromJObject(data);
-                Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
-                SetPopupOff();
-            }
+            NTTCalRecordDTO newRecord = NTTCalRecordDTO.FromJObject(data);
+            Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
+            SetPopupOff();
         }));
     }
 
