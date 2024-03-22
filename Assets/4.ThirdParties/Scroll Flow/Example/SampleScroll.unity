@@ -181,7 +181,7 @@ PrefabInstance:
       objectReference: {fileID: 1103031988}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: maxFontSize
-      value: 24.1
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: minVelocity
@@ -203,6 +203,10 @@ PrefabInstance:
       propertyPath: m_ContentTarget
       value: 
       objectReference: {fileID: 1103031988}
+    - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
+      propertyPath: m_HeightTemplate
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: isCanUseMouseWheel
       value: 1
@@ -752,7 +756,7 @@ PrefabInstance:
       objectReference: {fileID: 1855876817}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: maxFontSize
-      value: 24.1
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: minVelocity
@@ -774,6 +778,10 @@ PrefabInstance:
       propertyPath: m_ContentTarget
       value: 
       objectReference: {fileID: 1855876817}
+    - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
+      propertyPath: m_HeightTemplate
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: isCanUseMouseWheel
       value: 1
@@ -1293,7 +1301,7 @@ PrefabInstance:
       objectReference: {fileID: 945828676}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: maxFontSize
-      value: 24.1
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: minVelocity
@@ -1319,6 +1327,10 @@ PrefabInstance:
       propertyPath: m_ContentTarget
       value: 
       objectReference: {fileID: 945828676}
+    - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
+      propertyPath: m_HeightTemplate
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: isCanUseMouseWheel
       value: 1
@@ -1758,7 +1770,7 @@ PrefabInstance:
       objectReference: {fileID: 1923703690}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: maxFontSize
-      value: 24.1
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: minVelocity
@@ -1784,6 +1796,10 @@ PrefabInstance:
       propertyPath: m_ContentTarget
       value: 
       objectReference: {fileID: 1923703690}
+    - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
+      propertyPath: m_HeightTemplate
+      value: 48
+      objectReference: {fileID: 0}
     - target: {fileID: 7817251506741685096, guid: 5667cac651955634c849427787500207, type: 3}
       propertyPath: isCanUseMouseWheel
       value: 1

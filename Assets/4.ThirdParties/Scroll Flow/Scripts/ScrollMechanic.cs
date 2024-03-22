@@ -5,24 +5,23 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using System;
+using UnityEditor;
 
 public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginDragHandler, IPointerExitHandler, IPointerEnterHandler
 {
     [Header("Test variables")]
-    public bool initTest; //Test initialization
-    public bool m_IsInfinite; //Is infinite scrolling (Required initialization)
-    public string[] testData; //Test data
+    private bool m_IsInfinite; //Is infinite scrolling (Required initialization)
 
     [Header("Text prefab")]
-    public GameObject templateValues;
+    private GameObject m_PrefItemTemplate;
 
     [Header("Required objects")]
-    public Camera camera; //Main camera
-    public RectTransform m_TargetCanvas; //Target canvas
+    private Camera m_Camera; //Main camera
+    private RectTransform m_TargetCanvas; //Target canvas
 
-    public RectTransform m_RtContent; //Target content
-    public Transform m_TfContent; //Target content's transform
-    public AutoSizeLayoutScrollFlow contentSize; //My own layout group script. You could use it instead of default layout group
+    private RectTransform m_RtContent; //Target content
+    private Transform m_TfContent; //Target content's transform
+    private AutoSizeLayoutScrollFlow m_LayoutContent; //My own layout group script. You could use it instead of default layout group
 
     [Header("Settings")]
     [Space(20)]
@@ -37,11 +36,12 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
     public float shiftUp = 32; //Offset of upper texts
     public float shiftDown = 32; //Offset of lower texts
     public float padding = 0; //Spacing from upper and lower borders
+
     [Range(0, 1)]
     public float colorPad = 0.115f; //Padding of text color
     public float maxFontSize = 48.2f; //Maximun font size
 
-    public bool m_IsElastic = true; //Is elastic movement
+    private bool m_IsElastic = true; //Is elastic movement
     public float maxElastic = 50; //Maximun elasity distance
 
     public float inertiaSense = 4; //Inertia sensibility
@@ -104,12 +104,32 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
 
     private void Start()
     {
+        m_RtContent = transform.Find("Viewport/Content").GetComponent<RectTransform>();
+        m_TfContent = m_RtContent.transform;
+        m_LayoutContent = m_TfContent.GetComponent<AutoSizeLayoutScrollFlow>();
+
+        // Load the prefab at the specified path
+        m_PrefItemTemplate = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/4.ThirdParties/Scroll Flow/Prefabs/TemplateValue.prefab");
+
+        // Default values
         m_HeightText = m_HeightTemplate / 2;
         m_Middle = GetComponent<RectTransform>().sizeDelta.y / 2;
-        contentSize.topPad = m_Middle - m_HeightText;
-        contentSize.bottomPad = m_Middle - m_HeightText;
+        m_LayoutContent.topPad = m_Middle - m_HeightText;
+        m_LayoutContent.bottomPad = m_Middle - m_HeightText;
         m_CountCheck = Mathf.CeilToInt((m_Middle * 2) / m_HeightTemplate);
-        m_TfContent = m_RtContent.transform;
+    }
+
+    public void Init(List<string> itemTxtList, Camera camera, RectTransform canvas, bool isInfinite = false, bool isElastic = true)
+    {
+        if (!m_IsInitialized)
+        {
+            /*var newList = new List<string>();
+            for (int i = 0; i < testData.Length; i++)
+            {
+                newList.Add(testData[i]);
+            }*/
+            Initialize(itemTxtList, camera, canvas, isInfinite, isElastic);
+        }
     }
 
     /// <summary>
@@ -118,7 +138,7 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
     /// <param name="dataToInit"> List of texts to show </param>
     /// <param name="isInfinite"> Is scroll will be infinite </param>
     /// <param name="firstTarget"> Which text in list will be first </param>
-    public void Initialize(List<string> dataToInit, bool isInfinite = false, int firstTarget = 0)
+    public void Initialize(List<string> dataToInit, Camera cam, RectTransform canvas, bool isInfinite = false, bool isElastic = false, int firstTarget = 0)
     {
         m_CountTotal = dataToInit.Count;
         for (int i = 0; i < GetContentChildCount(); i++)
@@ -126,9 +146,8 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
             Destroy(m_RtContent.GetChild(i).gameObject);
         }
 
-        this.m_IsInfinite = isInfinite;
-
         int half = (int)(m_CountCheck / 2) + 1;
+
         int numberOfItems = Mathf.CeilToInt((float)half / (float)m_CountTotal);
 
         if (isInfinite)
@@ -172,15 +191,27 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
             }
         }
 
-        contentSize.UpdateLayout();
+        this.m_IsInfinite = isInfinite;
+        this.m_IsElastic = isElastic;
+        this.m_Camera = cam;
+        this.m_TargetCanvas = canvas;
+        m_LayoutContent.UpdateLayout();
         m_IsInitialized = true;
+    }
+
+    public void ClearAllContentChild()
+    {
+        foreach (Transform child in m_TfContent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private void GenerateItemFromData(List<string> dataToInit, int countLoop, int startIndex = 0)
     {
         for (int i = startIndex; i < countLoop; i++)
         {
-            var textComponent = GetTxtFromFirstChild(Instantiate(templateValues, m_TfContent).transform);
+            var textComponent = GetTxtFromFirstChild(Instantiate(m_PrefItemTemplate, m_TfContent).transform);
             var tfTxtParent = textComponent.transform.parent;
 
             textComponent.text = dataToInit[i];
@@ -222,22 +253,12 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
             m_IsDragging = false;
         }
 
-        if (initTest)
-        {
-            initTest = false;
-            var newList = new List<string>();
-            for (int i = 0; i < testData.Length; i++)
-            {
-                newList.Add(testData[i]);
-            }
-            Initialize(newList, m_IsInfinite);
-        }
-
         if (m_IsInitialized)
         {
             float adjustedRTSizeDeltaY = GetRTSizeDeltaY(m_RtContent) - m_Middle * 2;
 
             float contentYPosOnElastic = Mathf.Abs(GetContentYPos()) / maxElastic;
+            
             float contentYPosOnElasticAdjusted = Mathf.Abs(adjustedRTSizeDeltaY - GetContentYPos()) / maxElastic;
 
             if (!m_IsDragging)
@@ -278,55 +299,57 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
             }
             else
             {
+                float doubleMiddle = m_Middle * 2;
+                float subtractedSize = GetRectSizeDeltaY() - doubleMiddle;
+
                 if (isCanUseMouseWheel && isInArea && MouseScroll != 0)
                 {
-                    float invertMouseAmount = isInvertMouseWheel ? -1 : 1;
-                    float mouseScrollSense = MouseScroll * mouseWheelSensibility;
-                    float currentYPosContent = GetContentYPos() + (invertMouseAmount * mouseScrollSense);
+                    float invertSen = (isInvertMouseWheel ? -1 : 1) * MouseScroll * mouseWheelSensibility;
+                    if (m_IsElastic)
+                    {
+                        if (GetContentYPos() < 0)
+                        {
+                            SetDefaultInertia();
+                            SetContentAnchor(new Vector2(0, GetContentYPos() + invertSen * ClampReverseValueFromZeroToOne(Mathf.Abs(GetContentYPos()) / maxElastic)));
+                        }
+                        else if (GetContentYPos() > subtractedSize)
+                        {
+                            SetDefaultInertia();
+                            SetContentAnchor(new Vector2(0, GetContentYPos() + invertSen * ClampReverseValueFromZeroToOne(Mathf.Abs(subtractedSize - GetContentYPos()) / maxElastic)));
+                        }
+                        else
+                        {
+                            m_Inertia += invertSen;
+                            SetContentAnchor(new Vector2(0, GetContentYPos() + invertSen));
+                        }
+
+                    }
+                    else
+                    {
+                        m_Inertia += invertSen;
+                        SetContentAnchor(new Vector2(0, Mathf.Clamp(GetContentYPos() + invertSen, 0, subtractedSize)));
+                    }
+                }
+                else
+                {
+                    float mousePos = -m_StartPosMouse + GetNormalizeMousePosY();
 
                     if (m_IsElastic)
                     {
                         if (GetContentYPos() < 0)
                         {
                             SetDefaultInertia();
-                            SetContentAnchor(new Vector2(0, currentYPosContent * ClampReverseValueFromZeroToOne(contentYPosOnElastic)));
+                            SetContentAnchor(new Vector2(0, m_StartPosContent + mousePos * ClampReverseValueFromZeroToOne(Mathf.Abs(GetContentYPos()) / maxElastic)));
                         }
-                        else if (GetContentYPos() > adjustedRTSizeDeltaY)
+                        else if (GetContentYPos() > subtractedSize)
                         {
                             SetDefaultInertia();
-                            SetContentAnchor(new Vector2(0, currentYPosContent * ClampReverseValueFromZeroToOne(contentYPosOnElasticAdjusted)));
+                            SetContentAnchor(new Vector2(0, m_StartPosContent + mousePos * ClampReverseValueFromZeroToOne(Mathf.Abs(subtractedSize - GetContentYPos()) / maxElastic)));
                         }
                         else
                         {
-                            SetInertia(m_Inertia + invertMouseAmount * mouseScrollSense);
-                            SetContentAnchor(new Vector2(0, currentYPosContent));
-                        }
-                    }
-                    else
-                    {
-                        SetInertia(m_Inertia + invertMouseAmount * mouseScrollSense);
-                        SetContentAnchor(new Vector2(0, Mathf.Clamp(currentYPosContent, 0, adjustedRTSizeDeltaY)));
-                    }
-                }
-                else
-                {
-                    float currentYPosContent = m_StartPosContent + (-m_StartPosMouse + GetNormalizeMousePosY());
-                    if (m_IsElastic)
-                    {
-                        if (GetContentYPos() < 0)
-                        {
-                            SetDefaultInertia();
-                            SetContentAnchor(new Vector2(0, currentYPosContent * ClampReverseValueFromZeroToOne(contentYPosOnElastic)));
-                        }
-                        else if (GetContentYPos() > adjustedRTSizeDeltaY)
-                        {
-                            SetDefaultInertia();
-                            SetContentAnchor(new Vector2(0, currentYPosContent * ClampReverseValueFromZeroToOne(contentYPosOnElasticAdjusted)));
-                        }
-                        else
-                        {
-                            SetInertia(currentYPosContent - GetContentYPos());
-                            SetContentAnchor(new Vector2(0, currentYPosContent));
+                            SetInertia(m_StartPosContent + mousePos - GetContentYPos());
+                            SetContentAnchor(new Vector2(0, m_StartPosContent + mousePos));
                         }
 
                         m_StartPosMouse = GetNormalizeMousePosY();
@@ -334,37 +357,38 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
                     }
                     else
                     {
-                        SetInertia(currentYPosContent - GetContentYPos());
-                        SetContentAnchor(new Vector2(0, Mathf.Clamp(currentYPosContent, 0, adjustedRTSizeDeltaY)));
+                        SetInertia(m_StartPosContent + mousePos - GetContentYPos());
+                        SetContentAnchor(new Vector2(0, Mathf.Clamp(m_StartPosContent + mousePos, 0, subtractedSize)));
                     }
                 }
             }
 
             if (m_IsInfinite)
             {
-                float contentCount = m_PadCount + (m_CountTotal - m_PadCount);
-                float fullsizeContent = contentCount * m_HeightTemplate;
+                int count = m_PadCount + (m_CountTotal - m_PadCount);
+                float adjustedCount = count * (m_HeightText * 2);
 
-                bool cotentSmallerThanMiddle = GetContentYPos() < m_Middle;
-                bool contentGreaterThanMiddle = GetContentYPos() > GetRTSizeDeltaY(m_RtContent) - m_Middle * 3;
-
-                if (cotentSmallerThanMiddle)
+                if (GetContentYPos() < m_Middle)
                 {
-                    SetContentAnchor(new Vector2(0, GetContentYPos() + fullsizeContent));
-                    for (int i = 0; i < contentCount; i++)
+                    SetContentAnchor(new Vector2(0, GetContentYPos() + adjustedCount));
+
+                    for (int i = 0; i < count; i++)
                     {
-                        GetTxtFromChildIndex(i).fontSize = 0;
+                        m_RtContent.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>().fontSize = 0;
                     }
+
                     m_StartPosMouse = GetNormalizeMousePosY();
                     m_StartPosContent = GetContentYPos();
                 }
-                else if (contentGreaterThanMiddle)
+                else if (GetContentYPos() > GetRectSizeDeltaY() - m_Middle * 3)
                 {
-                    SetContentAnchor(new Vector2(0, GetContentYPos() - fullsizeContent));
-                    for (int i = (int)(m_RtContent.childCount - contentCount); i < m_RtContent.childCount; i++)
+                    SetContentAnchor(new Vector2(0, GetContentYPos() - adjustedCount));
+
+                    for (int i = m_RtContent.childCount - 1; i >= m_RtContent.childCount - count; i--)
                     {
-                        GetTxtFromChildIndex(i).fontSize = 0;
+                        m_RtContent.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>().fontSize = 0;
                     }
+
                     m_StartPosMouse = GetNormalizeMousePosY();
                     m_StartPosContent = GetContentYPos();
                 }
@@ -393,11 +417,10 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
 
                     float curveEvaluated = curveShift.Evaluate(1 - ratio);
 
-                    rtCurrentText.anchoredPosition = new Vector2(0, contentSizeWithMiddle > 0 
-                        ? -curveEvaluated * shiftUp 
-                        : curveEvaluated * shiftDown);
+                    rtCurrentText.anchoredPosition = new Vector2(0, contentSizeWithMiddle > 0 ? -curveEvaluated * shiftUp : curveEvaluated * shiftDown);
 
                     currentText.fontSize = maxFontSize * curve.Evaluate(ratio);
+
                     currentText.color = new Vector4(currentText.color.r, currentText.color.g, currentText.color.b, Mathf.Clamp((ratio - colorPad) / (1 - colorPad), 0, 1));
                 }
             }
@@ -438,6 +461,11 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
         return rt.sizeDelta.y;
     }
     
+    private float GetRectSizeDeltaY()
+    {
+        return m_RtContent.sizeDelta.y;
+    }
+    
     private float GetContentYPos()
     {
         return m_RtContent.anchoredPosition.y;
@@ -476,7 +504,7 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
 
     private float GetNormalizeMousePosY()
     {
-        return Input.mousePosition.y / camera.pixelHeight * GetRTSizeDeltaY(m_TargetCanvas);
+        return Input.mousePosition.y / m_Camera.pixelHeight * GetRTSizeDeltaY(m_TargetCanvas);
     }
 
     bool isInArea;

@@ -81,6 +81,11 @@ public class NTTConstant
         get { return "PopupMessage"; }
     }
 
+    public static string CONFIG_PREFAB_SCROLL_SYSTEM
+    {
+        get { return "ScrollSystem"; }
+    }
+
     public static string CONFIG_PREFAB_FAM_POPUP // name prefab FAM popup
     {
         get { return "FAMPopup"; }
@@ -121,10 +126,23 @@ public class NTTConstant
     public const string REGISTER_ROUTE = BASE_DOMAIN + "auth/register";
     public const string REGISTER_EXPERT_ROUTE = BASE_DOMAIN + "auth/register-expert";
 
-    public const string BMI_ROUTE = BASE_DOMAIN + "bmi-records";
-    public const string BMI_ROUTE_FORMAT = BASE_DOMAIN + "bmi-records/{0}";
-    public const string CAL_ROUTE = BASE_DOMAIN + "cal-records";
-    public const string CAL_ROUTE_FORMAT = BASE_DOMAIN + "cal-records/{0}";
+    public const string BMI_RECORDS_ROUTE = BASE_DOMAIN + "bmi-records";
+    public const string BMI_RECORDS_ROUTE_FORMAT = BASE_DOMAIN + "bmi-records/{0}";
+    public const string BMI_RECORDS_ROUTE_GET_ALL_FORMAT = BASE_DOMAIN + "bmi-records?limit={0}&page={1}";
+    public const string BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "bmi-records?sortBy={0}";
+    public const string BMI_RECORDS_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "bmi-records?sortBy={0}&limit={1}&page={2}";
+
+    public const string DAILY_CAL_ROUTE = BASE_DOMAIN + "daily-cals";
+    public const string DAILY_CAL_ROUTE_FORMAT = BASE_DOMAIN + "daily-cals/{0}";
+    public const string DAILY_CAL_ROUTE_GET_ALL_FORMAT = BASE_DOMAIN + "daily-cals?limit={0}&page={1}";
+    public const string DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "daily-cals?sortBy={0}";
+    public const string DAILY_CAL_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "daily-cals?sortBy={0}&limit={1}&page={2}";
+
+    public const string CAL_RECORDS_ROUTE = BASE_DOMAIN + "cal-records";
+    public const string CAL_RECORDS_ROUTE_FORMAT = BASE_DOMAIN + "cal-records/{0}";
+    public const string CAL_RECORDS_ROUTE_GET_ALL_FORMAT = BASE_DOMAIN + "cal-records?limit={0}&page={1}";
+    public const string CAL_RECORDS_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "cal-records?sortBy={0}";
+    public const string CAL_RECORDS_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "cal-records?sortBy={0}&limit={1}&page={2}";
 
     public const string APPLICATION_ROUTE = BASE_DOMAIN + "applications/{0}";
     public const string APPLICATION_STATUS_ROUTE = BASE_DOMAIN + "applications/{0}/status";
@@ -140,6 +158,10 @@ public class NTTConstant
     #region ICON_CODE
     public const string ICON_CLOSE = "\ue5cd";
     public const string ICON_MENU = "\ue5d2";
+    #endregion
+
+    #region SERVICE_KEY
+    public const string PARAM_DATE = "date";
     #endregion
 
     // Methods
@@ -166,6 +188,8 @@ public class NTTConstant
 
     // unit constants
     public const string BMI_UNIT = "kg/m^2";
+    public const string CALS = "cals";
+    public const string KILO_CALS = "Kcals";
 
     // tween constant
     public const string TIME_UNIT = " mins";
