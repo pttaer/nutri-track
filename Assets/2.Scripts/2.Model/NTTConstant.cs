@@ -81,6 +81,11 @@ public class NTTConstant
         get { return "PopupMessage"; }
     }
 
+    public static string CONFIG_PREFAB_SCROLL_SYSTEM
+    {
+        get { return "ScrollSystem"; }
+    }
+
     public static string CONFIG_PREFAB_FAM_POPUP // name prefab FAM popup
     {
         get { return "FAMPopup"; }

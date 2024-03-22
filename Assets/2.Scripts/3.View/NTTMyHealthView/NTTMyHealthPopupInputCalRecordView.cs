@@ -13,24 +13,15 @@ public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
     Button m_BtnExit;
     Button m_BtnAddRecord;
 
-    Button m_BtnNutrientSelect;
-    Button m_BtnAmountSelect;
+    TMP_InputField m_IpfNutrientSelect;
+    TMP_InputField m_IpfAmountSelect;
     Button m_BtnUnitSelect;
-    Button m_BtnDescriptionInput;
+    TMP_InputField m_IpfDescriptionInput;
 
-    TextMeshProUGUI m_TxtNutrientPlaceholder;
-    TextMeshProUGUI m_TxtAmountPlaceholder;
-    TextMeshProUGUI m_TxtUnitPlaceholder;
-    TextMeshProUGUI m_TxtDescriptionPlaceholder;
-
-    TextMeshProUGUI m_TxtNutrient;
-    TextMeshProUGUI m_TxtAmount;
-    TextMeshProUGUI m_TxtUnit;
-    TextMeshProUGUI m_TxtDescription;
-
-    List<TextMeshProUGUI> m_TxtValueList = new List<TextMeshProUGUI>();
+    TextMeshProUGUI m_TxtBtnUnit;
 
     bool m_IsInit = false;
+    DateTime m_CurrentDate;
 
     public void Init()
     {
@@ -39,57 +30,57 @@ public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
             m_BtnExit = transform.Find("BtnExit").GetComponent<Button>();
             m_BtnAddRecord = transform.Find("BtnAddRecord").GetComponent<Button>();
 
-            m_BtnNutrientSelect = transform.Find("Nutrient/BtnValue").GetComponent<Button>();
-            m_BtnAmountSelect = transform.Find("Amount/BtnValue").GetComponent<Button>();
+            m_IpfNutrientSelect = transform.Find("Nutrient/IpfValue").GetComponent<TMP_InputField>();
+            m_IpfAmountSelect = transform.Find("Amount/IpfValue").GetComponent<TMP_InputField>();
             m_BtnUnitSelect = transform.Find("Unit/BtnValue").GetComponent<Button>();
-            m_BtnDescriptionInput = transform.Find("Description/BtnValue").GetComponent<Button>();
+            m_IpfDescriptionInput = transform.Find("Description/IpfValue").GetComponent<TMP_InputField>();
 
-            m_TxtNutrientPlaceholder = transform.Find("Nutrient/BtnValue/Placeholder").GetComponent<TextMeshProUGUI>();
-            m_TxtAmountPlaceholder = transform.Find("Amount/BtnValue/Placeholder").GetComponent<TextMeshProUGUI>();
-            m_TxtUnitPlaceholder = transform.Find("Unit/BtnValue/Placeholder").GetComponent<TextMeshProUGUI>();
-            m_TxtDescriptionPlaceholder = transform.Find("Description/BtnValue/Placeholder").GetComponent<TextMeshProUGUI>();
-
-            m_TxtNutrient = transform.Find("Nutrient/BtnValue/Value").GetComponent<TextMeshProUGUI>();
-            m_TxtAmount = transform.Find("Amount/BtnValue/Value").GetComponent<TextMeshProUGUI>();
-            m_TxtUnit = transform.Find("Unit/BtnValue/Value").GetComponent<TextMeshProUGUI>();
-            m_TxtDescription = transform.Find("Description/BtnValue/Value").GetComponent<TextMeshProUGUI>();
-
-            m_TxtValueList.Add(m_TxtNutrient);
-            m_TxtValueList.Add(m_TxtAmount);
-            m_TxtValueList.Add(m_TxtUnit);
-            m_TxtValueList.Add(m_TxtDescription);
+            m_TxtBtnUnit = transform.Find("Unit/BtnValue/Value").GetComponent<TextMeshProUGUI>();
 
             m_BtnExit.onClick.AddListener(SetPopupOff);
             m_BtnAddRecord.onClick.AddListener(AddRecordWeight);
 
-            m_BtnNutrientSelect.onClick.AddListener(ShowSelectorWeight);
-            m_BtnAmountSelect.onClick.AddListener(ShowSelectorWeight);
-            m_BtnUnitSelect.onClick.AddListener(ShowSelectorWeight);
-            m_BtnDescriptionInput.onClick.AddListener(ShowSelectorWeight);
+            m_IpfNutrientSelect.onValueChanged.AddListener(Validate);
+            m_IpfAmountSelect.onValueChanged.AddListener(Validate);
+            m_BtnUnitSelect.onClick.AddListener(OnClickSelectUnit);
+            m_IpfDescriptionInput.onValueChanged.AddListener(Validate);
 
             m_IsInit = true;
         }
     }
 
-    private void AddRecordWeight()
+    public void SetCurrentDate(DateTime date)
     {
-        if (string.IsNullOrEmpty(m_TxtNutrient.text) && string.IsNullOrEmpty(m_TxtAmount.text) && string.IsNullOrEmpty(m_TxtUnit.text) && int.TryParse(m_TxtAmount.text, out int amount))
-        {
-            PostCalData(m_TxtNutrient.text, amount, m_TxtUnit.text, m_TxtDescription.text);
-        }
+        m_CurrentDate = DateTime.Parse(date.ToString(), null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+        Debug.Log("Run here m_CurrentDate" + m_CurrentDate);
     }
 
-    private void ShowSelectorWeight()
+    private void Validate(string arg0)
     {
-        throw new NotImplementedException();
+        
+    }
 
-        // TODO: Calculate and show on ui BMI
-        // m_TxtBMICalculated.text = $"{float.Parse(m_TxtWeight.text) / } {NTTConstant.BMI_UNIT}";
+    private void OnClickSelectUnit()
+    {
+
+    }
+
+    private void AddRecordWeight()
+    {
+        if (!string.IsNullOrEmpty(m_IpfNutrientSelect.text) && !string.IsNullOrEmpty(m_IpfAmountSelect.text) && !string.IsNullOrEmpty(m_TxtBtnUnit.text) && int.TryParse(m_IpfAmountSelect.text, out int amount))
+        {
+            PostCalData(m_IpfNutrientSelect.text, amount, m_TxtBtnUnit.text, m_IpfDescriptionInput.text);
+        }
     }
 
     private void SetPopupOff()
     {
         gameObject.SetActive(false);
+        m_IpfNutrientSelect.text = string.Empty;
+        m_IpfAmountSelect.text = string.Empty;
+        m_TxtBtnUnit.text = string.Empty;
+        m_IpfDescriptionInput.text = string.Empty;
         NTTMyHealthControl.Api.ClosePopupRecord();
     }
 
@@ -103,11 +94,9 @@ public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
         {
             if (result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("Run here" + JsonConvert.SerializeObject(data));
-
                 NTTCalRecordDTO newRecord = NTTCalRecordDTO.FromJObject(data);
-
                 Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
+                SetPopupOff();
             }
         }));
     }

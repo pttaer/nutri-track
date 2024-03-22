@@ -190,12 +190,18 @@ public class NTTMyHealthView : MonoBehaviour
 
     private void OnClickBtnCalRecord()
     {
-        ShowPopupInputCaloriesRecord(true);
+        if(DateTime.TryParse(m_TxtDate.text, out DateTime result))
+        {
+            ShowPopupInputCaloriesRecord(true, result);
+        }
     }
 
     private void OnClickBtnBMIRecord()
     {
-        ShowPopupInputBMIRecord(true);
+        if (DateTime.TryParse(m_TxtDate.text, out DateTime result))
+        {
+            ShowPopupInputBMIRecord(true, result);
+        }
     }
 
     private void OnClickAddDailyRecord(bool isForceReset = false)
@@ -234,15 +240,17 @@ public class NTTMyHealthView : MonoBehaviour
         m_PnlChooseRecordType.SetActive(isOn);
     }
 
-    private void ShowPopupInputBMIRecord(bool isOn)
+    private void ShowPopupInputBMIRecord(bool isOn, DateTime currentDate)
     {
         m_PopupInputBMIRecord.gameObject.SetActive(isOn);
+        m_PopupInputBMIRecord.SetCurrentDate(currentDate);
         m_BGFull.SetActive(isOn);
     }
 
-    private void ShowPopupInputCaloriesRecord(bool isOn)
+    private void ShowPopupInputCaloriesRecord(bool isOn, DateTime currentDate)
     {
         m_PopupInputCaloriesRecord.gameObject.SetActive(isOn);
+        m_PopupInputCaloriesRecord.SetCurrentDate(currentDate);
         m_BGFull.SetActive(isOn);
     }
 }

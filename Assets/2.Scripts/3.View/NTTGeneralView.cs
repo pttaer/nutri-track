@@ -7,6 +7,7 @@ public class NTTGeneralView : MonoBehaviour
 {
     private GameObject m_popupMessagePrefab;//prefab popup message
     [SerializeField] private GameObject m_FAMPopupPrefab;//prefab popup message
+    private ScrollMechanic m_SelectorView;// PopupSelector
     private GameObject m_Popup;//prefab popup message
     private GameObject m_Loading;//prefab popup message
     private GameObject m_CalendarPopup;
@@ -40,6 +41,7 @@ public class NTTGeneralView : MonoBehaviour
         m_CalendarPopup = transform.Find("Canvas/CalendarPopup").gameObject;
         m_DummyTxt = transform.Find("Canvas/TxtDummy").GetComponent<TextMeshProUGUI>();
         m_CalendarPopupView = transform.Find("Canvas/CalendarPopup/BG/CalendarControllerPreb").GetComponent<CalendarController>();
+        m_SelectorView = transform.Find("Canvas/PopupSelector/ScrollSystem").GetComponent<ScrollMechanic>();
         //
         m_popupMessagePrefab = ResourceObject.GetResource<GameObject>(NTTConstant.CONFIG_PREFAB_POPUP_MESSAGE);
 

@@ -166,7 +166,7 @@ class CalendarController : MonoBehaviour
                     // For disabling days in my health
                     if (m_IsDisableAllDayAfterToday)
                     {
-                        Debug.Log("Run here thatDay: " + thatDay);
+                        //Debug.Log("Run here thatDay: " + thatDay);
                         m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
 
                         // Find all the data items that have the same month of the current month
@@ -245,7 +245,7 @@ class CalendarController : MonoBehaviour
 
             TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat ?? DEFAULT_DATE_FORMAT), TWEEN_DURATION);
 
-            m_OnSelectCallback?.Invoke(true, isBmiExist, isCalRecordExist, date);
+            m_OnSelectCallback?.Invoke(true, isBmiExist, isCalRecordExist, DateTime.Parse(date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")));
 
             //NTTMyHealthControl.Api.DateClickShowBMICaloriesValue(dayInt, month, year);
         }
