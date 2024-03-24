@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,15 +7,23 @@ using UnityEngine.UI;
 public class NTTGeneralView : MonoBehaviour
 {
     private GameObject m_popupMessagePrefab;//prefab popup message
-    [SerializeField] private GameObject m_FAMPopupPrefab;//prefab popup message
-    private ScrollMechanic m_SelectorView;// PopupSelector
+    private GameObject m_FAMPopupPrefab;//prefab popup message
     private GameObject m_Popup;//prefab popup message
     private GameObject m_Loading;//prefab popup message
     private GameObject m_CalendarPopup;
+
+    private ScrollMechanic m_SelectorView;// PopupSelector
     private CalendarController m_CalendarPopupView;
-    private Transform m_canvasObj;//object canvas
-    private Transform m_SorryText;//object canvas
-    private TextMeshProUGUI m_DummyTxt;//object canvas
+
+    [SerializeField] Camera m_Camera;
+
+    private RectTransform m_RtCanvas;
+
+    private Transform m_CanvasObj;
+    private Transform m_SorryText;
+
+    private TextMeshProUGUI m_DummyTxt;
+
 
     private void Start()
     {
@@ -35,7 +44,8 @@ public class NTTGeneralView : MonoBehaviour
     private void Init()
     {
         // find reference
-        m_canvasObj = transform.Find("Canvas");
+        m_RtCanvas = transform.Find("Canvas").GetComponent<RectTransform>();
+        m_CanvasObj = transform.Find("Canvas");
         m_SorryText = transform.Find("Canvas/TxtSorry");
         m_Loading = transform.Find("Canvas/Loading").gameObject;
         m_CalendarPopup = transform.Find("Canvas/CalendarPopup").gameObject;
@@ -69,6 +79,13 @@ public class NTTGeneralView : MonoBehaviour
         }
     }
 
+    private void ShowSelector(List<string> itemTxtList)
+    {
+        m_SelectorView.gameObject.SetActive(true);
+        m_SelectorView.transform.parent.gameObject.SetActive(true);
+        m_SelectorView.Init(itemTxtList, m_Camera, canvas: m_RtCanvas, false);
+    }
+
     public void ShowSorryTxt(bool isShow, string txtShow = null)
     {
         m_SorryText.gameObject.SetActive(isShow);
@@ -88,7 +105,7 @@ public class NTTGeneralView : MonoBehaviour
     {
         if (m_Popup == null)
         {
-            m_Popup = Instantiate(m_FAMPopupPrefab, m_canvasObj);
+            m_Popup = Instantiate(m_FAMPopupPrefab, m_CanvasObj);
             m_Popup.GetComponent<NTTPopupView>().Init(title, content, btnConfirmText, btnElseText, onConfirm, onElse, onExit);
         }
         else
@@ -102,7 +119,7 @@ public class NTTGeneralView : MonoBehaviour
     {
         if (m_Popup == null)
         {
-            m_Popup = Instantiate(m_FAMPopupPrefab, m_canvasObj);
+            m_Popup = Instantiate(m_FAMPopupPrefab, m_CanvasObj);
             m_Popup.GetComponent<NTTPopupView>().Init(title, content, btnConfirmText, btnElseText, onConfirm, onElse, onExit, isShowInput);
         }
         else
@@ -122,6 +139,10 @@ public class NTTGeneralView : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F3))
         {
             ShowCalendarPopup(m_DummyTxt);
+        }
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            ShowSelector(new List<string>() { "cals", "kcals" });
         }
     }
 }

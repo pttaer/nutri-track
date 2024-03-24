@@ -76,7 +76,7 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
 
     private void SetCalRecordDetail()
     {
-        if(m_CalRecordList.Count < 1 && m_DailyCalData == null)
+        if (m_CalRecordList.Count < 1 && m_DailyCalData == null)
         {
             return;
         }
@@ -93,7 +93,7 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
             var item = m_CalRecordList[i];
             sb.Append($"    Record {i + 1}:\n      Nutrient: {item.Nutrient}\n      Amount: {item.Amount} {item.Unit}\n      Description: {item.Description}\n\n");
         }
- 
+
         view.Init("  Calories Record", sb.ToString());
     }
 }

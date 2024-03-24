@@ -7,21 +7,21 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using uPalette.Generated;
 using uPalette.Runtime.Core;
-using static UnityEngine.GraphicsBuffer;
 
 [SerializeField]
 class CalendarController : MonoBehaviour
 {
     [SerializeField] GameObject m_CalendarPanel;
-    [SerializeField] TextMeshProUGUI m_YearNumText;
-    [SerializeField] TextMeshProUGUI m_MonthNumText;
+    TextMeshProUGUI m_YearNumText;
+    TextMeshProUGUI m_MonthNumText;
 
-    [SerializeField] Button BtnExit;
-    [SerializeField] Button m_BtnFinish;
+    Button m_BtnExit;
+    Button m_BtnFinish;
 
-    [SerializeField] GameObject m_Item;
+    GameObject m_Item;
 
     [SerializeField] List<CalendarDateItem> m_DateItems = new List<CalendarDateItem>();
+
     const int _totalDateNum = 42;
     [SerializeField] float m_Width = 78.5f;
     [SerializeField] float m_Height = 48f;
@@ -29,8 +29,9 @@ class CalendarController : MonoBehaviour
 
     [SerializeField] float TWEEN_DURATION = 0.3f;
     [SerializeField] DateTime m_DateTime;
+
     private string m_DateFormat;
-    private bool m_IsDisableAllDayAfterToday;
+    private bool m_IsMyHealth;
     private Action<bool, bool, bool, DateTime?> m_OnSelectCallback;
 
     List<NTTBMIRecordDTO> m_BmiRecordsList = new List<NTTBMIRecordDTO>();
@@ -42,32 +43,46 @@ class CalendarController : MonoBehaviour
     private const string DEFAULT_DATE_FORMAT = "dd MMM yyyy";
     private const string DATE_DEFAULT = "Date";
 
-    public void Init(TextMeshProUGUI txt, string dateFormat = null, bool isDisableAllDayAfterToday = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, List<NTTCalRecordDTO> calRecordList = null, Action<bool, bool, bool, DateTime?> onSelectCallback = null)
-    {
-        Api = this;
+    private bool m_IsInited = false;
 
+    public void Init(TextMeshProUGUI targetUITxt, string dateFormat = null, bool isMyHealth = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, List<NTTCalRecordDTO> calRecordList = null, Action<bool, bool, bool, DateTime?> onDateSelectCallback = null)
+    {
         m_BmiRecordsList = bmiRecordsList;
         m_DailyCalList = dailyCalList;
         m_CalRecordList = calRecordList;
-        m_IsDisableAllDayAfterToday = isDisableAllDayAfterToday;
-        m_OnSelectCallback = onSelectCallback;
-        Vector3 startPos = m_Item.transform.localPosition;
-        m_DateFormat = dateFormat;
-        m_DateItems.Clear();
-        m_DateItems.Add(m_Item.GetComponent<CalendarDateItem>());
+        m_IsMyHealth = isMyHealth;
+        m_OnSelectCallback = onDateSelectCallback;
 
-        BtnExit = transform.Find("CalendarBG/BtnExit").GetComponent<Button>();
-        m_BtnFinish = transform.Find("CalendarBG/BottomBar/BtnFinish").GetComponent<Button>();
+        if (!m_IsInited)
+        {
+            Api = this;
 
-        BtnExit.onClick.AddListener(ClosePopup);
-        m_BtnFinish.onClick.AddListener(FinishPopup);
+            m_YearNumText = transform.Find("CalendarBG/TopBar/Year").GetComponent<TextMeshProUGUI>();
+            m_MonthNumText = transform.Find("CalendarBG/TopBar/Month").GetComponent<TextMeshProUGUI>();
 
-        BtnExit.gameObject.SetActive(false);
-        m_BtnFinish.gameObject.SetActive(false);
-        m_DateTime = DateTime.Now;
-        GenerateCalendarItems(startPos);
+            m_Item = transform.Find("CalendarBG/Item").gameObject;
+
+            m_BtnExit = transform.Find("CalendarBG/BtnExit").GetComponent<Button>();
+            m_BtnFinish = transform.Find("CalendarBG/BottomBar/BtnFinish").GetComponent<Button>();
+
+            m_BtnExit.onClick.AddListener(ClosePopup);
+            m_BtnFinish.onClick.AddListener(FinishPopup);
+
+            m_DateFormat = dateFormat;
+            m_DateItems.Clear();
+            m_DateItems.Add(m_Item.GetComponent<CalendarDateItem>());
+
+            m_BtnExit.gameObject.SetActive(false);
+            m_BtnFinish.gameObject.SetActive(false);
+
+            m_DateTime = DateTime.Now;
+
+            GenerateCalendarItems(m_Item.transform.localPosition);
+
+            m_IsInited = true;
+        }
         CreateCalendar();
-        SetTargetTxt(txt);
+        SetTargetTxt(targetUITxt);
     }
 
     private void GenerateCalendarItems(Vector3 startPos)
@@ -75,7 +90,6 @@ class CalendarController : MonoBehaviour
         for (int i = 1; i < _totalDateNum; i++)
         {
             GameObject item = Instantiate(m_Item);
-            item.name = "Item" + (i + 1).ToString();
             item.transform.SetParent(m_Item.transform.parent);
             item.transform.localScale = Vector3.one;
             item.transform.localRotation = Quaternion.identity;
@@ -128,7 +142,7 @@ class CalendarController : MonoBehaviour
         // For calling popup
         if (isShowPopup)
         {
-            BtnExit.gameObject.SetActive(true);
+            m_BtnExit.gameObject.SetActive(true);
             m_BtnFinish.gameObject.SetActive(true);
         }
     }
@@ -164,7 +178,7 @@ class CalendarController : MonoBehaviour
                     m_DateItems[i].gameObject.name = $"{label.text} {thatDay.Month} {thatDay.Year}";
 
                     // For disabling days in my health
-                    if (m_IsDisableAllDayAfterToday)
+                    if (m_IsMyHealth)
                     {
                         //Debug.Log("Run here thatDay: " + thatDay);
                         m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
@@ -246,14 +260,11 @@ class CalendarController : MonoBehaviour
             TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat ?? DEFAULT_DATE_FORMAT), TWEEN_DURATION);
 
             m_OnSelectCallback?.Invoke(true, isBmiExist, isCalRecordExist, DateTime.Parse(date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")));
-
-            //NTTMyHealthControl.Api.DateClickShowBMICaloriesValue(dayInt, month, year);
         }
         else
         {
             Debug.LogError("Invalid input for date.");
         }
-        //_calendarPanel.SetActive(false);
     }
 
     public void ClearTargetText()
@@ -265,8 +276,6 @@ class CalendarController : MonoBehaviour
             // DateTime.MinValue for default
             m_OnSelectCallback?.Invoke(false, false, false, null);
         }
-
-        // TODO: May clear the others info here too
     }
 
     private void SetAllItemsOff()

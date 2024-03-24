@@ -99,7 +99,7 @@ public class NTTPopupInputCalRecordView : MonoBehaviour
 
         Debug.Log("Run here calRecord: " + JsonConvert.SerializeObject(calRecord));
 
-        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.CAL_ROUTE, calRecord, (data) =>
+        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.DAILY_CAL_ROUTE, calRecord, (data) =>
         {
             Debug.Log("Run here" + JsonConvert.SerializeObject(data));
 

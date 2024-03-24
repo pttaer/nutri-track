@@ -184,7 +184,7 @@ public class NTTApiControl
         NTTControl.Api.HideLoading();
     }
 
-    public IEnumerator EditData<T>(string url, T formData, Action callback = null)
+    public IEnumerator EditData<T>(string url, T formData, Action<JObject> callback = null)
     {
         NTTControl.Api.ShowLoading();
 
@@ -214,10 +214,15 @@ public class NTTApiControl
             Debug.Log("Error: uploadHandler is null");
         }
 
+        string response = request.downloadHandler.text;
+
         if (request.result == UnityWebRequest.Result.Success)
         {
             NTTControl.Api.HideLoading();
-            callback?.Invoke();
+
+            JObject data = JsonConvert.DeserializeObject<JObject>(response);
+            Debug.Log("response: " + response);
+            callback?.Invoke(data);
         }
         else
         {
@@ -237,18 +242,12 @@ public class NTTApiControl
 
         UnityWebRequest request = WebRequestWithAuthorizationHeader(uri, NTTConstant.METHOD_POST);
         request.SetRequestHeader("Content-Type", "application/json");
-
-        string headerValue = request.GetRequestHeader("Content-Type");
-        Debug.Log($"Header: Content-Type, Value: {headerValue}");
-        string header = request.GetRequestHeader("Authorization");
-        Debug.Log($"Header: Authorization, Value: {header}");
-
         request.uploadHandler = new UploadHandlerRaw(jsonBytes);
         request.downloadHandler = new DownloadHandlerBuffer();
 
-        Debug.Log("Run here request" + JsonConvert.SerializeObject(request));
-
         yield return request.SendWebRequest();
+
+        Debug.Log("request result: " + request.result);
 
         if (request.uploadHandler != null)
         {

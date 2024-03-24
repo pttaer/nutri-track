@@ -18,10 +18,14 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
     TextMeshProUGUI m_TxtBMICalculated;
 
     bool m_IsInit = false;
+    NTTBMIRecordDTO m_CurrentBMIRecord;
+    Action m_OnExit;
     DateTime m_CurrentDate;
 
-    public void Init()
+    public void Init(Action callbackExit = null)
     {
+        m_OnExit = callbackExit;
+
         if (!m_IsInit)
         {
             m_BtnExit = transform.Find("BtnExit").GetComponent<Button>();
@@ -39,17 +43,21 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
         }
     }
 
-    public void SetCurrentDate(DateTime date)
+
+    public void SetCurrentDate(DateTime date, NTTBMIRecordDTO currentBMIRecord)
     {
+        m_CurrentBMIRecord = currentBMIRecord;
         m_CurrentDate = DateTime.Parse(date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
         Debug.Log("Run here m_CurrentDate" + m_CurrentDate);
     }
 
-    private void ValidateWeight(string arg0)
+    private void ValidateWeight(string weightTxt)
     {
-        if (!string.IsNullOrEmpty(arg0))
+        if (!string.IsNullOrEmpty(weightTxt))
         {
-            m_TxtBMICalculated.text = $"Calculated BMI: {(float.Parse(m_IpfWeightSelect.text) / Math.Pow(NTTModel.CurrentUser.User.Height / 100, 2)).ToString("F1")} {NTTConstant.BMI_UNIT}";
+            var bmi = NTTMyHealthControl.Api.CurrentUserBMICalculate(float.Parse(weightTxt));
+
+            m_TxtBMICalculated.text = $"Calculated BMI: {bmi.ToString("F1")} {NTTConstant.BMI_UNIT}";
         }
     }
 
@@ -74,20 +82,26 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
     {
         NTTBMIRecordPostDTO bmiRecord = new(weight, m_CurrentDate);
 
-        StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.BMI_RECORDS_ROUTE, bmiRecord, (data) =>
+        if (m_CurrentBMIRecord != null)
         {
-            NTTBMIRecordDTO newRecord = NTTBMIRecordDTO.FromJObject(data);
-            Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
-            SetPopupOff();
-        }));
-    }
-
-    private void GetWeightBMIData()
-    {
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(NTTConstant.BMI_RECORDS_ROUTE, callback: (data) =>
+            StartCoroutine(NTTApiControl.Api.EditData(string.Format(NTTConstant.BMI_RECORDS_ROUTE_FORMAT, m_CurrentBMIRecord.Id), bmiRecord, (data) =>
+            {
+                SetPopupOff();
+                Debug.Log("PUT");
+                m_CurrentBMIRecord = null;
+                m_OnExit?.Invoke();
+            }));
+            m_CurrentBMIRecord = null;
+        }
+        else
         {
-            Debug.Log("Run here" + JsonConvert.SerializeObject(data));
-        }));
+            StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.BMI_RECORDS_ROUTE, bmiRecord, (data) =>
+            {
+                SetPopupOff();
+                Debug.Log("POST");
+                m_OnExit?.Invoke();
+            }));
+        }
     }
 
     private void Update()

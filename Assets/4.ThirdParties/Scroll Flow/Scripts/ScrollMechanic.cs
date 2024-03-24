@@ -102,23 +102,6 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
         }
     }
 
-    private void Start()
-    {
-        m_RtContent = transform.Find("Viewport/Content").GetComponent<RectTransform>();
-        m_TfContent = m_RtContent.transform;
-        m_LayoutContent = m_TfContent.GetComponent<AutoSizeLayoutScrollFlow>();
-
-        // Load the prefab at the specified path
-        m_PrefItemTemplate = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/4.ThirdParties/Scroll Flow/Prefabs/TemplateValue.prefab");
-
-        // Default values
-        m_HeightText = m_HeightTemplate / 2;
-        m_Middle = GetComponent<RectTransform>().sizeDelta.y / 2;
-        m_LayoutContent.topPad = m_Middle - m_HeightText;
-        m_LayoutContent.bottomPad = m_Middle - m_HeightText;
-        m_CountCheck = Mathf.CeilToInt((m_Middle * 2) / m_HeightTemplate);
-    }
-
     public void Init(List<string> itemTxtList, Camera camera, RectTransform canvas, bool isInfinite = false, bool isElastic = true)
     {
         if (!m_IsInitialized)
@@ -140,6 +123,20 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
     /// <param name="firstTarget"> Which text in list will be first </param>
     public void Initialize(List<string> dataToInit, Camera cam, RectTransform canvas, bool isInfinite = false, bool isElastic = false, int firstTarget = 0)
     {
+        m_RtContent = transform.Find("Viewport/Content").GetComponent<RectTransform>();
+        m_TfContent = m_RtContent.transform;
+        m_LayoutContent = m_TfContent.GetComponent<AutoSizeLayoutScrollFlow>();
+
+        // Load the prefab at the specified path
+        m_PrefItemTemplate = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/4.ThirdParties/Scroll Flow/Prefabs/TemplateValue.prefab");
+
+        // Default values
+        m_HeightText = m_HeightTemplate / 2;
+        m_Middle = GetComponent<RectTransform>().sizeDelta.y / 2;
+        m_LayoutContent.topPad = m_Middle - m_HeightText;
+        m_LayoutContent.bottomPad = m_Middle - m_HeightText;
+        m_CountCheck = Mathf.CeilToInt((m_Middle * 2) / m_HeightTemplate);
+
         m_CountTotal = dataToInit.Count;
         for (int i = 0; i < GetContentChildCount(); i++)
         {
@@ -219,7 +216,7 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
             tfTxtParent.GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, m_HeightTemplate);
         }
     }
-    
+
     private void CallbackLoop(int maxLoop, Action callback)
     {
         for (int j = 0; j < maxLoop; j++)
@@ -258,7 +255,7 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
             float adjustedRTSizeDeltaY = GetRTSizeDeltaY(m_RtContent) - m_Middle * 2;
 
             float contentYPosOnElastic = Mathf.Abs(GetContentYPos()) / maxElastic;
-            
+
             float contentYPosOnElasticAdjusted = Mathf.Abs(adjustedRTSizeDeltaY - GetContentYPos()) / maxElastic;
 
             if (!m_IsDragging)
@@ -431,7 +428,7 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
 
                 float currentItemCenterYPos = m_TfContent.GetChild(m_CurrentCenter).GetComponent<RectTransform>().anchoredPosition.y;
 
-                SetContentAnchor(new Vector2(0, Mathf.Lerp(GetContentYPos(), - currentItemCenterYPos - m_Middle, speedLerp * Time.deltaTime)));
+                SetContentAnchor(new Vector2(0, Mathf.Lerp(GetContentYPos(), -currentItemCenterYPos - m_Middle, speedLerp * Time.deltaTime)));
             }
         }
     }
@@ -445,12 +442,12 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
     {
         m_RtContent.anchoredPosition = pos;
     }
-    
+
     private TextMeshProUGUI GetTxtFromChildIndex(int index)
     {
         return GetTxtFromFirstChild(m_TfContent.GetChild(index));
     }
-    
+
     private TextMeshProUGUI GetTxtFromFirstChild(Transform t)
     {
         return t.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -460,17 +457,17 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
     {
         return rt.sizeDelta.y;
     }
-    
+
     private float GetRectSizeDeltaY()
     {
         return m_RtContent.sizeDelta.y;
     }
-    
+
     private float GetContentYPos()
     {
         return m_RtContent.anchoredPosition.y;
     }
-    
+
     private int GetContentChildCount()
     {
         return m_RtContent.childCount;
@@ -480,7 +477,7 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
     {
         SetInertia(0);
     }
-    
+
     private void SetInertia(float value)
     {
         m_Inertia = value;

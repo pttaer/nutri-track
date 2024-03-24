@@ -21,10 +21,12 @@ public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
     TextMeshProUGUI m_TxtBtnUnit;
 
     bool m_IsInit = false;
+    Action m_OnExit;
     DateTime m_CurrentDate;
 
-    public void Init()
+    public void Init(Action callbackExit = null)
     {
+        m_OnExit = callbackExit;
         if (!m_IsInit)
         {
             m_BtnExit = transform.Find("BtnExit").GetComponent<Button>();
@@ -95,6 +97,7 @@ public class NTTMyHealthPopupInputCalRecordView : MonoBehaviour
             NTTCalRecordDTO newRecord = NTTCalRecordDTO.FromJObject(data);
             Debug.Log("Run here" + JsonConvert.SerializeObject(newRecord));
             SetPopupOff();
+            m_OnExit?.Invoke();
         }));
     }
 

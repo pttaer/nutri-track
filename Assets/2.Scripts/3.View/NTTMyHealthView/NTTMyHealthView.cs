@@ -30,13 +30,13 @@ public class NTTMyHealthView : MonoBehaviour
     private TextMeshProUGUI m_TxtBMIValue;
     private TextMeshProUGUI m_TxtCaloriesValue;
 
-    private NTTBMIRecordDTO m_CurrentBmiRecord;
     private float m_CurrentDayBMI;
+    private NTTBMIRecordDTO m_CurrentBmiRecord;
     private NTTDailyCalDTO m_CurrentDayCalRecord;
     private List<NTTCalRecordDTO> m_CurrentCalRecordList = new List<NTTCalRecordDTO>();
 
     // Non-ref var
-    private const string DEFAULT_VALUE = "Unsubmitted";
+    private const string UNSUBMITTED = "Unsubmitted";
 
     private void Start()
     {
@@ -93,83 +93,124 @@ public class NTTMyHealthView : MonoBehaviour
 
         // Default values
         m_TxtDate.text = DateTime.Now.ToString("dd MMM yyyy");
-        m_TxtBMIValue.text = DEFAULT_VALUE;
-        m_TxtCaloriesValue.text = DEFAULT_VALUE;
+        m_TxtBMIValue.text = UNSUBMITTED;
+        m_TxtCaloriesValue.text = UNSUBMITTED;
 
         m_PnlChooseRecordType.SetActive(false);
         m_PopupInputBMIRecord.gameObject.SetActive(false);
         m_PopupInputCaloriesRecord.gameObject.SetActive(false);
         m_BGFull.SetActive(false);
 
-        m_PopupInputBMIRecord.Init();
-        m_PopupInputCaloriesRecord.Init();
+        m_PopupInputBMIRecord.Init(ReloadCalendarWithBMICaloriesData);
+        m_PopupInputCaloriesRecord.Init(ReloadCalendarWithBMICaloriesData);
 
         m_BtnDetailRecord.interactable = false;
 
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(string.Format(NTTConstant.BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (bmiData) =>
+        ReloadCalendarWithBMICaloriesData();
+    }
+
+    private void ReloadCalendarWithBMICaloriesData()
+    {
+        GetListBMIRecord((bmiData) =>
         {
-            StartCoroutine(NTTApiControl.Api.GetListData<NTTDailyCalDTO>(string.Format(NTTConstant.DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (dailyCalData) =>
+            GetListDailyCal((dailyCalData) =>
             {
-                StartCoroutine(NTTApiControl.Api.GetListData<NTTCalRecordDTO>(string.Format(NTTConstant.CAL_RECORDS_ROUTE, NTTConstant.PARAM_DATE), (calRecordData) =>
+                GetListCalRecord((calRecordData) =>
                 {
                     NTTControl.Api.ShowLoading();
-                    m_CalendarController.Init(m_TxtDate, null, isDisableAllDayAfterToday: true, bmiRecordsList: bmiData.Results, dailyCalList: dailyCalData.Results, calRecordList: calRecordData.Results, onSelectCallback: (isOn, isBMIExist, isCalRecordExist, date) =>
-                    {
-                        Debug.Log("Run here " + isOn);
-                        m_BtnAddDailyRecord.gameObject.SetActive(isOn);
-                        OnClickAddDailyRecord(isForceReset: true);
 
-                        m_BtnDetailRecord.interactable = isBMIExist || isCalRecordExist;
+                    m_CalendarController.Init(
+                        targetUITxt: m_TxtDate,
+                        dateFormat: null,
+                        isMyHealth: true,
+                        bmiRecordsList: bmiData.Results,
+                        dailyCalList: dailyCalData.Results,
+                        calRecordList: calRecordData.Results,
+                        onDateSelectCallback: (isOn, isBMIExist, isCalRecordExist, date) =>
+                        {
+                            m_BtnAddDailyRecord.gameObject.SetActive(isOn);
 
-                        if (isBMIExist)
-                        {
-                            NTTMyHealthControl.Api.CheckExistItemByDateInListBMI(
-                                date ?? DateTime.MinValue,
-                                bmiData.Results,
-                                callbackExist: (itemData) =>
-                                {
-                                    // kg/height^2 (height is in meter)
+                            ResetPnlChooseRecord();
 
-                                    float bmi = itemData.Weight / (float)Math.Pow(NTTModel.CurrentUser.User.Height / 100, 2);
-                                    float roundedBMI = (float)Math.Ceiling(bmi * 10) / 10;
-                                    m_TxtBMIValue.text = $"{roundedBMI} {NTTConstant.BMI_UNIT}";
-                                    m_CurrentBmiRecord = itemData;
-                                    m_CurrentDayBMI = roundedBMI;
-                                }
-                            );
-                        }
-                        else
-                        {
-                            m_TxtBMIValue.text = DEFAULT_VALUE;
-                            m_CurrentBmiRecord = null;
-                            m_CurrentDayBMI = 0;
-                        }
+                            m_BtnDetailRecord.interactable = isBMIExist || isCalRecordExist;
 
-                        if (isCalRecordExist)
-                        {
-                            NTTMyHealthControl.Api.CheckExistItemByDateInListDailyCal(
-                                date ?? DateTime.MinValue,
-                                dailyCalData.Results,
-                                calRecordData.Results,
-                                callbackExist: (dailyCal, listCalRecord) =>
-                                {
-                                    m_TxtCaloriesValue.text = $"{listCalRecord.Sum(item => item.Amount)} {NTTConstant.CALS}";
-                                    m_CurrentCalRecordList = listCalRecord;
-                                    m_CurrentDayCalRecord = dailyCal;
-                                }
-                            );
-                        }
-                        else
-                        {
-                            m_TxtCaloriesValue.text = DEFAULT_VALUE;
-                            m_CurrentCalRecordList.Clear();
-                            m_CurrentDayCalRecord = null;
-                        }
-                    });
+                            VerifyBMISetOnUI(bmiData, isBMIExist, date);
+
+                            VerifyCalSetOnUI(dailyCalData, calRecordData, isCalRecordExist, date);
+                        });
+
                     NTTControl.Api.HideLoading();
-                }));
-            }));
-        }));
+                });
+            });
+        });
+    }
+
+    private void VerifyCalSetOnUI(NTTPageResultDTO<NTTDailyCalDTO> dailyCalData, NTTPageResultDTO<NTTCalRecordDTO> calRecordData, bool isCalRecordExist, DateTime? date)
+    {
+        if (isCalRecordExist)
+        {
+            NTTMyHealthControl.Api.CheckExistItemByDateInListDailyCal(
+                date ?? DateTime.MinValue,
+                dailyCalData.Results,
+                calRecordData.Results,
+                callbackExist: (dailyCal, listCalRecord) =>
+                {
+                    SetCurrentDailyCal(dailyCal, listCalRecord);
+                }
+            );
+        }
+        else
+        {
+            SetDefaultCal();
+        }
+    }
+
+    private void VerifyBMISetOnUI(NTTPageResultDTO<NTTBMIRecordDTO> bmiData, bool isBMIExist, DateTime? date)
+    {
+        if (isBMIExist)
+        {
+            NTTMyHealthControl.Api.CheckExistItemByDateInListBMI(
+                date ?? DateTime.MinValue,
+                bmiData.Results,
+                callbackExist: (itemData) =>
+                {
+                    float bmi = NTTMyHealthControl.Api.CurrentUserBMICalculate(itemData.Weight);
+                    SetCurrentBMI(itemData, bmi);
+                }
+            );
+        }
+        else
+        {
+            SetDefaultBMI();
+        }
+    }
+
+    private void SetCurrentDailyCal(NTTDailyCalDTO dailyCal, List<NTTCalRecordDTO> listCalRecord)
+    {
+        m_TxtCaloriesValue.text = $"{listCalRecord.Sum(item => item.Amount)} {NTTConstant.CALS}";
+        m_CurrentCalRecordList = listCalRecord;
+        m_CurrentDayCalRecord = dailyCal;
+    }
+
+    private void SetCurrentBMI(NTTBMIRecordDTO itemData, float bmi)
+    {
+        m_TxtBMIValue.text = $"{bmi} {NTTConstant.BMI_UNIT}";
+        m_CurrentBmiRecord = itemData;
+        m_CurrentDayBMI = bmi;
+    }
+
+    private void SetDefaultCal()
+    {
+        m_TxtCaloriesValue.text = UNSUBMITTED;
+        m_CurrentCalRecordList.Clear();
+        m_CurrentDayCalRecord = null;
+    }
+
+    private void SetDefaultBMI()
+    {
+        m_TxtBMIValue.text = UNSUBMITTED;
+        m_CurrentBmiRecord = null;
+        m_CurrentDayBMI = 0;
     }
 
     private void OnClickDetailRecord()
@@ -198,20 +239,19 @@ public class NTTMyHealthView : MonoBehaviour
         }
     }
 
-    private void OnClickAddDailyRecord(bool isForceReset = false)
+    private void OnClickAddDailyRecord()
     {
         bool isPnlChooseOn = m_PnlChooseRecordType.activeSelf;
 
-        if (isForceReset)
-        {
-            ShowPnlChooseRecordType(false);
-        }
-        else
-        {
-            ShowPnlChooseRecordType(!isPnlChooseOn);
-        }
+        ShowPnlChooseRecordType(!isPnlChooseOn);
 
-        m_TxtBtnAddDailyRecord.text = isPnlChooseOn || isForceReset ? "Add daily record" : "Close";
+        m_TxtBtnAddDailyRecord.text = isPnlChooseOn ? "Add daily record" : "Close";
+    }
+
+    private void ResetPnlChooseRecord()
+    {
+        ShowPnlChooseRecordType(false);
+        m_TxtBtnAddDailyRecord.text = "Add daily record";
     }
 
     private void SetBMICaloriesValue(float bmi, float calo)
@@ -237,7 +277,7 @@ public class NTTMyHealthView : MonoBehaviour
     private void ShowPopupInputBMIRecord(bool isOn, DateTime currentDate)
     {
         m_PopupInputBMIRecord.gameObject.SetActive(isOn);
-        m_PopupInputBMIRecord.SetCurrentDate(currentDate);
+        m_PopupInputBMIRecord.SetCurrentDate(currentDate, m_CurrentBmiRecord);
         m_BGFull.SetActive(isOn);
     }
 
@@ -246,5 +286,30 @@ public class NTTMyHealthView : MonoBehaviour
         m_PopupInputCaloriesRecord.gameObject.SetActive(isOn);
         m_PopupInputCaloriesRecord.SetCurrentDate(currentDate);
         m_BGFull.SetActive(isOn);
+    }
+
+
+    public void GetListBMIRecord(Action<NTTPageResultDTO<NTTBMIRecordDTO>> callback = null)
+    {
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTBMIRecordDTO>(string.Format(NTTConstant.BMI_RECORDS_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (bmiData) =>
+        {
+            callback?.Invoke(bmiData);
+        }));
+    }
+
+    public void GetListDailyCal(Action<NTTPageResultDTO<NTTDailyCalDTO>> callback = null)
+    {
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTDailyCalDTO>(string.Format(NTTConstant.DAILY_CAL_ROUTE_GET_ALL_SORT_FORMAT, NTTConstant.PARAM_DATE), (dailyCalData) =>
+        {
+            callback?.Invoke(dailyCalData);
+        }));
+    }
+
+    public void GetListCalRecord(Action<NTTPageResultDTO<NTTCalRecordDTO>> callback = null)
+    {
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTCalRecordDTO>(string.Format(NTTConstant.CAL_RECORDS_ROUTE, NTTConstant.PARAM_DATE), (calRecordData) =>
+        {
+            callback?.Invoke(calRecordData);
+        }));
     }
 }

@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
-public class NTTMyHealthControl : MonoBehaviour
+public class NTTMyHealthControl
 {
     public static NTTMyHealthControl Api;
 
@@ -64,9 +62,15 @@ public class NTTMyHealthControl : MonoBehaviour
     {
         OnClosePopupRecordEvent?.Invoke();
     }
-    
+
     public void ChooseDay(bool isOn)
     {
         OnChooseDayEvent?.Invoke(isOn);
+    }
+
+    public float CurrentUserBMICalculate(float weight)
+    {
+        // kg/m^2 (height is in meter)
+        return (float)Math.Round(weight / Math.Pow(NTTModel.CurrentUser.User.Height / 100, 2), 1);
     }
 }

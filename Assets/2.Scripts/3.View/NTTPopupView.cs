@@ -26,7 +26,7 @@ public class NTTPopupView : MonoBehaviour
 
         m_BtnConfirm = buttonGroup.Find("BtnConfirm").GetComponent<Button>();
         m_BtnElse = buttonGroup.Find("BtnElse").GetComponent<Button>();
-        m_BtnExit = container.Find("BtnExit").GetComponent<Button>();
+        m_BtnExit = container.Find("m_BtnExit").GetComponent<Button>();
         m_TxtTitle = container.Find("TxtTitle").GetComponent<Text>();
         m_TxtContent = popupContent.Find("TxtContent").GetComponent<Text>();
         m_TxtBtnConfirm = buttonGroup.Find("BtnConfirm/TxtLabel").GetComponent<Text>();
@@ -62,7 +62,7 @@ public class NTTPopupView : MonoBehaviour
 
         m_BtnConfirm = buttonGroup.Find("BtnConfirm").GetComponent<Button>();
         m_BtnElse = buttonGroup.Find("BtnElse").GetComponent<Button>();
-        m_BtnExit = container.Find("BtnExit").GetComponent<Button>();
+        m_BtnExit = container.Find("m_BtnExit").GetComponent<Button>();
         m_TxtTitle = container.Find("TxtTitle").GetComponent<Text>();
         m_TxtContent = popupContent.Find("TxtContent").GetComponent<Text>();
         m_TxtBtnConfirm = buttonGroup.Find("BtnConfirm/TxtLabel").GetComponent<Text>();
