@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using uPalette.Generated;
 using uPalette.Runtime.Core;
@@ -12,6 +11,13 @@ using uPalette.Runtime.Core;
 class CalendarController : MonoBehaviour
 {
     [SerializeField] GameObject m_CalendarPanel;
+
+    // Date buttons:
+    Button m_BtnMonthPrev;
+    Button m_BtnMonthNext;
+    Button m_BtnYearPrev;
+    Button m_BtnYearNext;
+
     TextMeshProUGUI m_YearNumText;
     TextMeshProUGUI m_MonthNumText;
 
@@ -40,22 +46,25 @@ class CalendarController : MonoBehaviour
 
     public static CalendarController Api;
 
-    private const string DEFAULT_DATE_FORMAT = "dd MMM yyyy";
-    private const string DATE_DEFAULT = "Date";
 
     private bool m_IsInited = false;
 
-    public void Init(TextMeshProUGUI targetUITxt, string dateFormat = null, bool isMyHealth = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, List<NTTCalRecordDTO> calRecordList = null, Action<bool, bool, bool, DateTime?> onDateSelectCallback = null)
+    public void Init(TextMeshProUGUI targetUITxt, string dateFormat = null, bool isMyHealth = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, List<NTTCalRecordDTO> calRecordsList = null, Action<bool, bool, bool, DateTime?> onDateSelectCallback = null)
     {
         m_BmiRecordsList = bmiRecordsList;
         m_DailyCalList = dailyCalList;
-        m_CalRecordList = calRecordList;
+        m_CalRecordList = calRecordsList;
         m_IsMyHealth = isMyHealth;
         m_OnSelectCallback = onDateSelectCallback;
 
         if (!m_IsInited)
         {
             Api = this;
+
+            m_BtnMonthPrev = transform.Find("CalendarBG/TopBar/BtnMonthPrev").GetComponent<Button>();
+            m_BtnMonthNext = transform.Find("CalendarBG/TopBar/BtnMonthNext").GetComponent<Button>();
+            m_BtnYearPrev = transform.Find("CalendarBG/TopBar/BtnYearPrev").GetComponent<Button>();
+            m_BtnYearNext = transform.Find("CalendarBG/TopBar/BtnYearNext").GetComponent<Button>();
 
             m_YearNumText = transform.Find("CalendarBG/TopBar/Year").GetComponent<TextMeshProUGUI>();
             m_MonthNumText = transform.Find("CalendarBG/TopBar/Month").GetComponent<TextMeshProUGUI>();
@@ -64,6 +73,11 @@ class CalendarController : MonoBehaviour
 
             m_BtnExit = transform.Find("CalendarBG/BtnExit").GetComponent<Button>();
             m_BtnFinish = transform.Find("CalendarBG/BottomBar/BtnFinish").GetComponent<Button>();
+
+            m_BtnMonthPrev.onClick.AddListener(MonthPrev);
+            m_BtnMonthNext.onClick.AddListener(MonthNext);
+            m_BtnYearPrev.onClick.AddListener(YearPrev);
+            m_BtnYearNext.onClick.AddListener(YearNext);
 
             m_BtnExit.onClick.AddListener(ClosePopup);
             m_BtnFinish.onClick.AddListener(FinishPopup);
@@ -81,6 +95,7 @@ class CalendarController : MonoBehaviour
 
             m_IsInited = true;
         }
+
         CreateCalendar();
         SetTargetTxt(targetUITxt);
     }
@@ -139,7 +154,6 @@ class CalendarController : MonoBehaviour
 
     public void ShowExitFinishPopup(bool isShowPopup = false)
     {
-        // For calling popup
         if (isShowPopup)
         {
             m_BtnExit.gameObject.SetActive(true);
@@ -174,13 +188,14 @@ class CalendarController : MonoBehaviour
 
                     label.text = (date + 1).ToString();
 
-                    // For recognition
+                    // For recognition in hierachy
                     m_DateItems[i].gameObject.name = $"{label.text} {thatDay.Month} {thatDay.Year}";
 
-                    // For disabling days in my health
                     if (m_IsMyHealth)
                     {
                         //Debug.Log("Run here thatDay: " + thatDay);
+
+                        // Disabling days in future
                         m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
 
                         // Find all the data items that have the same month of the current month
@@ -201,21 +216,6 @@ class CalendarController : MonoBehaviour
         TweenUtils.TypingAnimation(m_MonthNumText, m_DateTime.ToString("MMM"), TWEEN_DURATION);
     }
 
-    int GetDays(DayOfWeek day)
-    {
-        switch (day)
-        {
-            case DayOfWeek.Monday: return 1;
-            case DayOfWeek.Tuesday: return 2;
-            case DayOfWeek.Wednesday: return 3;
-            case DayOfWeek.Thursday: return 4;
-            case DayOfWeek.Friday: return 5;
-            case DayOfWeek.Saturday: return 6;
-            case DayOfWeek.Sunday: return 0;
-        }
-
-        return 0;
-    }
     public void YearPrev()
     {
         m_DateTime = m_DateTime.AddYears(-1);
@@ -240,26 +240,19 @@ class CalendarController : MonoBehaviour
         CreateCalendar();
     }
 
-    public void ShowCalendar(TextMeshProUGUI target)
-    {
-        m_CalendarPanel.SetActive(true);
-        m_CalendarPanel.transform.localScale = Vector3.zero;
-        m_CalendarPanel.transform.DOScale(1, 0.3f).SetEase(Ease.OutExpo);
-        m_Target = target;
-        Debug.Log("TARGET IS: " + m_Target.name);
-    }
-
     public void OnDateItemClick(string day, bool isBmiExist, bool isCalRecordExist)
     {
         SetAllItemsOff();
-        Debug.Log("CLICK" + day);
+
         if (int.TryParse(day, out int dayInt) && int.TryParse(m_YearNumText.text, out int year))
         {
             DateTime date = new DateTime(year, MonthAbbreviationToNumber(m_MonthNumText.text), dayInt);
 
-            TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat ?? DEFAULT_DATE_FORMAT), TWEEN_DURATION);
+            DateTime isoStringFormatDate = DateTime.Parse(date.ToString(NTTConstant.DATE_FORMAT_ISO_STRING));
 
-            m_OnSelectCallback?.Invoke(true, isBmiExist, isCalRecordExist, DateTime.Parse(date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")));
+            TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat ?? NTTConstant.DATE_FORMAT_FULL_MAIN), TWEEN_DURATION);
+
+            m_OnSelectCallback?.Invoke(true, isBmiExist, isCalRecordExist, isoStringFormatDate);
         }
         else
         {
@@ -271,7 +264,7 @@ class CalendarController : MonoBehaviour
     {
         if (m_Target != null)
         {
-            m_Target.text = DATE_DEFAULT;
+            m_Target.text = NTTConstant.DATE;
 
             // DateTime.MinValue for default
             m_OnSelectCallback?.Invoke(false, false, false, null);
@@ -307,5 +300,21 @@ class CalendarController : MonoBehaviour
                 Debug.LogError("Invalid month abbreviation: " + monthAbbreviation);
                 return -1; // or throw an exception, depending on your requirements
         }
+    }
+
+    private int GetDays(DayOfWeek day)
+    {
+        switch (day)
+        {
+            case DayOfWeek.Monday: return 1;
+            case DayOfWeek.Tuesday: return 2;
+            case DayOfWeek.Wednesday: return 3;
+            case DayOfWeek.Thursday: return 4;
+            case DayOfWeek.Friday: return 5;
+            case DayOfWeek.Saturday: return 6;
+            case DayOfWeek.Sunday: return 0;
+        }
+
+        return 0;
     }
 }

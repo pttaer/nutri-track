@@ -27,7 +27,7 @@ public class CalendarDateItem : MonoBehaviour
             callbackExist: (itemData) =>
             {
                 m_BMI.SetActive(true);
-                Debug.Log("Run here YEET " + itemDate);
+                //Debug.Log("Run here YEET " + itemDate);
             },
             callbackNone: () =>
             {
@@ -45,7 +45,7 @@ public class CalendarDateItem : MonoBehaviour
             callbackExist: (dailyCal, listCalRecord) =>
             {
                 m_DailyCal.SetActive(true);
-                Debug.Log("Run here YEET " + itemDate);
+                //Debug.Log("Run here YEET " + itemDate);
             },
             callbackNone: () =>
             {

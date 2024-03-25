@@ -234,6 +234,11 @@ public class ScrollMechanic : MonoBehaviour, IDropHandler, IDragHandler, IBeginD
         return int.Parse(m_RtContent.GetChild(m_CurrentCenter).name);
     }
 
+    public string GetCurrentSelectedTxt()
+    {
+        return m_RtContent.GetChild(m_CurrentCenter).Find("Text").GetComponent<TextMeshProUGUI>().text;
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonUp(0))

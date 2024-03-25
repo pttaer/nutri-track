@@ -11,19 +11,17 @@ public class NTTMyHealthView : MonoBehaviour
 {
     private CalendarController m_CalendarController;
 
-    private GameObject m_PnlSummary;
     private GameObject m_PnlChooseRecordType;
+    private GameObject m_BGPopupAddDailyRecord;
 
     private NTTMyHealthPopupRecordDetailView m_PopupRecordDetail;
     private NTTMyHealthPopupInputBMIRecordView m_PopupInputBMIRecord;
     private NTTMyHealthPopupInputCalRecordView m_PopupInputCaloriesRecord;
-    private GameObject m_BGFull;
 
-    private Button m_BtnSummary;
     private Button m_BtnAddDailyRecord;
-    private Button m_BtnBMIRecord;
-    private Button m_BtnCalRecord;
-    private Button m_BtnDetailRecord;
+    private Button m_BtnAddBMI;
+    private Button m_BtnAddCal;
+    private Button m_BtnRecordDetail;
 
     private TextMeshProUGUI m_TxtBtnAddDailyRecord;
     private TextMeshProUGUI m_TxtDate;
@@ -35,9 +33,6 @@ public class NTTMyHealthView : MonoBehaviour
     private NTTDailyCalDTO m_CurrentDayCalRecord;
     private List<NTTCalRecordDTO> m_CurrentCalRecordList = new List<NTTCalRecordDTO>();
 
-    // Non-ref var
-    private const string UNSUBMITTED = "Unsubmitted";
-
     private void Start()
     {
         Init();
@@ -45,14 +40,12 @@ public class NTTMyHealthView : MonoBehaviour
 
     private void OnDestroy()
     {
-        //NTTMyHealthControl.Api.OnDateClickShowBMICaloriesValueEvent -= SetBMICaloriesValue;
         NTTMyHealthControl.Api.OnClosePopupRecordEvent -= ClosePopupBackground;
     }
 
     private void Init()
     {
         // References
-        Transform topBar = transform.Find("TopBar");
         Transform content = transform.Find("Body/Content");
         Transform popupRecordDetail = transform.Find("PopupRecordDetail");
         Transform pnlCalendar = content.Find("PnlCalendar");
@@ -60,7 +53,8 @@ public class NTTMyHealthView : MonoBehaviour
 
         m_CalendarController = pnlCalendar.Find("CalendarControllerPreb").GetComponent<CalendarController>();
 
-        m_PnlSummary = pnlSummary.gameObject;
+        m_PnlChooseRecordType = content.Find("PnlChooseRecordType").gameObject;
+        m_BGPopupAddDailyRecord = content.Find("BGFull").gameObject;
 
         m_TxtBtnAddDailyRecord = pnlSummary.Find("TopBar/BtnAddDailyRecord/Text").GetComponent<TextMeshProUGUI>();
         m_TxtDate = pnlSummary.Find("TopBar/TxtDate").GetComponent<TextMeshProUGUI>();
@@ -68,43 +62,37 @@ public class NTTMyHealthView : MonoBehaviour
         m_TxtCaloriesValue = pnlSummary.Find("Calories/Value").GetComponent<TextMeshProUGUI>();
 
         m_BtnAddDailyRecord = pnlSummary.Find("TopBar/BtnAddDailyRecord").GetComponent<Button>();
-        m_BtnBMIRecord = content.Find("PnlChooseRecordType/BMI").GetComponent<Button>();
-        m_BtnCalRecord = content.Find("PnlChooseRecordType/Calories").GetComponent<Button>();
-        m_BtnDetailRecord = pnlSummary.Find("Background").GetComponent<Button>();
+        m_BtnAddBMI = content.Find("PnlChooseRecordType/BMI").GetComponent<Button>();
+        m_BtnAddCal = content.Find("PnlChooseRecordType/Calories").GetComponent<Button>();
+        m_BtnRecordDetail = pnlSummary.Find("Background").GetComponent<Button>();
 
-        m_PnlChooseRecordType = content.Find("PnlChooseRecordType").gameObject;
         m_PopupRecordDetail = popupRecordDetail.GetComponent<NTTMyHealthPopupRecordDetailView>();
         m_PopupInputBMIRecord = content.Find("PopupInputBMIRecord").GetComponent<NTTMyHealthPopupInputBMIRecordView>();
         m_PopupInputCaloriesRecord = content.Find("PopupInputCalRecord").GetComponent<NTTMyHealthPopupInputCalRecordView>();
-        m_BGFull = content.Find("BGFull").gameObject;
-
-        m_BtnSummary = pnlSummary.GetComponent<Button>();
 
         // Add listeners
-        m_BtnSummary.onClick.AddListener(OnSummaryClick);
-        m_BtnAddDailyRecord.onClick.AddListener(() => OnClickAddDailyRecord());
-        m_BtnBMIRecord.onClick.AddListener(OnClickBtnBMIRecord);
-        m_BtnCalRecord.onClick.AddListener(OnClickBtnCalRecord);
-        m_BtnDetailRecord.onClick.AddListener(OnClickDetailRecord);
+        m_BtnAddDailyRecord.onClick.AddListener(OnClickAddDailyRecord);
+        m_BtnAddBMI.onClick.AddListener(OnClickBtnBMIRecord);
+        m_BtnAddCal.onClick.AddListener(OnClickBtnCalRecord);
+        m_BtnRecordDetail.onClick.AddListener(OnClickDetailRecord);
 
         // Register events
-        //NTTMyHealthControl.Api.OnDateClickShowBMICaloriesValueEvent += SetBMICaloriesValue;
         NTTMyHealthControl.Api.OnClosePopupRecordEvent += ClosePopupBackground;
 
         // Default values
-        m_TxtDate.text = DateTime.Now.ToString("dd MMM yyyy");
-        m_TxtBMIValue.text = UNSUBMITTED;
-        m_TxtCaloriesValue.text = UNSUBMITTED;
+        m_TxtBMIValue.text = NTTConstant.UNSUBMITTED;
+        m_TxtCaloriesValue.text = NTTConstant.UNSUBMITTED;
+        m_TxtDate.text = DateTime.Now.ToString(NTTConstant.DATE_FORMAT_FULL_MAIN);
 
         m_PnlChooseRecordType.SetActive(false);
         m_PopupInputBMIRecord.gameObject.SetActive(false);
         m_PopupInputCaloriesRecord.gameObject.SetActive(false);
-        m_BGFull.SetActive(false);
+        m_BGPopupAddDailyRecord.SetActive(false);
 
         m_PopupInputBMIRecord.Init(ReloadCalendarWithBMICaloriesData);
         m_PopupInputCaloriesRecord.Init(ReloadCalendarWithBMICaloriesData);
 
-        m_BtnDetailRecord.interactable = false;
+        m_BtnRecordDetail.interactable = false;
 
         ReloadCalendarWithBMICaloriesData();
     }
@@ -125,18 +113,18 @@ public class NTTMyHealthView : MonoBehaviour
                         isMyHealth: true,
                         bmiRecordsList: bmiData.Results,
                         dailyCalList: dailyCalData.Results,
-                        calRecordList: calRecordData.Results,
+                        calRecordsList: calRecordData.Results,
                         onDateSelectCallback: (isOn, isBMIExist, isCalRecordExist, date) =>
                         {
                             m_BtnAddDailyRecord.gameObject.SetActive(isOn);
 
                             ResetPnlChooseRecord();
 
-                            m_BtnDetailRecord.interactable = isBMIExist || isCalRecordExist;
-
                             VerifyBMISetOnUI(bmiData, isBMIExist, date);
 
                             VerifyCalSetOnUI(dailyCalData, calRecordData, isCalRecordExist, date);
+
+                            m_BtnRecordDetail.interactable = isBMIExist || isCalRecordExist;
                         });
 
                     NTTControl.Api.HideLoading();
@@ -150,9 +138,9 @@ public class NTTMyHealthView : MonoBehaviour
         if (isCalRecordExist)
         {
             NTTMyHealthControl.Api.CheckExistItemByDateInListDailyCal(
-                date ?? DateTime.MinValue,
-                dailyCalData.Results,
-                calRecordData.Results,
+                itemDate: date ?? DateTime.MinValue,
+                dailyCalList: dailyCalData.Results,
+                calRecordList: calRecordData.Results,
                 callbackExist: (dailyCal, listCalRecord) =>
                 {
                     SetCurrentDailyCal(dailyCal, listCalRecord);
@@ -170,12 +158,11 @@ public class NTTMyHealthView : MonoBehaviour
         if (isBMIExist)
         {
             NTTMyHealthControl.Api.CheckExistItemByDateInListBMI(
-                date ?? DateTime.MinValue,
-                bmiData.Results,
+                itemDate: date ?? DateTime.MinValue,
+                bmiRecordList: bmiData.Results,
                 callbackExist: (itemData) =>
                 {
-                    float bmi = NTTMyHealthControl.Api.CurrentUserBMICalculate(itemData.Weight);
-                    SetCurrentBMI(itemData, bmi);
+                    SetCurrentBMI(itemData, NTTMyHealthControl.Api.CurrentUserBMICalculate(itemData.Weight));
                 }
             );
         }
@@ -201,14 +188,14 @@ public class NTTMyHealthView : MonoBehaviour
 
     private void SetDefaultCal()
     {
-        m_TxtCaloriesValue.text = UNSUBMITTED;
+        m_TxtCaloriesValue.text = NTTConstant.UNSUBMITTED;
         m_CurrentCalRecordList.Clear();
         m_CurrentDayCalRecord = null;
     }
 
     private void SetDefaultBMI()
     {
-        m_TxtBMIValue.text = UNSUBMITTED;
+        m_TxtBMIValue.text = NTTConstant.UNSUBMITTED;
         m_CurrentBmiRecord = null;
         m_CurrentDayBMI = 0;
     }
@@ -220,14 +207,14 @@ public class NTTMyHealthView : MonoBehaviour
 
     private void ClosePopupBackground()
     {
-        m_BGFull.SetActive(false);
+        m_BGPopupAddDailyRecord.SetActive(false);
     }
 
     private void OnClickBtnCalRecord()
     {
         if (DateTime.TryParse(m_TxtDate.text, out DateTime result))
         {
-            ShowPopupInputCaloriesRecord(true, result);
+            ShowPopupInputCaloriesRecord(result);
         }
     }
 
@@ -235,7 +222,7 @@ public class NTTMyHealthView : MonoBehaviour
     {
         if (DateTime.TryParse(m_TxtDate.text, out DateTime result))
         {
-            ShowPopupInputBMIRecord(true, result);
+            ShowPopupInputBMIRecord(result);
         }
     }
 
@@ -245,28 +232,14 @@ public class NTTMyHealthView : MonoBehaviour
 
         ShowPnlChooseRecordType(!isPnlChooseOn);
 
-        m_TxtBtnAddDailyRecord.text = isPnlChooseOn ? "Add daily record" : "Close";
+        m_TxtBtnAddDailyRecord.text = isPnlChooseOn ? NTTConstant.ADD_DAILY_RECORD : NTTConstant.CLOSE;
     }
 
     private void ResetPnlChooseRecord()
     {
         ShowPnlChooseRecordType(false);
-        m_TxtBtnAddDailyRecord.text = "Add daily record";
-    }
 
-    private void SetBMICaloriesValue(float bmi, float calo)
-    {
-        return;
-
-        m_TxtBMIValue.text = bmi.ToString();
-        m_TxtCaloriesValue.text = calo.ToString();
-
-        // NOTE: Take user data in here to init for the popup summary here
-    }
-
-    private void OnSummaryClick()
-    {
-        // TODO: Show popup summary
+        m_TxtBtnAddDailyRecord.text = NTTConstant.ADD_DAILY_RECORD;
     }
 
     private void ShowPnlChooseRecordType(bool isOn)
@@ -274,20 +247,17 @@ public class NTTMyHealthView : MonoBehaviour
         m_PnlChooseRecordType.SetActive(isOn);
     }
 
-    private void ShowPopupInputBMIRecord(bool isOn, DateTime currentDate)
+    private void ShowPopupInputBMIRecord(DateTime currentDate)
     {
-        m_PopupInputBMIRecord.gameObject.SetActive(isOn);
         m_PopupInputBMIRecord.SetCurrentDate(currentDate, m_CurrentBmiRecord);
-        m_BGFull.SetActive(isOn);
+        m_BGPopupAddDailyRecord.SetActive(true);
     }
 
-    private void ShowPopupInputCaloriesRecord(bool isOn, DateTime currentDate)
+    private void ShowPopupInputCaloriesRecord(DateTime currentDate)
     {
-        m_PopupInputCaloriesRecord.gameObject.SetActive(isOn);
-        m_PopupInputCaloriesRecord.SetCurrentDate(currentDate);
-        m_BGFull.SetActive(isOn);
+        m_PopupInputCaloriesRecord.SetCurrentDate(currentDate, m_CurrentDayCalRecord);
+        m_BGPopupAddDailyRecord.SetActive(true);
     }
-
 
     public void GetListBMIRecord(Action<NTTPageResultDTO<NTTBMIRecordDTO>> callback = null)
     {
@@ -307,7 +277,7 @@ public class NTTMyHealthView : MonoBehaviour
 
     public void GetListCalRecord(Action<NTTPageResultDTO<NTTCalRecordDTO>> callback = null)
     {
-        StartCoroutine(NTTApiControl.Api.GetListData<NTTCalRecordDTO>(string.Format(NTTConstant.CAL_RECORDS_ROUTE, NTTConstant.PARAM_DATE), (calRecordData) =>
+        StartCoroutine(NTTApiControl.Api.GetListData<NTTCalRecordDTO>(NTTConstant.CAL_RECORDS_ROUTE, (calRecordData) =>
         {
             callback?.Invoke(calRecordData);
         }));

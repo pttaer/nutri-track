@@ -6,15 +6,8 @@ public class NTTMyHealthControl
 {
     public static NTTMyHealthControl Api;
 
-    public Action<float, float> OnDateClickShowBMICaloriesValueEvent;
     public Action OnClosePopupRecordEvent;
     public Action<bool> OnChooseDayEvent;
-
-    public void DateClickShowBMICaloriesValue(int day, int month, int year)
-    {
-        // TODO: Call api show here then listen in MyHealthView
-        //OnDateClickShowBMICaloriesValueEvent?.Invoke(bmi, calo);
-    }
 
     public void CheckExistItemByDateInListBMI(DateTime itemDate, List<NTTBMIRecordDTO> bmiRecordList, Action<NTTBMIRecordDTO> callbackExist = null, Action callbackNone = null)
     {

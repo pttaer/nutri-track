@@ -191,6 +191,13 @@ public class NTTConstant
     public const string CALS = "cals";
     public const string KILO_CALS = "Kcals";
 
+    // other strings
+    public const string NONE = "None";
+    public const string UNSUBMITTED = "Unsubmitted";
+    public const string ADD_DAILY_RECORD = "Add daily record";
+    public const string CLOSE = "Close";
+    public const string DATE = "Date";
+
     // tween constant
     public const string TIME_UNIT = " mins";
 
@@ -198,6 +205,10 @@ public class NTTConstant
 
     // date format
     public const string DATE_FORMAT_SHORT = "dd MMM";
+
+    public const string DATE_FORMAT_FULL_MAIN = "dd MMM yyyy";
+
+    public const string DATE_FORMAT_ISO_STRING = "yyyy-MM-ddTHH:mm:ss.fffZ";
 
     public const string DATE_FORMAT_FULL = "d/M/yyyy";
 
