@@ -170,7 +170,7 @@ class CalendarController : MonoBehaviour
         int index = GetDays(firstDay.DayOfWeek);
 
         var palette = PaletteStore.Instance.ColorPalette;
-        var color = palette.GetActiveValue(ColorEntry.DateSelected.ToEntryId()).Value;
+        var color = palette.GetActiveValue(ColorEntry.Primary.ToEntryId()).Value;
 
         int date = 0;
         firstDay = firstDay.AddDays(1);

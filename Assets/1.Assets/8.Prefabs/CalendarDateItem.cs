@@ -11,6 +11,8 @@ public class CalendarDateItem : MonoBehaviour
     [SerializeField] GameObject m_BG;
     [SerializeField] GameObject m_BMI;
     [SerializeField] GameObject m_DailyCal;
+    [SerializeField] Image m_ImgBMI;
+    [SerializeField] Image m_ImgCalories;
     public bool m_IsSunday;
     public bool m_IsChoosen;
 
@@ -18,15 +20,17 @@ public class CalendarDateItem : MonoBehaviour
     {
         GetComponent<Button>().interactable = enable;
     }
-    
+
     public void EnableBMI(DateTime itemDate, List<NTTBMIRecordDTO> bmiRecordList)
     {
         NTTMyHealthControl.Api.CheckExistItemByDateInListBMI(
-            itemDate, 
+            itemDate,
             bmiRecordList,
             callbackExist: (itemData) =>
             {
                 m_BMI.SetActive(true);
+                var color = PaletteStore.Instance.ColorPalette.GetActiveValue(ColorEntry.BMI.ToEntryId()).Value;
+                m_ImgBMI.color = color;
                 //Debug.Log("Run here YEET " + itemDate);
             },
             callbackNone: () =>
@@ -35,7 +39,7 @@ public class CalendarDateItem : MonoBehaviour
             }
         );
     }
-    
+
     public void EnableDailyCal(DateTime itemDate, List<NTTDailyCalDTO> dailyCalList, List<NTTCalRecordDTO> calRecordList)
     {
         NTTMyHealthControl.Api.CheckExistItemByDateInListDailyCal(
@@ -45,6 +49,8 @@ public class CalendarDateItem : MonoBehaviour
             callbackExist: (dailyCal, listCalRecord) =>
             {
                 m_DailyCal.SetActive(true);
+                var color = PaletteStore.Instance.ColorPalette.GetActiveValue(ColorEntry.Calories.ToEntryId()).Value;
+                m_ImgCalories.color = color;
                 //Debug.Log("Run here YEET " + itemDate);
             },
             callbackNone: () =>
@@ -75,8 +81,7 @@ public class CalendarDateItem : MonoBehaviour
     {
         if (m_BG.activeSelf)
         {
-            var palette = PaletteStore.Instance.ColorPalette;
-            var color = palette.GetActiveValue(ColorEntry.DateSelected.ToEntryId()).Value;
+            var color = PaletteStore.Instance.ColorPalette.GetActiveValue(ColorEntry.Primary.ToEntryId()).Value;
             m_Txt.color = m_IsSunday ? color : Color.black;
             m_Txt.fontStyle = FontStyle.Normal;
             m_BG.SetActive(false);

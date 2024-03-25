@@ -58,8 +58,8 @@ public class NTTMyHealthView : MonoBehaviour
 
         m_TxtBtnAddDailyRecord = pnlSummary.Find("TopBar/BtnAddDailyRecord/Text").GetComponent<TextMeshProUGUI>();
         m_TxtDate = pnlSummary.Find("TopBar/TxtDate").GetComponent<TextMeshProUGUI>();
-        m_TxtBMIValue = pnlSummary.Find("BMI/Value").GetComponent<TextMeshProUGUI>();
-        m_TxtCaloriesValue = pnlSummary.Find("Calories/Value").GetComponent<TextMeshProUGUI>();
+        m_TxtBMIValue = pnlSummary.Find("Record/BMI/Value").GetComponent<TextMeshProUGUI>();
+        m_TxtCaloriesValue = pnlSummary.Find("Record/Calories/Value").GetComponent<TextMeshProUGUI>();
 
         m_BtnAddDailyRecord = pnlSummary.Find("TopBar/BtnAddDailyRecord").GetComponent<Button>();
         m_BtnAddBMI = content.Find("PnlChooseRecordType/BMI").GetComponent<Button>();
