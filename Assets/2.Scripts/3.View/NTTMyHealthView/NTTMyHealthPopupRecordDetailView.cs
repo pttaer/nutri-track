@@ -16,13 +16,16 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
     private NTTMyHealthRecordDetailItemView m_ItemDetailPref;
 
     private NTTBMIRecordDTO m_BmiRecordData;
-    private float m_CurrentDayBMI;
     private NTTDailyCalDTO m_DailyCalData;
-    private List<NTTCalRecordDTO> m_CalRecordList = new List<NTTCalRecordDTO>();
 
+    private List<NTTCalRecordDTO> m_CalRecordList = new List<NTTCalRecordDTO>();
     private List<NTTMyHealthRecordDetailItemView> m_DetailItemViewList = new List<NTTMyHealthRecordDetailItemView>();
 
+    private float m_CurrentDayBMI;
     private bool m_IsInited = false;
+
+    public const string TAB = "     ";
+    private const string CALORIES_RECORD = "  Calories Record";
 
     public void Init(float currentBMI = 0, NTTBMIRecordDTO bmiRecordData = null, NTTDailyCalDTO dailyCalData = null, List<NTTCalRecordDTO> calRecordList = null)
     {
@@ -54,10 +57,12 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
     private void SetPopupOff()
     {
         gameObject.SetActive(false);
+
         foreach (var item in m_DetailItemViewList)
         {
             item.ClearItem();
         }
+
         m_DetailItemViewList.Clear();
     }
 
@@ -68,10 +73,11 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
             return;
         }
 
-        var view = Instantiate(m_ItemDetailPref, m_TfContent).GetComponent<NTTMyHealthRecordDetailItemView>();
-        m_DetailItemViewList.Add(view);
+        string title = $"{m_BmiRecordData.Date.ToString(NTTConstant.DATE_FORMAT_FULL) ?? "ERROR NULL"}\n\n  BMI Record";
 
-        view.Init($"{m_BmiRecordData.Date.ToString(NTTConstant.DATE_FORMAT_FULL) ?? "ERROR NULL"}\n\n  BMI Record", $"     Weight: {m_BmiRecordData.Weight}\n     BMI: {m_CurrentDayBMI}");
+        string detail = $"{TAB}Weight: {m_BmiRecordData.Weight} kg\n{TAB}BMI: {m_CurrentDayBMI} kg/m^2";
+
+        GenerateItemDetailView().Init(title, detail);
     }
 
     private void SetCalRecordDetail()
@@ -80,10 +86,20 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
         {
             return;
         }
+        GenerateItemDetailView().Init(CALORIES_RECORD, SumDetailCalRecordTxt());
+    }
 
+    private NTTMyHealthRecordDetailItemView GenerateItemDetailView()
+    {
         var view = Instantiate(m_ItemDetailPref, m_TfContent).GetComponent<NTTMyHealthRecordDetailItemView>();
+
         m_DetailItemViewList.Add(view);
 
+        return view;
+    }
+
+    private string SumDetailCalRecordTxt()
+    {
         StringBuilder sb = new StringBuilder();
 
         int count = m_CalRecordList.Count;
@@ -91,9 +107,9 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             var item = m_CalRecordList[i];
-            sb.Append($"    Record {i + 1}:\n      Nutrient: {item.Nutrient}\n      Amount: {item.Amount} {item.Unit}\n      Description: {item.Description}\n\n");
+            sb.Append($"{TAB}Record {i + 1}:\n{TAB}  Nutrient: {item.Nutrient}\n{TAB}  Amount: {item.Amount} {item.Unit}\n{TAB}  Description: {item.Description}\n\n");
         }
 
-        view.Init("  Calories Record", sb.ToString());
+        return sb.ToString();
     }
 }

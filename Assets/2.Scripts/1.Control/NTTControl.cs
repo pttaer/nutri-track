@@ -40,6 +40,14 @@ public class NTTControl
         get { return m_ShowPopupCalendar; }
         set { m_ShowPopupCalendar = value; }
     }
+    
+    private Action<List<string>, Action<string>> m_ShowSelector; //notify show popup message
+
+    public Action<List<string>, Action<string>> OnCallShowSelector
+    {
+        get { return m_ShowSelector; }
+        set { m_ShowSelector = value; }
+    }
 
     public static NTTControl Api
     {
@@ -139,6 +147,11 @@ public class NTTControl
     public void ShowCalendarPopup(TextMeshProUGUI targetTxt, bool isClosePopup)
     {
         OnCallShowPopupCalendarEvent?.Invoke(targetTxt, isClosePopup);
+    }
+    
+    public void ShowSelector(List<string> listTxtShow, Action<string> callbackSelect = null)
+    {
+        OnCallShowSelector?.Invoke(listTxtShow, callbackSelect);
     }
 
     public void UnloadThenLoadScene(string sceneToLoad)

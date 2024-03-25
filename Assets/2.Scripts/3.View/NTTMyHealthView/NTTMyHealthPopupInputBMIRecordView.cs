@@ -22,9 +22,9 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
     Action m_OnExit;
     DateTime m_CurrentDate;
 
-    public void Init(Action callbackExit = null)
+    public void Init(Action callbackExitAddRecord = null)
     {
-        m_OnExit = callbackExit;
+        m_OnExit = callbackExitAddRecord;
 
         if (!m_IsInit)
         {
@@ -36,8 +36,8 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
             m_TxtBMICalculated = transform.Find("CalculatedBMI/Title").GetComponent<TextMeshProUGUI>();
 
             m_BtnExit.onClick.AddListener(SetPopupOff);
-            m_IpfWeightSelect.onValueChanged.AddListener(ValidateWeight);
             m_BtnAddRecord.onClick.AddListener(AddRecordWeight);
+            m_IpfWeightSelect.onValueChanged.AddListener(ValidateWeight);
 
             m_IsInit = true;
         }
@@ -47,8 +47,12 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
     public void SetCurrentDate(DateTime date, NTTBMIRecordDTO currentBMIRecord)
     {
         m_CurrentBMIRecord = currentBMIRecord;
-        m_CurrentDate = DateTime.Parse(date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
-        Debug.Log("Run here m_CurrentDate" + m_CurrentDate);
+
+        m_CurrentDate = DateTime.Parse(date.ToString(NTTConstant.DATE_FORMAT_ISO_STRING));
+
+        //Debug.Log("Run here m_CurrentDate" + m_CurrentDate);
+
+        SetPopupActive(true);
     }
 
     private void ValidateWeight(string weightTxt)
@@ -63,18 +67,18 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
 
     private void AddRecordWeight()
     {
-        Debug.Log("Run here m_IpfWeightSelect.text" + m_IpfWeightSelect.text);
         if (!string.IsNullOrEmpty(m_IpfWeightSelect.text) && float.TryParse(m_IpfWeightSelect.text, out float weight))
         {
-            Debug.Log("Run here weight" + weight);
             PostWeightBMIData(weight);
         }
     }
 
     private void SetPopupOff()
     {
-        gameObject.SetActive(false);
+        SetPopupActive(false);
+
         m_IpfWeightSelect.text = string.Empty;
+
         NTTMyHealthControl.Api.ClosePopupRecord();
     }
 
@@ -86,30 +90,34 @@ public class NTTMyHealthPopupInputBMIRecordView : MonoBehaviour
         {
             StartCoroutine(NTTApiControl.Api.EditData(string.Format(NTTConstant.BMI_RECORDS_ROUTE_FORMAT, m_CurrentBMIRecord.Id), bmiRecord, (data) =>
             {
-                SetPopupOff();
                 Debug.Log("PUT");
+
+                OnFinishAddRecord();
+
                 m_CurrentBMIRecord = null;
-                m_OnExit?.Invoke();
             }));
+
             m_CurrentBMIRecord = null;
         }
         else
         {
             StartCoroutine(NTTApiControl.Api.PostData(NTTConstant.BMI_RECORDS_ROUTE, bmiRecord, (data) =>
             {
-                SetPopupOff();
                 Debug.Log("POST");
-                m_OnExit?.Invoke();
+
+                OnFinishAddRecord();
             }));
         }
     }
 
-    private void Update()
+    private void OnFinishAddRecord()
     {
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            Debug.Log("Run here");
-            PostWeightBMIData(40);
-        }
+        SetPopupOff();
+        m_OnExit?.Invoke();
+    }
+
+    private void SetPopupActive(bool active)
+    {
+        gameObject.SetActive(active);
     }
 }

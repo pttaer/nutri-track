@@ -236,9 +236,10 @@ public class NTTApiControl
         NTTControl.Api.ShowLoading();
 
         string jsonData = JsonConvert.SerializeObject(formData, Formatting.Indented);
-        byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
-
+        
         Debug.Log("formData: " + jsonData);
+        
+        byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
 
         UnityWebRequest request = WebRequestWithAuthorizationHeader(uri, NTTConstant.METHOD_POST);
         request.SetRequestHeader("Content-Type", "application/json");

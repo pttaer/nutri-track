@@ -24,6 +24,10 @@ public class NTTGeneralView : MonoBehaviour
 
     private TextMeshProUGUI m_DummyTxt;
 
+    private Button m_BtnSelect;
+
+    private Action<string> m_CallbackSelect;
+
 
     private void Start()
     {
@@ -39,6 +43,7 @@ public class NTTGeneralView : MonoBehaviour
         NTTControl.Api.OnLoadFailShowSorry -= ShowSorryTxt;
         NTTControl.Api.CheckingSchoolIdEvent -= CheckSchoolId;
         NTTControl.Api.OnCallShowPopupCalendarEvent -= ShowCalendarPopup;
+        NTTControl.Api.OnCallShowSelector -= ShowSelector;
     }
 
     private void Init()
@@ -52,8 +57,11 @@ public class NTTGeneralView : MonoBehaviour
         m_DummyTxt = transform.Find("Canvas/TxtDummy").GetComponent<TextMeshProUGUI>();
         m_CalendarPopupView = transform.Find("Canvas/CalendarPopup/BG/CalendarControllerPreb").GetComponent<CalendarController>();
         m_SelectorView = transform.Find("Canvas/PopupSelector/ScrollSystem").GetComponent<ScrollMechanic>();
+        m_BtnSelect = transform.Find("Canvas/PopupSelector/BtnSelect").GetComponent<Button>();
         //
         m_popupMessagePrefab = ResourceObject.GetResource<GameObject>(NTTConstant.CONFIG_PREFAB_POPUP_MESSAGE);
+
+        m_BtnSelect.onClick.AddListener(ClosePopupSelector);
 
         // register event
         NTTControl.Api.ShowNTTPopupEvent += ShowNTTPopup;
@@ -62,6 +70,13 @@ public class NTTGeneralView : MonoBehaviour
         NTTControl.Api.OnLoadFailShowSorry += ShowSorryTxt;
         NTTControl.Api.CheckingSchoolIdEvent += CheckSchoolId;
         NTTControl.Api.OnCallShowPopupCalendarEvent += ShowCalendarPopup;
+        NTTControl.Api.OnCallShowSelector += ShowSelector;
+    }
+
+    private void ClosePopupSelector()
+    {
+        m_SelectorView.transform.parent.gameObject.SetActive(false);
+        m_CallbackSelect?.Invoke(m_SelectorView.GetCurrentSelectedTxt());
     }
 
     private void ShowCalendarPopup(TextMeshProUGUI targetTxt, bool isClosePopup = false)
@@ -79,8 +94,9 @@ public class NTTGeneralView : MonoBehaviour
         }
     }
 
-    private void ShowSelector(List<string> itemTxtList)
+    private void ShowSelector(List<string> itemTxtList, Action<string> callbackSelect = null)
     {
+        m_CallbackSelect = callbackSelect;
         m_SelectorView.gameObject.SetActive(true);
         m_SelectorView.transform.parent.gameObject.SetActive(true);
         m_SelectorView.Init(itemTxtList, m_Camera, canvas: m_RtCanvas, false);

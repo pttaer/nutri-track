@@ -467,11 +467,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CalendarPanel: {fileID: 0}
-  m_YearNumText: {fileID: 586558943089831956}
-  m_MonthNumText: {fileID: 3734139996773097220}
-  BtnExit: {fileID: 9213274808533855759}
-  m_BtnFinish: {fileID: 8800319881824041560}
-  m_Item: {fileID: 433109480824168940}
   m_DateItems: []
   m_Width: 95
   m_Height: 64
@@ -590,7 +585,7 @@ GameObject:
   - component: {fileID: 433109480465925769}
   - component: {fileID: 433109480465925784}
   m_Layer: 5
-  m_Name: YearPrev
+  m_Name: BtnYearPrev
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1223,7 +1218,7 @@ GameObject:
   - component: {fileID: 433109480988782653}
   - component: {fileID: 433109480988782640}
   m_Layer: 5
-  m_Name: MonthPrev
+  m_Name: BntMonthPrev
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1547,7 +1542,7 @@ GameObject:
   - component: {fileID: 433109481231309988}
   - component: {fileID: 433109481231309991}
   m_Layer: 5
-  m_Name: MonthNext
+  m_Name: BtnMonthNext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1805,7 +1800,7 @@ GameObject:
   - component: {fileID: 433109481572515342}
   - component: {fileID: 433109481572515328}
   m_Layer: 5
-  m_Name: YearNext
+  m_Name: BtnYearNext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
