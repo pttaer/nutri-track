@@ -117,7 +117,7 @@ MonoBehaviour:
       _ids:
       - e9c81117-b7cb-4f69-8673-b747282a5fc3
       - 913ca696-7772-405e-9764-40cabcc3e128
-    _activeThemeId: e9c81117-b7cb-4f69-8673-b747282a5fc3
+    _activeThemeId: 913ca696-7772-405e-9764-40cabcc3e128
   _gradientPalette:
     _entries:
       _keys: []
