@@ -13,12 +13,18 @@ public class CalendarDateItem : MonoBehaviour
     [SerializeField] GameObject m_DailyCal;
     [SerializeField] Image m_ImgBMI;
     [SerializeField] Image m_ImgCalories;
+    private Button m_Btn;
     public bool m_IsSunday;
     public bool m_IsChoosen;
 
     public void EnableButton(bool enable)
     {
-        GetComponent<Button>().interactable = enable;
+        if(m_Btn == null)
+        {
+            m_Btn = GetComponent<Button>();
+        }
+        m_Btn.interactable = enable;
+        m_Txt.color = enable ? Color.black : NTTConstant.DISABLED_TEXT_COLOR;
     }
 
     public void EnableBMI(DateTime itemDate, List<NTTBMIRecordDTO> bmiRecordList)
