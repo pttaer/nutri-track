@@ -53,7 +53,7 @@ public class NTTMyHealthView : MonoBehaviour
 
         m_CalendarController = pnlCalendar.Find("CalendarControllerPreb").GetComponent<CalendarController>();
 
-        m_PnlChooseRecordType = content.Find("PnlChooseRecordType").gameObject;
+        m_PnlChooseRecordType = pnlSummary.Find("PnlChooseRecordType").gameObject;
         m_BGPopupAddDailyRecord = content.Find("BGFull").gameObject;
 
         m_TxtBtnAddDailyRecord = pnlSummary.Find("TopBar/BtnAddDailyRecord/Text").GetComponent<TextMeshProUGUI>();
@@ -62,8 +62,8 @@ public class NTTMyHealthView : MonoBehaviour
         m_TxtCaloriesValue = pnlSummary.Find("Record/Calories/Value").GetComponent<TextMeshProUGUI>();
 
         m_BtnAddDailyRecord = pnlSummary.Find("TopBar/BtnAddDailyRecord").GetComponent<Button>();
-        m_BtnAddBMI = content.Find("PnlChooseRecordType/BMI").GetComponent<Button>();
-        m_BtnAddCal = content.Find("PnlChooseRecordType/Calories").GetComponent<Button>();
+        m_BtnAddBMI = pnlSummary.Find("PnlChooseRecordType/BMI").GetComponent<Button>();
+        m_BtnAddCal = pnlSummary.Find("PnlChooseRecordType/Calories").GetComponent<Button>();
         m_BtnRecordDetail = pnlSummary.Find("Background").GetComponent<Button>();
 
         m_PopupRecordDetail = popupRecordDetail.GetComponent<NTTMyHealthPopupRecordDetailView>();
