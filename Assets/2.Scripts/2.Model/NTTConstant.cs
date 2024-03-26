@@ -188,6 +188,7 @@ public class NTTConstant
 
     // unit constants
     public const string BMI_UNIT = "kg/m^2";
+    public const string WEIGHT_UNIT = "kg";
     public const string CALS = "cals";
     public const string KILO_CALS = "Kcals";
 

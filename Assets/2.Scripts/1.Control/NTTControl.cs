@@ -1,10 +1,10 @@
 //using Firebase.Auth;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using uPalette.Generated;
+using uPalette.Runtime.Core;
 
 public class NTTControl
 {
@@ -82,13 +82,15 @@ public class NTTControl
         NTTSceneLoaderControl.Api.Init();
 
         // Default value
-        //UnloadThenLoadScene(NTTConstant.SCENE_LOGIN);
-        //LoadScene(NTTConstant.SCENE_MENU);
-        //NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_MENU);
         NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_WELCOME);
-
         Debug.Log("INIT");
     }
+
+    public Color GetPaletteColorValue(ColorEntry entry)
+    {
+        return PaletteStore.Instance.ColorPalette.GetActiveValue(entry.ToEntryId()).Value;
+    }
+
     #region UTILS
 
     //show hide loading
@@ -153,94 +155,5 @@ public class NTTControl
     {
         OnCallShowSelector?.Invoke(listTxtShow, callbackSelect);
     }
-
-    public void UnloadThenLoadScene(string sceneToLoad)
-    {
-        // Unload the current scene & remove scenes loaded beside loadfirst
-        List<string> sceneNames = SceneManager.GetAllScenes()
-                                              .Select(scene => scene.name)
-                                              .ToList();
-
-        foreach (var sceneName in sceneNames)
-        {
-            //if (sceneName != NTTConstant.SCENE_LOADFIRST && sceneName != NTTConstant.SCENE_MENU)
-            //{
-            //    if (NTTModel.Api.ScenesLoaded.Contains(sceneName) && NTTModel.Api.ScenesLoaded.Contains(sceneToLoad))
-            //    {
-            //        NTTModel.Api.ScenesLoaded.Remove(sceneName);
-            //    }
-            //    UnLoadScene(sceneName);
-            //}
-        }
-
-        LoadScene(sceneToLoad);
-    }
-
-    // Load and add scene to scenes loaded list
-    private void LoadScene(string sceneToLoad)
-    {
-        if (!SceneManager.GetSceneByName(sceneToLoad).isLoaded)
-        {
-            SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
-
-//            if (!NTTModel.Api.ScenesLoaded.Contains(sceneToLoad))
-//            {
-//                NTTModel.Api.ScenesLoaded.Add(sceneToLoad);
-//            }
-
-//#if UNITY_EDITOR
-//            foreach (var scene in NTTModel.Api.ScenesLoaded)
-//            {
-//                Debug.Log("SCENE LOADED: " + scene);
-//            }
-//#endif
-        }
-    }
-
-    private void UnLoadScene(string sceneToUnLoad)
-    {
-        if (SceneManager.GetSceneByName(sceneToUnLoad).isLoaded)
-        {
-            SceneManager.UnloadSceneAsync(sceneToUnLoad);
-        }
-    }
-
-    // For opening one or many panels in the set of panels of one scene
-    public void OpenPanel(GameObject pnlToShow, List<GameObject> pnlList, bool isCheckToTurnPanelOff = false)
-    {
-        if (pnlToShow.activeSelf && isCheckToTurnPanelOff)
-        {
-            pnlToShow.SetActive(false);
-            return;
-        }
-
-        foreach (var pnl in pnlList)
-        {
-            if (pnl.gameObject == pnlToShow)
-            {
-                pnl.gameObject.SetActive(true);
-                continue;
-            }
-            pnl.SetActive(false);
-        }
-    }
-
-    /*public void OpeManyPanel(List<GameObject> pnlList, bool isCheckToTurnPanelOff = false, params GameObject[] pnlsToShow)
-    {
-        pnlList.ForEach(panel => panel.SetActive(!pnlsToShow.Contains(panel)));
-        pnlsToShow.ToList().ForEach(panelToShow => panelToShow.SetActive(true));
-
-        if (isCheckToTurnPanelOff)
-        {
-            pnlList.Where(panel => !pnlsToShow.Contains(panel)).ToList().ForEach(panel => panel.SetActive(false));
-        }
-    }*/
-
-    public void OpenManyPanel(List<GameObject> pnlList, List<GameObject> pnlsToShow)
-    {
-        pnlList.ForEach(panel => panel.SetActive(false));
-        pnlsToShow.ForEach(panel => panel.SetActive(true));
-    }
-
     #endregion UTILS
 }

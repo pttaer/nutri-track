@@ -1,11 +1,9 @@
-﻿using DG.Tweening;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using uPalette.Generated;
-using uPalette.Runtime.Core;
 
 [SerializeField]
 class CalendarController : MonoBehaviour
@@ -24,7 +22,7 @@ class CalendarController : MonoBehaviour
     Button m_BtnExit;
     Button m_BtnFinish;
 
-    GameObject m_Item;
+    CalendarDateItem m_Item;
 
     [SerializeField] List<CalendarDateItem> m_DateItems = new List<CalendarDateItem>();
 
@@ -33,7 +31,7 @@ class CalendarController : MonoBehaviour
     [SerializeField] float m_Height = 48f;
     [SerializeField] TextMeshProUGUI m_Target;
 
-    [SerializeField] float TWEEN_DURATION = 0.3f;
+    [SerializeField] float m_TweenDuration = 0.3f;
     [SerializeField] DateTime m_DateTime;
 
     private string m_DateFormat;
@@ -46,8 +44,9 @@ class CalendarController : MonoBehaviour
 
     public static CalendarController Api;
 
-
     private bool m_IsInited = false;
+
+    private const string MONTH_FORMAT = "MMM";
 
     public void Init(TextMeshProUGUI targetUITxt, string dateFormat = null, bool isMyHealth = false, List<NTTBMIRecordDTO> bmiRecordsList = null, List<NTTDailyCalDTO> dailyCalList = null, List<NTTCalRecordDTO> calRecordsList = null, Action<bool, bool, bool, DateTime?> onDateSelectCallback = null)
     {
@@ -61,18 +60,21 @@ class CalendarController : MonoBehaviour
         {
             Api = this;
 
-            m_BtnMonthPrev = transform.Find("CalendarBG/TopBar/BtnMonthPrev").GetComponent<Button>();
-            m_BtnMonthNext = transform.Find("CalendarBG/TopBar/BtnMonthNext").GetComponent<Button>();
-            m_BtnYearPrev = transform.Find("CalendarBG/TopBar/BtnYearPrev").GetComponent<Button>();
-            m_BtnYearNext = transform.Find("CalendarBG/TopBar/BtnYearNext").GetComponent<Button>();
+            Transform calendarBG = transform.Find("CalendarBG");
+            Transform topbar = calendarBG.Find("TopBar");
 
-            m_YearNumText = transform.Find("CalendarBG/TopBar/Year").GetComponent<TextMeshProUGUI>();
-            m_MonthNumText = transform.Find("CalendarBG/TopBar/Month").GetComponent<TextMeshProUGUI>();
+            m_BtnMonthPrev = topbar.Find("BtnMonthPrev").GetComponent<Button>();
+            m_BtnMonthNext = topbar.Find("BtnMonthNext").GetComponent<Button>();
+            m_BtnYearPrev = topbar.Find("BtnYearPrev").GetComponent<Button>();
+            m_BtnYearNext = topbar.Find("BtnYearNext").GetComponent<Button>();
 
-            m_Item = transform.Find("CalendarBG/Item").gameObject;
+            m_YearNumText = topbar.Find("Year").GetComponent<TextMeshProUGUI>();
+            m_MonthNumText = topbar.Find("Month").GetComponent<TextMeshProUGUI>();
 
-            m_BtnExit = transform.Find("CalendarBG/BtnExit").GetComponent<Button>();
-            m_BtnFinish = transform.Find("CalendarBG/BottomBar/BtnFinish").GetComponent<Button>();
+            m_Item = calendarBG.Find("Item").GetComponent<CalendarDateItem>();
+
+            m_BtnExit = calendarBG.Find("BtnExit").GetComponent<Button>();
+            m_BtnFinish = calendarBG.Find("BottomBar/BtnFinish").GetComponent<Button>();
 
             m_BtnMonthPrev.onClick.AddListener(MonthPrev);
             m_BtnMonthNext.onClick.AddListener(MonthNext);
@@ -84,7 +86,7 @@ class CalendarController : MonoBehaviour
 
             m_DateFormat = dateFormat;
             m_DateItems.Clear();
-            m_DateItems.Add(m_Item.GetComponent<CalendarDateItem>());
+            m_DateItems.Add(m_Item);
 
             m_BtnExit.gameObject.SetActive(false);
             m_BtnFinish.gameObject.SetActive(false);
@@ -97,20 +99,19 @@ class CalendarController : MonoBehaviour
         }
 
         CreateCalendar();
-        SetTargetTxt(targetUITxt);
+        m_Target = targetUITxt;
     }
 
     private void GenerateCalendarItems(Vector3 startPos)
     {
         for (int i = 1; i < _totalDateNum; i++)
         {
-            GameObject item = Instantiate(m_Item);
-            item.transform.SetParent(m_Item.transform.parent);
-            item.transform.localScale = Vector3.one;
-            item.transform.localRotation = Quaternion.identity;
-            item.transform.localPosition = new Vector3((i % 7 * m_Width) + startPos.x, startPos.y - (i / 7 * m_Height), startPos.z);
+            CalendarDateItem itemView = Instantiate(m_Item.gameObject).GetComponent<CalendarDateItem>();
+            itemView.transform.SetParent(m_Item.transform.parent);
+            itemView.transform.localScale = Vector3.one;
+            itemView.transform.localRotation = Quaternion.identity;
+            itemView.transform.localPosition = new Vector3((i % 7 * m_Width) + startPos.x, startPos.y - (i / 7 * m_Height), startPos.z);
 
-            CalendarDateItem itemView = item.GetComponent<CalendarDateItem>();
             m_DateItems.Add(itemView);
 
             if ((i + 1) % 7 == 0)
@@ -147,11 +148,6 @@ class CalendarController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void SetTargetTxt(TextMeshProUGUI txt, bool isShowPopup = false)
-    {
-        m_Target = txt;
-    }
-
     public void ShowExitFinishPopup(bool isShowPopup = false)
     {
         if (isShowPopup)
@@ -166,54 +162,60 @@ class CalendarController : MonoBehaviour
         SetAllItemsOff();
         ClearTargetText();
 
-        DateTime firstDay = m_DateTime.AddDays(-(m_DateTime.Day));
+        DateTime firstDay = m_DateTime.AddDays(-m_DateTime.Day);
+        DateTime tomorow = DateTime.Today.AddDays(1);
+
         int index = GetDays(firstDay.DayOfWeek);
 
-        var palette = PaletteStore.Instance.ColorPalette;
-        var color = palette.GetActiveValue(ColorEntry.Primary.ToEntryId()).Value;
+        var sundayColor = NTTControl.Api.GetPaletteColorValue(ColorEntry.Primary);
 
         int date = 0;
+
         firstDay = firstDay.AddDays(1);
+
         for (int i = 0; i < _totalDateNum; i++)
         {
-            Text label = m_DateItems[i].GetComponentInChildren<Text>();
-            m_DateItems[i].gameObject.SetActive(false);
+            CalendarDateItem itemView = m_DateItems[i];
+
+            Text label = itemView.GetComponentInChildren<Text>();
+
+            GameObject goItem = itemView.gameObject;
+
+            goItem.SetActive(false);
 
             if (i >= index)
             {
                 DateTime thatDay = firstDay.AddDays(date);
+                //Debug.Log("Run here thatDay: " + thatDay);
+
                 if (thatDay.Month == firstDay.Month)
                 {
-                    m_DateItems[i].gameObject.SetActive(true);
+                    goItem.SetActive(true);
+
+                    goItem.name = $"{label.text} {thatDay.Month} {thatDay.Year}";
 
                     label.text = (date + 1).ToString();
 
-                    // For recognition in hierachy
-                    m_DateItems[i].gameObject.name = $"{label.text} {thatDay.Month} {thatDay.Year}";
+                    if (itemView.m_IsSunday)
+                    {
+                        label.color = sundayColor;
+                    }
 
                     if (m_IsMyHealth)
                     {
-                        //Debug.Log("Run here thatDay: " + thatDay);
+                        itemView.EnableButton(thatDay < tomorow);
 
-                        // Disabling days in future
-                        m_DateItems[i].EnableButton(thatDay < DateTime.Today.AddDays(1));
+                        itemView.EnableBMI(thatDay, m_BmiRecordsList?.FindAll(item => item.Date.Month == thatDay.Month));
 
-                        // Find all the data items that have the same month of the current month
-                        m_DateItems[i].EnableBMI(thatDay, m_BmiRecordsList?.FindAll(item => item.Date.Month == thatDay.Month));
-                        m_DateItems[i].EnableDailyCal(thatDay, m_DailyCalList?.FindAll(item => item.Date.Month == thatDay.Month), m_CalRecordList);
-                    }
-
-                    if (m_DateItems[i].m_IsSunday)
-                    {
-                        label.color = color;
+                        itemView.EnableDailyCal(thatDay, m_DailyCalList?.FindAll(item => item.Date.Month == thatDay.Month), m_CalRecordList);
                     }
                 }
                 date++;
             }
         }
 
-        TweenUtils.TypingAnimation(m_YearNumText, m_DateTime.Year.ToString(), TWEEN_DURATION);
-        TweenUtils.TypingAnimation(m_MonthNumText, m_DateTime.ToString("MMM"), TWEEN_DURATION);
+        TweenUtils.TypingAnimation(m_YearNumText, m_DateTime.Year.ToString(), m_TweenDuration);
+        TweenUtils.TypingAnimation(m_MonthNumText, m_DateTime.ToString(MONTH_FORMAT), m_TweenDuration);
     }
 
     public void YearPrev()
@@ -250,7 +252,7 @@ class CalendarController : MonoBehaviour
 
             DateTime isoStringFormatDate = DateTime.Parse(date.ToString(NTTConstant.DATE_FORMAT_ISO_STRING));
 
-            TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat ?? NTTConstant.DATE_FORMAT_FULL_MAIN), TWEEN_DURATION);
+            TweenUtils.TypingAnimation(m_Target, date.ToString(m_DateFormat ?? NTTConstant.DATE_FORMAT_FULL_MAIN), m_TweenDuration);
 
             m_OnSelectCallback?.Invoke(true, isBmiExist, isCalRecordExist, isoStringFormatDate);
         }

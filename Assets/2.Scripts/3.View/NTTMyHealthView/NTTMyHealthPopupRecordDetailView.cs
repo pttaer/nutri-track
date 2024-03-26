@@ -75,7 +75,7 @@ public class NTTMyHealthPopupRecordDetailView : MonoBehaviour
 
         string title = $"{m_BmiRecordData.Date.ToString(NTTConstant.DATE_FORMAT_FULL) ?? "ERROR NULL"}\n\n  BMI Record";
 
-        string detail = $"{TAB}Weight: {m_BmiRecordData.Weight} kg\n{TAB}BMI: {m_CurrentDayBMI} kg/m^2";
+        string detail = $"{TAB}Weight: {m_BmiRecordData.Weight} {NTTConstant.WEIGHT_UNIT}\n{TAB}BMI: {m_CurrentDayBMI} {NTTConstant.BMI_UNIT}";
 
         GenerateItemDetailView().Init(title, detail);
     }

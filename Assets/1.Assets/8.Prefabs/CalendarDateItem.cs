@@ -35,7 +35,7 @@ public class CalendarDateItem : MonoBehaviour
             callbackExist: (itemData) =>
             {
                 m_BMI.SetActive(true);
-                var color = PaletteStore.Instance.ColorPalette.GetActiveValue(ColorEntry.BMI.ToEntryId()).Value;
+                var color = NTTControl.Api.GetPaletteColorValue(ColorEntry.BMI);
                 m_ImgBMI.color = color;
                 //Debug.Log("Run here YEET " + itemDate);
             },
@@ -55,7 +55,7 @@ public class CalendarDateItem : MonoBehaviour
             callbackExist: (dailyCal, listCalRecord) =>
             {
                 m_DailyCal.SetActive(true);
-                var color = PaletteStore.Instance.ColorPalette.GetActiveValue(ColorEntry.Calories.ToEntryId()).Value;
+                var color = NTTControl.Api.GetPaletteColorValue(ColorEntry.Calories);
                 m_ImgCalories.color = color;
                 //Debug.Log("Run here YEET " + itemDate);
             },
@@ -87,7 +87,7 @@ public class CalendarDateItem : MonoBehaviour
     {
         if (m_BG.activeSelf)
         {
-            var color = PaletteStore.Instance.ColorPalette.GetActiveValue(ColorEntry.Primary.ToEntryId()).Value;
+            var color = NTTControl.Api.GetPaletteColorValue(ColorEntry.Primary);
             m_Txt.color = m_IsSunday ? color : Color.black;
             m_Txt.fontStyle = FontStyle.Normal;
             m_BG.SetActive(false);
