@@ -219,6 +219,8 @@ public class NTTConstant
 
     private static Color m_MainColor = new(0f, 0.69f, 0.31f);
 
+    public static Color DISABLED_TEXT_COLOR = new(0, 0, 0, 0.3f);
+
     private static Color m_MainLightColor = new(115f / 255f, 209f / 255f, 61f / 255f, 86f / 255f);
 
     private static Color32 m_RedTextColor = new(202, 33, 43, 255);

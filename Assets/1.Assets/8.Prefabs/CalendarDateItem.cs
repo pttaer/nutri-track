@@ -24,7 +24,7 @@ public class CalendarDateItem : MonoBehaviour
             m_Btn = GetComponent<Button>();
         }
         m_Btn.interactable = enable;
-        m_Txt.color = enable ? Color.black : new Color(0,0,0, 0.3f);
+        m_Txt.color = enable ? Color.black : NTTConstant.DISABLED_TEXT_COLOR;
     }
 
     public void EnableBMI(DateTime itemDate, List<NTTBMIRecordDTO> bmiRecordList)
