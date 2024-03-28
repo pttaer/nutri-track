@@ -144,6 +144,13 @@ public class NTTConstant
     public const string CAL_RECORDS_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "cal-records?sortBy={0}";
     public const string CAL_RECORDS_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "cal-records?sortBy={0}&limit={1}&page={2}";
 
+    public const string DIET_ROUTE = BASE_DOMAIN + "diets";
+    public const string DIET_ROUTE_FORMAT = BASE_DOMAIN + "diets/{0}";
+    public const string DIET_ROUTE_GET_ALL_FORMAT = BASE_DOMAIN + "diets?limit={0}&page={1}";
+    public const string DIET_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "diets?sortBy={0}";
+    public const string DIET_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "diets?sortBy={0}&limit={1}&page={2}";
+    public const string DIET_ROUTE_SET_ACTIVE_FORMAT = BASE_DOMAIN + "diets/{0}/status";
+
     public const string APPLICATION_ROUTE = BASE_DOMAIN + "applications/{0}";
     public const string APPLICATION_STATUS_ROUTE = BASE_DOMAIN + "applications/{0}/status";
 

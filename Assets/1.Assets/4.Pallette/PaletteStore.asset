@@ -24,6 +24,7 @@ MonoBehaviour:
       - 85c67598-67da-4d45-bb5f-fb3be32ca9a9
       - 525bdd84-1167-4ac2-b588-38d3d87e6555
       - fc94772a-758d-4cf3-b875-8c0e0f7ac8dd
+      - 945d9261-e376-48a9-98e9-a5613583d45f
       _values:
       - _id: ed16ed0e-dac1-49fb-a608-d88a993816b7
         _name:
@@ -115,6 +116,16 @@ MonoBehaviour:
           _values:
           - _value: {r: 0.5019608, g: 0.87058824, b: 0.8509804, a: 1}
           - _value: {r: 0.9764706, g: 0.85882354, b: 0.7411765, a: 1}
+      - _id: 945d9261-e376-48a9-98e9-a5613583d45f
+        _name:
+          _value: ActiveColor
+        _values:
+          _keys:
+          - e9c81117-b7cb-4f69-8673-b747282a5fc3
+          - 913ca696-7772-405e-9764-40cabcc3e128
+          _values:
+          - _value: {r: 0.93725497, g: 0.32156864, b: 0.2392157, a: 1}
+          - _value: {r: 0.23529413, g: 0.9294118, b: 0.43921572, a: 1}
     _themes:
       _keys:
       - e9c81117-b7cb-4f69-8673-b747282a5fc3
@@ -137,6 +148,7 @@ MonoBehaviour:
       - 85c67598-67da-4d45-bb5f-fb3be32ca9a9
       - 525bdd84-1167-4ac2-b588-38d3d87e6555
       - fc94772a-758d-4cf3-b875-8c0e0f7ac8dd
+      - 945d9261-e376-48a9-98e9-a5613583d45f
     _themeOrders:
       _ids:
       - e9c81117-b7cb-4f69-8673-b747282a5fc3
