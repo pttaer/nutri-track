@@ -35,6 +35,7 @@ public enum ColorTheme
         Menu,
         BMI,
         Calories,
+        ActiveColor,
     }
 
     public static class ColorEntryExtensions
@@ -61,6 +62,8 @@ public enum ColorTheme
                     return "525bdd84-1167-4ac2-b588-38d3d87e6555";
                 case ColorEntry.Calories:
                     return "fc94772a-758d-4cf3-b875-8c0e0f7ac8dd";
+                case ColorEntry.ActiveColor:
+                    return "945d9261-e376-48a9-98e9-a5613583d45f";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(entry), entry, null);
             }

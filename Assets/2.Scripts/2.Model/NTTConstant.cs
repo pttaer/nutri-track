@@ -58,6 +58,11 @@ public class NTTConstant
         get { return "NTTWelcome"; }
     }
 
+    public static string SCENE_DIET
+    {
+        get { return "NTTDiet"; }
+    }
+
     //TODO: UPDATE NEW SCENES
 
     #endregion SCENE_NAMES
@@ -144,6 +149,15 @@ public class NTTConstant
     public const string CAL_RECORDS_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "cal-records?sortBy={0}";
     public const string CAL_RECORDS_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "cal-records?sortBy={0}&limit={1}&page={2}";
 
+    public const string DIET_ROUTE = BASE_DOMAIN + "diets";
+    public const string DIET_ROUTE_FORMAT = BASE_DOMAIN + "diets/{0}";
+    public const string DIET_ROUTE_GET_ALL_FORMAT = BASE_DOMAIN + "diets?limit={0}&page={1}";
+    public const string DIET_ROUTE_GET_ALL_SORT_FORMAT = BASE_DOMAIN + "diets?sortBy={0}";
+    public const string DIET_ROUTE_GET_ALL_SORT_LIMIT_FORMAT = BASE_DOMAIN + "diets?sortBy={0}&limit={1}&page={2}";
+    public const string DIET_ROUTE_SET_ACTIVE_FORMAT = BASE_DOMAIN + "diets/{0}/status";
+    
+    public const string EXPERT_ROUTE = BASE_DOMAIN + "users/experts";
+
     public const string APPLICATION_ROUTE = BASE_DOMAIN + "applications/{0}";
     public const string APPLICATION_STATUS_ROUTE = BASE_DOMAIN + "applications/{0}/status";
 
@@ -188,7 +202,7 @@ public class NTTConstant
 
     // unit constants
     public const string BMI_UNIT = "kg/m^2";
-    public const string WEIGHT_UNIT = "kg";
+    public const string WEIGHT_UNIT_KG = "kg";
     public const string CALS = "cals";
     public const string KILO_CALS = "Kcals";
 
