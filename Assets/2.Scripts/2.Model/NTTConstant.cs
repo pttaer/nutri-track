@@ -63,6 +63,11 @@ public class NTTConstant
         get { return "NTTDiet"; }
     }
 
+    public static string SCENE_EXPERT
+    {
+        get { return "NTTExpert"; }
+    }
+
     //TODO: UPDATE NEW SCENES
 
     #endregion SCENE_NAMES
@@ -172,6 +177,8 @@ public class NTTConstant
     #region ICON_CODE
     public const string ICON_CLOSE = "\ue5cd";
     public const string ICON_MENU = "\ue5d2";
+    public const string STAR = "\ue838";
+    public const string STAR_HALF = "\ue839";
     #endregion
 
     #region SERVICE_KEY

@@ -46,11 +46,13 @@ public class NTTHomeView : MonoBehaviour
 
     private void OnClickExpert()
     {
-        throw new NotImplementedException();
+        NTTSceneLoaderControl.Api.UnloadLastScene();
+        NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_EXPERT);
     }
 
     private void OnClickDiet()
     {
+        NTTSceneLoaderControl.Api.UnloadLastScene();
         NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_DIET);
     }
 }

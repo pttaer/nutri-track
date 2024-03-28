@@ -18,6 +18,12 @@ EditorBuildSettings:
     path: Assets/3.Scenes/NTTMobile/NTTHome.unity
     guid: 8f55949710b40344384b1623db8bf27d
   - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTDiet.unity
+    guid: 8c0af278ec7beee4096f2b78c5fb5049
+  - enabled: 1
+    path: Assets/3.Scenes/NTTMobile/NTTExpert.unity
+    guid: ad824630f40b0414c84b6c5c342761af
+  - enabled: 1
     path: Assets/3.Scenes/NTTMobile/NTTMyHealth.unity
     guid: 45f289317b0cd974b8c68ce2924e47c4
   - enabled: 1
