@@ -16,13 +16,13 @@ public class NTTHomeView : MonoBehaviour
     void Start()
     {
         Transform content = transform.Find("Content");
-        Transform scrollContent = content.Find("ScrollviewButtons/Viewport/Content");
+        Transform scrollContent = content.Find("ScrollView/Viewport/Content");
         Transform pnlTips = content.Find("PnlTips");
 
-        m_BtnDiet = scrollContent.Find("BtnDiet").GetComponent<Button>();
-        m_BtnExpert = scrollContent.Find("BtnExpert").GetComponent<Button>();
-        m_BtnDailyProgressUpdate = scrollContent.Find("BtnDailyProgressUpdate").GetComponent<Button>();
-        m_BtnFoodList = scrollContent.Find("BtnFoodList").GetComponent<Button>();
+        m_BtnDiet = scrollContent.Find("BtnDiet/Btn").GetComponent<Button>();
+        m_BtnExpert = scrollContent.Find("BtnExpert/Btn").GetComponent<Button>();
+        m_BtnDailyProgressUpdate = scrollContent.Find("BtnDailyProgressUpdate/Btn").GetComponent<Button>();
+        m_BtnFoodList = scrollContent.Find("BtnFoodList/Btn").GetComponent<Button>();
 
         m_LETips = pnlTips.GetComponent<LayoutElement>();
 
@@ -51,6 +51,6 @@ public class NTTHomeView : MonoBehaviour
 
     private void OnClickDiet()
     {
-        throw new NotImplementedException();
+        NTTSceneLoaderControl.Api.LoadScene(NTTConstant.SCENE_DIET);
     }
 }
